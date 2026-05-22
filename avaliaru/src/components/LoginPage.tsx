@@ -2,6 +2,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { User, Lock, Loader2 } from "lucide-react";
 import Input from "./Input";
+import { loginUser } from "@/actions/login";
+import myAlert from "@/lib/alert";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -11,16 +13,26 @@ export default function LoginPage() {
 
     const formData = new FormData(e.currentTarget);
 
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-
-    // Simulação de cadastro no banco de dados, tempo de espera de 2 segundos
     setIsLoading(true);
-    setTimeout(() => {
-      console.log("Email: " + email);
-      console.log("Senha: " + password);
-      setIsLoading(false);
-    }, 2000);
+
+    loginUser(formData)
+      .catch((error) => {
+        if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
+          return;
+        }
+
+        // 2. Trata os erros reais de login aqui embaixo
+        if (error instanceof Error) {
+          console.error("Erro ao fazer login:", error);
+          myAlert.error("Ocorreu um erro ao tentar fazer login. Por favor, tente novamente.\n" + error.message);
+        } else {
+          console.error("Erro desconhecido ao fazer login:", error);
+          myAlert.error("Ocorreu um erro desconhecido ao tentar fazer login. Por favor, tente novamente.");
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
   return (
     <div id="login-form">

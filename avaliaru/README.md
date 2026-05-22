@@ -30,3 +30,18 @@ Depois disso, o projeto ficará disponível em modo de desenvolvimento.
 ## Observações
 
 Antes de subir a aplicação, verifique se o arquivo `.env.local` está configurado corretamente e se todas as variáveis de ambiente esperadas pelo projeto foram definidas.
+
+
+## Inicialização do banco de dados
+```bash
+    npx drizzle-kit generate #.../avaliaru/$
+    npx drizzle-kit migrate #.../avaliaru/$
+```
+
+## Páginas e acesso
+
+| Perfil | /dashboard | /gestao | /admin |
+|---|---|---|---|
+| Gestor Ru | Não | Sim | Não
+| Aluno | Sim | Não | Não
+| Admin | Não | Sim | Sim

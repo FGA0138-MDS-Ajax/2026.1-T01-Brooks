@@ -4,6 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { User, Mail, AlertTriangle, Loader2 } from "lucide-react";
 import Input from "./Input";
+import { registerUser } from "@/actions/register";
+import alert from "@/lib/alert";
+import myAlert from "@/lib/alert";
 
 export default function RegisterPage() {
   const [password, setPassword] = useState("");
@@ -15,21 +18,44 @@ export default function RegisterPage() {
 
     const formData = new FormData(e.currentTarget);
 
-    const fullName = formData.get("full-name") as string;
-    const email = formData.get("email") as string;
     const password = formData.get("password") as string;
+    const confirmedPassword = formData.get("confirmed-password") as string;
 
-    // Simulação de cadastro no banco de dados, tempo de espera de 2 segundos
+    if (password !== confirmedPassword) {
+      alert.error("As senhas não coincidem. Por favor, verifique e tente novamente.");
+      return;
+    }
+
     setIsLoading(true);
-    setTimeout(() => {
-      console.log("Cadastro Concluido");
-      console.log("Nome Completo: " + fullName);
-      console.log("Email: " + email);
-      console.log("Senha: " + password);
 
-      setIsLoading(false);
-    }, 2000);
+    registerUser(formData)
+      .then(() => {
+        console.log("Usuário registrado com sucesso!");
+        alert.success("Usuário registrado com sucesso! ");
+      })
+      .catch((error) => {
+        if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
+          return;
+        }
+
+        // 2. Trata os erros reais de login aqui embaixo
+        if (error instanceof Error) {
+          console.error("Erro ao fazer login:", error);
+          myAlert.error("Ocorreu um erro ao tentar fazer login. Por favor, tente novamente.\n" + error.message);
+        } else {
+          console.error("Erro desconhecido ao fazer login:", error);
+          myAlert.error("Ocorreu um erro desconhecido ao tentar fazer login. Por favor, tente novamente.");
+        }
+
+        console.error("Erro ao registrar usuário:", error);
+        alert.error("Ocorreu um erro ao registrar. \n" + error.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+
   };
+
 
   return (
     <div id="register-form">
@@ -43,7 +69,7 @@ export default function RegisterPage() {
           <label>Nome Completo</label>
           <div className="input-container">
             <Input
-              name="full-name"
+              name="name"
               icon={User}
               size={18}
               type="text"
@@ -126,7 +152,7 @@ export default function RegisterPage() {
 
       <div className="switch-form-text">
         Já possui uma conta?{" "}
-        <Link href="/" className="switch-btn switch-btn-register">
+        <Link href="/login" className="switch-btn switch-btn-register">
           Faça Login
         </Link>
       </div>
