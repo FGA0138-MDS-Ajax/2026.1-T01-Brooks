@@ -254,6 +254,12 @@ label {
 
 .btn-register { background-color: var(--ru-green); }
 .btn-register:hover { background-color: #2D5E3A; }
+.btn-register:disabled {
+  background-color: #E5E7EB;
+  color: #9CA3AF;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
 
 /* Alerta de Alérgenos */
 .alert-box {

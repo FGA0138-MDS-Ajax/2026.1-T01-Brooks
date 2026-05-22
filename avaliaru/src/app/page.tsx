@@ -1,7 +1,5 @@
 "use client"; // Diz ao Next.js que este componente precisa rodar no navegador (Cliente)
 
-// import { useState } from 'react';
-// import { useRouter } from 'next/navigation';
 import LoginPage from '@/components/LoginPage';
 import LeftBar from '../components/LeftBar';
 
