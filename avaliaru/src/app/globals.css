@@ -1,26 +1,296 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+    --ru-dark-blue: #1E325C;
+    --ru-green: #3B7A4C;
+    --ru-light-bg: #F4F6F9;
+    --ru-white: #FFFFFF;
+    --text-main: #333333;
+    --text-muted: #666666;
+    --border-color: #D1D5DB;
+    --alert-bg: #FFF8E7;
+    --alert-border: #FFE2A8;
+    --alert-text: #8A6D3B;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--ru-light-bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
+
+.container {
+    background-color: var(--ru-white);
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 850px;
+    min-height: 550px;
+    overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .container {
+        flex-direction: row;
+    }
+}
+
+/* Lado Esquerdo - Banner */
+.banner-side {
+    background: linear-gradient(135deg, var(--ru-dark-blue) 0%, #111E36 100%);
+    color: var(--ru-white);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .banner-side {
+        width: 50%;
+    }
+}
+
+.banner-content {
+    margin: auto 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo-placeholder {
+    width: 96px;
+    height: 96px;
+    background-color: var(--ru-white);
+    border-radius: 50%;
+    padding: 6px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.logo-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.banner-content h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.banner-content p {
+    color: #CBD5E1;
+    font-size: 0.875rem;
+    max-width: 300px;
+    line-height: 1.5;
+}
+
+.banner-footer {
+    font-size: 0.75rem;
+    color: #94A3B8;
+    margin-top: 20px;
+}
+
+/* Lado Direito - Formulários */
+.form-side {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--ru-white);
+}
+
+@media (min-width: 768px) {
+    .form-side {
+        width: 50%;
+    }
+}
+
+.form-header {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .form-header {
+        text-align: left;
+    }
+}
+
+.form-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.login-title { color: var(--ru-dark-blue); }
+.register-title { color: var(--ru-green); }
+
+.form-header p {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+/* Elementos de Formulário comuns */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4B5563;
+    margin-bottom: 6px;
+}
+
+.input-container {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9CA3AF;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+
+.input-container input {
+    width: 100%;
+    padding: 10px 12px 10px 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+/* Variação de foco dependendo do ecrã ativo */
+#login-form input:focus {
+    border-color: var(--ru-green);
+    box-shadow: 0 0 0 3px rgba(59, 122, 76, 0.15);
+}
+
+#register-form input:focus {
+    border-color: var(--ru-dark-blue);
+    box-shadow: 0 0 0 3px rgba(30, 50, 92, 0.15);
+}
+
+.form-link {
+    font-size: 0.75rem;
+    color: var(--ru-green);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.form-link:hover {
+    text-decoration: underline;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+@media (min-width: 480px) {
+    .form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.form-grid input {
+    padding: 10px 12px;
+}
+
+/* Botões */
+.btn {
+    width: 100%;
+    color: var(--ru-white);
+    font-weight: 600;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.btn-login { background-color: var(--ru-dark-blue); }
+.btn-login:hover { background-color: #152442; }
+
+.btn-register { background-color: var(--ru-green); }
+.btn-register:hover { background-color: #2D5E3A; }
+.btn-register:disabled {
+  background-color: #E5E7EB;
+  color: #9CA3AF;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+/* Alerta de Alérgenos */
+.alert-box {
+    background-color: var(--alert-bg);
+    border: 1px solid var(--alert-border);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 0.75rem;
+    color: var(--alert-text);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+/* Rodapé de alternância */
+.switch-form-text {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #4B5563;
+    margin-top: 24px;
+}
+
+.switch-btn {
+    background: none;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.switch-btn-login { color: var(--ru-green); }
+.switch-btn-register { color: var(--ru-dark-blue); }
+.switch-btn:hover { text-decoration: underline; }
