@@ -1,6 +1,6 @@
 "use client"; // Diz ao Next.js que este componente precisa rodar no navegador (Cliente)
 
-import LoginPage from "@/components/LoginPage";
+import LandingPage from "@/components/LandingPage";
 import LeftBar from "../components/LeftBar";
 
 export default function Home() {
@@ -10,8 +10,8 @@ export default function Home() {
       <LeftBar />
 
       {/* Barra Direita: Formulários Dinâmicos */}
-      <div className="form-side">
-        <LoginPage />
+      <div id="land-side">
+        <LandingPage />
       </div>
     </div>
   );
