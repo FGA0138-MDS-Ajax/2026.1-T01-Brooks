@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import LeftBar from "@/components/LeftBar"
-import RegisterPage from "@/components/RegisterPage"
+import LeftBar from "@/components/LeftBar";
+import RegisterPage from "@/components/RegisterPage";
 
 export default function RegisterRoute() {
-    return (
-        <div className="container">
-            {/* O mesmo Lado Esquerdo Fixo */}
-            <LeftBar />
+  return (
+    <div className="container">
+      {/* O mesmo Lado Esquerdo Fixo */}
+      <LeftBar />
 
-            {/* Lado Direito com o Formulário de Cadastro */}
-            <div className="form-side">
-                <RegisterPage />
-            </div>
-        </div>
-    );
+      {/* Lado Direito com o Formulário de Cadastro */}
+      <div className="form-side">
+        <RegisterPage />
+      </div>
+    </div>
+  );
 }

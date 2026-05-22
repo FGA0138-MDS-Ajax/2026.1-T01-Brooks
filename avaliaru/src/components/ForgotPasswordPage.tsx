@@ -17,9 +17,9 @@ export default function ForgotPasswordPage() {
     // Envio de email feito pela API
     setIsLoading(true);
     setTimeout(() => {
-        console.log("email: " + email);
-        setIsLoading(false);
-        setIsSent(true);
+      console.log("email: " + email);
+      setIsLoading(false);
+      setIsSent(true);
     }, 2000);
   };
 
