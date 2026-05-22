@@ -21,7 +21,7 @@ export async function registerUser(formData: FormData) {
     throw new Error("E-mail e senha são obrigatórios.");
   }
 
-  // 1. Verificar se o e-mail já está cadastrado
+
   const [existingUser] = await db
     .select()
     .from(users)
@@ -31,15 +31,13 @@ export async function registerUser(formData: FormData) {
     throw new Error("Este e-mail já está em uso.");
   }
 
-  // 2. Encriptar a senha do usuário
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // 3. Inserir no banco de dados usando o Drizzle
   await db.insert(users).values({
     name,
     email,
     passwordHash: hashedPassword,
-    perfil: "aluno", // Definindo o perfil padrão como "aluno"
+    perfil: "aluno", 
   });
 
   return redirect("/login");
