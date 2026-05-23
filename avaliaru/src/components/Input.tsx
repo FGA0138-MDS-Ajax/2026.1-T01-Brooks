@@ -9,6 +9,7 @@ type InputProps = {
   name?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
+
 export default function Input(props: InputProps) {
   const IconComponent = props.icon;
   return (

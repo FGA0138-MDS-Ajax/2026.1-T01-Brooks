@@ -1,5 +1,3 @@
-"use client";
-
 import ForgotPasswordPage from "@/components/ForgotPasswordPage";
 import LeftBar from "@/components/LeftBar";
 
