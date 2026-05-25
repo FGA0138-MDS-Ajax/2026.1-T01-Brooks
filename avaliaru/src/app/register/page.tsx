@@ -1,12 +1,12 @@
-import LeftBar from "@/components/LeftBar";
-import RegisterPage from "@/components/RegisterPage";
+import LeftBar from "@/components/LeftBar/LeftBar";
+import RegisterPage from "@/components/RegisterPage/RegisterPage";
 
 export default function RegisterRoute() {
   return (
     <div className="container">
       <LeftBar />
 
-      <div className="form-side">
+      <div className="right-side">
         <RegisterPage />
       </div>
     </div>

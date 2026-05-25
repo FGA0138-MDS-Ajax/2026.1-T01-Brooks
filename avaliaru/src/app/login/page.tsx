@@ -1,11 +1,11 @@
-import LeftBar from "@/components/LeftBar";
-import LoginPage from "@/components/LoginPage";
+import LeftBar from "@/components/LeftBar/LeftBar";
+import LoginPage from "@/components/LoginPage/LoginPage";
 
 export default function LoginRouter() {
   return (
     <div className="container">
       <LeftBar />
-      <div className="form-side">
+      <div className="right-side">
         <LoginPage />
       </div>
     </div>

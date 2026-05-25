@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { User, Lock, Loader2 } from "lucide-react";
-import Input from "./Input";
+import Input from "../Input/Input";
 import { loginUser } from "@/actions/login";
 import myAlert from "@/lib/alert";
 
@@ -26,10 +26,15 @@ export default function LoginPage() {
         // 2. Trata os erros reais de login aqui embaixo
         if (error instanceof Error) {
           console.error("Erro ao fazer login:", error);
-          myAlert.error("Ocorreu um erro ao tentar fazer login. Por favor, tente novamente.\n" + error.message);
+          myAlert.error(
+            "Ocorreu um erro ao tentar fazer login. Por favor, tente novamente.\n" +
+              error.message,
+          );
         } else {
           console.error("Erro desconhecido ao fazer login:", error);
-          myAlert.error("Ocorreu um erro desconhecido ao tentar fazer login. Por favor, tente novamente.");
+          myAlert.error(
+            "Ocorreu um erro desconhecido ao tentar fazer login. Por favor, tente novamente.",
+          );
         }
       })
       .finally(() => {
@@ -39,23 +44,21 @@ export default function LoginPage() {
   return (
     <div id="login-form">
       <div className="form-header">
-        <h2 className="login-title">Bem-vindo de volta!</h2>
+        <h2 className="page-title">Bem-vindo de volta!</h2>
         <p>Acesse sua conta para ver o cardápio de hoje.</p>
       </div>
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>E-mail</label>
-          <div className="input-container">
-            <Input
-              name="email"
-              icon={User}
-              size={18}
-              type="text"
-              placeholder="usuario@aluno.unb.br"
-              required={true}
-            />
-          </div>
+          <Input
+            name="email"
+            icon={User}
+            size={18}
+            type="text"
+            placeholder="usuario@aluno.unb.br"
+            required={true}
+          />
         </div>
 
         <div className="form-group">
@@ -65,16 +68,14 @@ export default function LoginPage() {
               Esqueceu a senha?
             </Link>
           </div>
-          <div className="input-container">
-            <Input
-              name="password"
-              icon={Lock}
-              size={18}
-              type="password"
-              placeholder="••••••••"
-              required={true}
-            />
-          </div>
+          <Input
+            name="password"
+            icon={Lock}
+            size={18}
+            type="password"
+            placeholder="••••••••"
+            required={true}
+          />
         </div>
 
         <button type="submit" className="btn btn-login">
