@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --ru-dark-blue: #1e325c;
-  --ru-green: #3b7a4c;
+  --ru-dark-blue: #003366;
+  --ru-green: #006633;
   --ru-light-bg: #f4f6f9;
   --ru-white: #ffffff;
   --text-main: #333333;
@@ -211,7 +211,6 @@ label {
   margin-top: 24px;
 }
 
-/* login and register *//* login and register */
 .switch-btn {
   background: none;
   border: none;
