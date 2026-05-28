@@ -12,6 +12,8 @@ export default function LeftBar() {
                         className="logo-img"
                         width={96}
                         height={96}
+                        loading="eager"
+                        priority
                     />
                 </div>
                 <h1>AvaliaRU</h1>
