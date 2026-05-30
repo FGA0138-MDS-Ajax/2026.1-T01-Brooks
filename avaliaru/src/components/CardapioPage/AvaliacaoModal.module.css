@@ -1,0 +1,43 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.estrelas {
+  display: flex;
+  gap: 8px;
+}
+
+.estrela {
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.estrelaSelecionada {
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: #f59e0b;
+  cursor: pointer;
+}

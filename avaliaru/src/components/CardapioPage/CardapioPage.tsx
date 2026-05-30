@@ -4,6 +4,7 @@ import CardapioCard from "./CardapioCard";
 export type CardapioDiario = {
   id: number;
   dia: string;
+  diaSemana: number;
   pratoPrincipal: string;
   vegetariano: string;
   guarnicao: string;
@@ -12,10 +13,13 @@ export type CardapioDiario = {
 };
 
 export default function CardapioPage() {
+  const diaAtual = new Date().getDay();
+
   const dadosDoCardapio: CardapioDiario[] = [
     {
       id: 1,
       dia: "Segunda-feira",
+      diaSemana: 1,
       pratoPrincipal: "Frango Assado",
       vegetariano: "Lasanha de Berinjela",
       guarnicao: "Purê de Batatas",
@@ -25,6 +29,7 @@ export default function CardapioPage() {
     {
       id: 2,
       dia: "Terça-feira",
+      diaSemana: 2,
       pratoPrincipal: "Carne de Panela com Batatas",
       vegetariano: "Estrogonofe de Grão de Bico",
       guarnicao: "Macarrão Alho e Óleo",
@@ -34,6 +39,7 @@ export default function CardapioPage() {
     {
       id: 3,
       dia: "Quarta-feira",
+      diaSemana: 3,
       pratoPrincipal: "Feijoada Tradicional",
       vegetariano: "Feijoada Vegana",
       guarnicao: "Couve Refogada e Farofa",
@@ -43,6 +49,7 @@ export default function CardapioPage() {
     {
       id: 4,
       dia: "Quinta-feira",
+      diaSemana: 4,
       pratoPrincipal: "Iscas de Suíno Aceboladas",
       vegetariano: "Hambúrguer de Lentilha",
       guarnicao: "Polenta Cremosa",
@@ -52,6 +59,7 @@ export default function CardapioPage() {
     {
       id: 5,
       dia: "Sexta-feira",
+      diaSemana: 5,
       pratoPrincipal: "Peixe ao Molho de Coco",
       vegetariano: "Moqueca de Banana da Terra",
       guarnicao: "Pirão de Peixe",
@@ -61,6 +69,7 @@ export default function CardapioPage() {
     {
       id: 6,
       dia: "Sábado",
+      diaSemana: 6,
       pratoPrincipal: "Estrogonofe de Frango",
       vegetariano: "Escondidinho de Soja",
       guarnicao: "Batata Palha",
@@ -82,6 +91,7 @@ export default function CardapioPage() {
             guarnicao={menu.guarnicao}
             acompanhamentos={menu.acompanhamentos}
             sobremesa={menu.sobremesa}
+            isHoje={menu.diaSemana === diaAtual}
           />
         ))}
       </div>

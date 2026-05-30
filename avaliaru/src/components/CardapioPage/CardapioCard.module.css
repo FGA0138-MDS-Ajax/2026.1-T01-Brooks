@@ -5,6 +5,7 @@
   border: 1px solid #e2e8f0; 
   overflow: hidden; 
   border-left: 6px solid #1b365d;
+  position: relative;
 }
 
 
@@ -93,4 +94,17 @@
 
 .btnAvaliar:hover {
   background-color: #2a4a7f;
+}
+
+.badgeHoje {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background-color: #e53e3e;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 20px;
 }

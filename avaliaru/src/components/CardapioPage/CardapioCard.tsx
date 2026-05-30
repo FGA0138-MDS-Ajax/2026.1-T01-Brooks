@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import styles from "./CardapioCard.module.css";
+import AvaliacaoModal from "./AvaliacaoModal";
 
 type CardapioProps = {
   id: number;
@@ -11,10 +12,12 @@ type CardapioProps = {
   guarnicao: string;
   acompanhamentos: string;
   sobremesa: string;
+  isHoje?: boolean;
 };
 
 export default function CardapioCard(props: CardapioProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [modalAberto, setModalAberto] = useState(false);
   const handleClick = () => {
     setIsOpen(!isOpen);
   };
@@ -22,6 +25,7 @@ export default function CardapioCard(props: CardapioProps) {
   return (
     <div className={styles.cardDia}>
       <div className={styles.cardHeader} onClick={handleClick}>
+        {props.isHoje && <span className={styles.badgeHoje}>Hoje</span>}
         <h2>{props.dia}</h2>
         <span>{isOpen ? "Ocultar Cardápio" : "Ver Cardápio"}</span>
       </div>
@@ -55,8 +59,20 @@ export default function CardapioCard(props: CardapioProps) {
             <strong>Sobremesa: </strong> {props.sobremesa}
           </p>
 
-          <button className={styles.btnAvaliar}>Avaliar Almoço</button>
+          <button
+            className={styles.btnAvaliar}
+            onClick={(e) => { e.stopPropagation(); setModalAberto(true); }}
+          >
+            Avaliar Almoço
+          </button>
         </div>
+      )}
+      {modalAberto && (
+        <AvaliacaoModal
+          dia={props.dia}
+          pratoPrincipal={props.pratoPrincipal}
+          onClose={() => setModalAberto(false)}
+        />
       )}
     </div>
   );
