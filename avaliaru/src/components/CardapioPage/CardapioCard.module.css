@@ -1,14 +1,12 @@
 .cardDia {
-  background-color: #ffffff; 
-  border-radius: 12px; 
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
-  border: 1px solid #e2e8f0; 
-  overflow: hidden; 
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
   border-left: 6px solid #1b365d;
   position: relative;
 }
-
-
 
 .cardHeader {
   padding: 24px;
@@ -99,9 +97,9 @@
 .badgeHoje {
   position: absolute;
   top: 8px;
-  right: 10px;
+  left: 10px;
   background-color: #e53e3e;
-  color: #ffffff;
+  color: #fff !important;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;

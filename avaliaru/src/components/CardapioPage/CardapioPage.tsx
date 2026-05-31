@@ -1,6 +1,5 @@
 import styles from "./CardapioPage.module.css";
 import CardapioCard from "./CardapioCard";
-
 export type CardapioDiario = {
   id: number;
   dia: string;
@@ -13,7 +12,10 @@ export type CardapioDiario = {
 };
 
 export default function CardapioPage() {
-  const diaAtual = new Date().getDay();
+  const hoje = new Date();
+  const diaAtual = new Date(
+    hoje.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }),
+  ).getDay();
 
   const dadosDoCardapio: CardapioDiario[] = [
     {

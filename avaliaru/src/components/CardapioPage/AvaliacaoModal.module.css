@@ -18,12 +18,27 @@
   width: 360px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.titulo {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.subtitulo {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0 0 8px 0;
 }
 
 .estrelas {
   display: flex;
   gap: 8px;
+  justify-content: center;
 }
 
 .estrela {
@@ -32,12 +47,72 @@
   font-size: 32px;
   color: #ccc;
   cursor: pointer;
+  transition: color 0.2s;
 }
 
 .estrelaSelecionada {
   background: none;
   border: none;
   font-size: 32px;
-  color: #f59e0b;
+  color: #fbbf24;
   cursor: pointer;
+  transition: color 0.2s;
+}
+
+.textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #334155;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: none;
+}
+
+.textarea:focus {
+  border-color: #2a4a7f;
+}
+
+.botoesContainer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.btnCancelar {
+  background: transparent;
+  color: #475569;
+  border: none;
+  padding: 8px 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btnCancelar:hover {
+  background-color: #f1f5f9;
+}
+
+.btnEnviar {
+  background-color: #2a4a7f;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btnEnviar:hover {
+  background-color: #1e3a68;
+}
+
+.btnEnviar:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
 }
