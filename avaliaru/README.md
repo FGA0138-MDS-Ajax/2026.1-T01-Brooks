@@ -45,3 +45,20 @@ Antes de subir a aplicação, verifique se o arquivo `.env.local` está configur
 | Gestor Ru | Não | Sim | Não
 | Aluno | Sim | Não | Não
 | Admin | Não | Sim | Sim
+
+## Banco de dados
+
+Para que o banco de dados funcione corretamente com as tabelas corretas, faça o seguinte.
+
+Se ainda não instalou os pacotes do projeto, (```Confira se você está na pasta /avaliaru ```) rode: 
+
+```bash
+$ npm -i
+```
+
+E para criar a migração e criar as tabela no arquivo .db, rode o seguinte comando (```Confira se você está na pasta /avaliaru ```):
+
+```bash
+npx drizzle-kit generate
+npx drizzle-kit migrate
+```

@@ -1,18 +1,23 @@
-import { integer, sqliteTable, text, primaryKey } from "drizzle-orm/sqlite-core"
+import { DataDMA, usuarioPerfis } from "@/types/types"
+import { integer, sqliteTable, text, primaryKey, blob, } from "drizzle-orm/sqlite-core"
 import type { AdapterAccount } from "next-auth/adapters"
 
-export type UsuarioPerfil = "gestorru" | "aluno" | "adm";
+/*
+ *   Modelo Físico do Banco de Dados da aplicação Avaliaru
+ */
+
+// Esquema de autenticação do NextAuth.js, adaptado para o Drizzle ORM e SQLite
 
 export const users = sqliteTable("user", {
     id: text("id")
         .primaryKey()
         .$defaultFn(() => crypto.randomUUID()),
-    name: text("name"),
+    name: text("name").unique(),
     email: text("email").unique(),
     emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
     image: text("image"),
     passwordHash: text("passwordHash"),
-    perfil: text("perfil").$type<UsuarioPerfil>().notNull().default("aluno"),
+    perfil: text("perfil", {enum: usuarioPerfis}).notNull().default("aluno"),
 })
 
 export const accounts = sqliteTable(
@@ -83,3 +88,91 @@ export const authenticators = sqliteTable(
         }),
     ]
 )
+
+// Modelo físico do banco de dados para a aplicação Avaliaru
+
+export const restricaoAlimentar = sqliteTable(
+    "restricaoAlimentar",
+    {
+        codigo: text("codigo").primaryKey(),
+        nome: text("nome").notNull(),
+    }
+)
+
+export const prato = sqliteTable(
+    "prato",
+    {
+        idPrato: text("idPrato").primaryKey().notNull(),
+        nome: text("nome").notNull(),
+    }
+)
+
+export const avaliacao = sqliteTable(
+    "avaliacao",
+    {
+        idAvaliacao: integer("idAvaliacao").primaryKey({autoIncrement: true}),
+        nota: integer("nota").notNull(),
+        dataHoraAvaliacao: integer("dataHoraAvaliacao", { mode: "timestamp_ms" }).notNull(),
+        comentario: text("comentario"),
+        statusModeracao: integer("statusModeracao", {mode: "boolean"}).notNull(), // true = publico, false = moderado
+        fkPratoDoDia: integer("fkPratoDoDia").notNull().references(() => pratoDoDia.idPratoDoDia, { onDelete: "cascade" }),
+        fkEstudante: text("fkEstudante").notNull().references(() => users.id, { onDelete: "cascade" }),
+    }
+)
+
+export const pratoDoDia = sqliteTable(
+    "pratoDoDia",
+    {
+        idPratoDoDia: integer("idPratoDoDia").primaryKey({autoIncrement: true}),
+        refeicao: text({enum: ["café", "almoço", "jantar"]}).notNull(),
+        data: blob().$type<DataDMA>().notNull(),
+        fkPrato: integer("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
+    }
+)
+
+export const estudantePossuiRestricao = sqliteTable(
+    "estudantePossuiRestricao",
+    {
+        fkEstudante: text("fkEstudante").notNull().references(() => users.id, { onDelete: "cascade" }),
+        fkRestricao: text("fkRestricao").notNull().references(() => restricaoAlimentar.codigo, { onDelete: "cascade" }),
+    },
+    (estudantePossuiRestricao) => [
+        primaryKey({
+            columns: [estudantePossuiRestricao.fkEstudante, estudantePossuiRestricao.fkRestricao],
+        }),
+    ]
+)
+
+export const estudanteFavoritaPrato = sqliteTable(
+    "estudanteFavoritaPrato",
+    {
+        fkEstudante: text("fkEstudante").notNull().references(() => users.id, { onDelete: "cascade" }),
+        fkPrato: integer("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
+    },
+    (estudanteFavoritaPrato) => [
+        primaryKey({
+            columns: [estudanteFavoritaPrato.fkEstudante, estudanteFavoritaPrato.fkPrato],
+        }),
+    ]
+)
+
+export const restricaoContemPrato = sqliteTable(
+    "restricaoContemPrato",
+    {
+        fkRestricao: text("fkRestricao").notNull().references(() => restricaoAlimentar.codigo, { onDelete: "cascade" }),
+        fkPrato: integer("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
+    },
+    (restricaoContemPrato) => [
+        primaryKey({
+            columns: [restricaoContemPrato.fkRestricao, restricaoContemPrato.fkPrato],
+        }),
+    ]
+)
+
+/*
+ *    Configurações para parametrizar a aplicação 
+ */
+
+import { InferSelectModel } from "drizzle-orm";
+
+export type Prato = InferSelectModel<typeof prato>;

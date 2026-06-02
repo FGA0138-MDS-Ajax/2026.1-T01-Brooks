@@ -12,7 +12,8 @@ import {
   verificationTokens,
 } from "./lib/db/schema";
 import { eq } from "drizzle-orm";
-import bcrypt from "bcryptjs";
+import { compare } from "bcrypt-ts"
+import { UsuarioPerfil } from "./types/types";
 
 export const {
   handlers: { GET, POST },
@@ -29,6 +30,23 @@ export const {
 
   session: {
     strategy: "jwt",
+  },
+
+  callbacks: {
+    async jwt({ token, user }) {
+      // Quando o usuário fizer login, injeta o perfil no token JWT
+      if (user) {
+        token.role = user.perfil;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // Repassa a role do token para a sessão que o Proxy lê
+      if (session.user) {
+        session.user.role = token.role as UsuarioPerfil;
+      }
+      return session;
+    },
   },
 
   providers: [
@@ -49,7 +67,7 @@ export const {
 
           if (!user || !user.passwordHash) return null;
 
-          const passwordMatch = await bcrypt.compare(
+          const passwordMatch = await compare(
             credentials.password as string,
             user.passwordHash
           );
