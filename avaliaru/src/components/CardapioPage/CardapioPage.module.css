@@ -1,0 +1,37 @@
+.paginaCardapio {
+  background-color: #f5f6f8;
+  min-height: 100vh;
+  width: 100%;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    width: 90%;
+    max-width: 1500px;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    align-items: start;
+  }
+}
+
+.tituloPrincipal {
+  text-align: center;
+  color: #1b365d;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 40px;
+}

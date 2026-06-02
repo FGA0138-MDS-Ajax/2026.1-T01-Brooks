@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import SuccessPassword from "./SuccessPassword";
-import Input from "./Input";
+import Input from "../Input/Input";
 import { Mail, Loader2 } from "lucide-react";
 
 export default function ForgotPasswordPage() {
@@ -32,23 +32,21 @@ export default function ForgotPasswordPage() {
   return (
     <div id="forgot-password-form">
       <div className="form-header">
-        <h2 className="login-title">Recuperar Senha</h2>
+        <h2 className="page-title">Recuperar Senha</h2>
         <p>Insira o seu e-mail para receber as instruções de redefinição.</p>
       </div>
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>E-mail </label>
-          <div className="input-container">
-            <Input
-              name="email"
-              required={true}
-              icon={Mail}
-              size={18}
-              type="email"
-              placeholder="matricula@aluno.unb.br"
-            />
-          </div>
+          <Input
+            name="email"
+            required={true}
+            icon={Mail}
+            size={18}
+            type="email"
+            placeholder="matricula@aluno.unb.br"
+          />
         </div>
 
         <button

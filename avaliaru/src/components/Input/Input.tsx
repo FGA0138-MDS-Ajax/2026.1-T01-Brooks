@@ -1,4 +1,5 @@
 import { ElementType, ChangeEvent } from "react";
+import styles from "./Input.module.css"
 
 type InputProps = {
   icon?: ElementType;
@@ -9,12 +10,13 @@ type InputProps = {
   name?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
+
 export default function Input(props: InputProps) {
   const IconComponent = props.icon;
   return (
-    <div className="input-container">
+    <div className={styles['input-container']}>
       {IconComponent && (
-        <span className="input-icon">
+        <span className={styles['input-icon']}>
           <IconComponent size={props.size} />
         </span>
       )}

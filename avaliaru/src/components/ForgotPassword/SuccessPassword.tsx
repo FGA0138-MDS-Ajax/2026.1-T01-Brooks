@@ -17,7 +17,7 @@ export default function SuccessPassword() {
           color="#3B7A4C"
           style={{ marginBottom: "16px" }}
         />
-        <h2 className="login-title">Verifique seu e-mail</h2>
+        <h2 className="page-title">Verifique seu e-mail</h2>
         <p style={{ marginTop: "8px", lineHeight: "1.6" }}>
           Enviamos um link de recuperação para o endereço informado. Não se
           esqueça de checar a caixa de spam.
