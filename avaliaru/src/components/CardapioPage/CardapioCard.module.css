@@ -1,0 +1,108 @@
+.cardDia {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  border-left: 6px solid #1b365d;
+  position: relative;
+}
+
+.cardHeader {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cardHeader:hover {
+  background-color: #f8fafc;
+}
+
+.cardHeader h2 {
+  color: #1b365d;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.cardHeader span {
+  color: #4a5568;
+  font-size: 14px;
+}
+
+.cardapioConteudo {
+  padding: 0 24px 24px 24px;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 8px;
+  padding-top: 24px;
+}
+
+.refeicaoTitulo {
+  color: #1b365d;
+  font-size: 20px;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #388e3c;
+  padding-bottom: 8px;
+}
+
+.itemCardapio {
+  margin-bottom: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.itemCardapio strong {
+  color: #2d3748;
+}
+
+.badge {
+  color: #ffffff;
+  font-size: 13px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-weight: 500;
+  margin-left: 4px;
+  display: inline-block;
+}
+
+.badgePrincipal {
+  background-color: var(--ru-dark-blue);
+}
+
+.badgeVegetariano {
+  background-color: var(--ru-green);
+}
+
+.btnAvaliar {
+  display: block;
+  width: 100%;
+  background-color: #1b365d;
+  color: #ffffff;
+  border: none;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 6px;
+  margin-top: 24px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btnAvaliar:hover {
+  background-color: #2a4a7f;
+}
+
+.badgeHoje {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  background-color: #e53e3e;
+  color: #fff !important;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 20px;
+}

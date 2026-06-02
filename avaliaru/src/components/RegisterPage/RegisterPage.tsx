@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { User, Mail, AlertTriangle, Loader2 } from "lucide-react";
-import Input from "./Input";
+import { User, Mail, AlertTriangle, Loader2, Lock } from "lucide-react";
+import Input from "../Input/Input";
+import styles from "./RegisterPage.module.css";
 import { registerUser } from "@/actions/register";
 import alert from "@/lib/alert";
 import myAlert from "@/lib/alert";
@@ -22,7 +23,9 @@ export default function RegisterPage() {
     const confirmedPassword = formData.get("confirmed-password") as string;
 
     if (password !== confirmedPassword) {
-      alert.error("As senhas não coincidem. Por favor, verifique e tente novamente.");
+      alert.error(
+        "As senhas não coincidem. Por favor, verifique e tente novamente.",
+      );
       return;
     }
 
@@ -41,10 +44,15 @@ export default function RegisterPage() {
         // 2. Trata os erros reais de login aqui embaixo
         if (error instanceof Error) {
           console.error("Erro ao fazer login:", error);
-          myAlert.error("Ocorreu um erro ao tentar fazer login. Por favor, tente novamente.\n" + error.message);
+          myAlert.error(
+            "Ocorreu um erro ao tentar fazer login. Por favor, tente novamente.\n" +
+              error.message,
+          );
         } else {
           console.error("Erro desconhecido ao fazer login:", error);
-          myAlert.error("Ocorreu um erro desconhecido ao tentar fazer login. Por favor, tente novamente.");
+          myAlert.error(
+            "Ocorreu um erro desconhecido ao tentar fazer login. Por favor, tente novamente.",
+          );
         }
 
         console.error("Erro ao registrar usuário:", error);
@@ -53,80 +61,74 @@ export default function RegisterPage() {
       .finally(() => {
         setIsLoading(false);
       });
-
   };
-
 
   return (
     <div id="register-form">
       <div className="form-header">
-        <h2 className="register-title">Criar Conta</h2>
+        <h2 className="page-title">Criar Conta</h2>
         <p>Configure seu perfil para alertas personalizados.</p>
       </div>
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Nome Completo</label>
-          <div className="input-container">
-            <Input
-              name="name"
-              icon={User}
-              size={18}
-              type="text"
-              placeholder="Seu nome"
-              required={true}
-            />
-          </div>
+          <Input
+            name="name"
+            icon={User}
+            size={18}
+            type="text"
+            placeholder="Seu nome"
+            required={true}
+          />
         </div>
 
         <div className="form-group">
           <label>E-mail</label>
-          <div className="input-container">
-            <Input
-              name="email"
-              icon={Mail}
-              size={18}
-              type="text"
-              placeholder="matricula@aluno.unb.br"
-              required={true}
-            />
-          </div>
+          <Input
+            name="email"
+            icon={Mail}
+            size={18}
+            type="text"
+            placeholder="matricula@aluno.unb.br"
+            required={true}
+          />
         </div>
 
         <div className="form-group">
           <div className="form-grid">
             <div>
               <label>Senha</label>
-              <div className="input-container">
-                <Input
-                  name="password"
-                  type="password"
-                  placeholder="••••••••"
-                  required={true}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    setPassword(e.target.value);
-                  }}
-                />
-              </div>
+              <Input
+                name="password"
+                icon={Lock}
+                size={18}
+                type="password"
+                placeholder="••••••••"
+                required={true}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setPassword(e.target.value);
+                }}
+              />
             </div>
             <div>
               <label>Confirmar Senha</label>
-              <div className="input-container">
-                <Input
-                  name="confirmed-password"
-                  type="password"
-                  placeholder="••••••••"
-                  required={true}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    setConfirmedPassword(e.target.value);
-                  }}
-                />
-              </div>
+              <Input
+                name="confirmed-password"
+                icon={Lock}
+                size={18}
+                type="password"
+                placeholder="••••••••"
+                required={true}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setConfirmedPassword(e.target.value);
+                }}
+              />
             </div>
           </div>
         </div>
 
-        <div className="alert-box">
+        <div className={styles["alert-box"]}>
           <AlertTriangle size={16} color="#B45309" style={{ flexShrink: 0 }} />
           <span>
             Você poderá configurar suas restrições alimentares (alérgenos) e
@@ -137,7 +139,7 @@ export default function RegisterPage() {
         <button
           disabled={password !== confirmedPassword || password === ""}
           type="submit"
-          className="btn btn-register"
+          className={`btn ${styles["btn-register"]}`}
         >
           {isLoading ? (
             <div className="flex items-center justify-center gap-2">
@@ -152,7 +154,10 @@ export default function RegisterPage() {
 
       <div className="switch-form-text">
         Já possui uma conta?{" "}
-        <Link href="/login" className="switch-btn switch-btn-register">
+        <Link
+          href="/login"
+          className={`switch-btn ${styles["switch-btn-register"]}`}
+        >
           Faça Login
         </Link>
       </div>

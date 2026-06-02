@@ -1,9 +1,9 @@
 "use client"
 import { cadastrarPrato } from "@/actions/pratoActions/cadastrarPrato"
-import Input from "@/components/Input"
 import myAlert from "@/lib/alert"
 import { Key, Loader2, Text } from "lucide-react"
 import { useState } from "react"
+import Input from "./Input/Input"
 
 export default function CadastrarPratoPage() {
     const isLoading = useState(false)[0]
