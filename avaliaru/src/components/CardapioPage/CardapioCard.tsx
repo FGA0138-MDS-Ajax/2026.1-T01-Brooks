@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Heart } from "lucide-react";
 import styles from "./CardapioCard.module.css";
 import AvaliacaoModal from "./AvaliacaoModal";
 
@@ -13,10 +14,64 @@ type CardapioProps = {
   acompanhamentos: string;
   sobremesa: string;
   isHoje?: boolean;
+  favoritos: string[];
+  onAlternarFavorito: (id: string) => void;
 };
 
 export default function CardapioCard(props: CardapioProps) {
   const [modalAberto, setModalAberto] = useState(false);
+
+  const itensCardapio = [
+    {
+      id: `prato-principal-${props.id}`,
+      rotulo: "Prato Principal",
+      valor: props.pratoPrincipal,
+      destaque: styles.badgePrincipal,
+    },
+    {
+      id: `vegetariano-${props.id}`,
+      rotulo: "Vegetariano",
+      valor: props.vegetariano,
+      destaque: styles.badgeVegetariano,
+    },
+    {
+      rotulo: "Guarnição",
+      valor: props.guarnicao,
+    },
+    {
+      rotulo: "Acompanhamentos",
+      valor: props.acompanhamentos,
+    },
+    {
+      id: `sobremesa-${props.id}`,
+      rotulo: "Sobremesa",
+      valor: props.sobremesa,
+    },
+  ];
+
+  const renderBotaoFavorito = (id: string, label: string) => {
+    const estaFavorito = props.favoritos.includes(id);
+
+    return (
+      <button
+        type="button"
+        className={`${styles.btnFavorito} ${
+          estaFavorito ? styles.btnFavoritoAtivo : ""
+        }`}
+        aria-label={
+          estaFavorito ? `Remover ${label} dos favoritos` : `Favoritar ${label}`
+        }
+        aria-pressed={estaFavorito}
+        title={estaFavorito ? "Remover dos favoritos" : "Favoritar"}
+        onClick={(e) => {
+          e.stopPropagation();
+          props.onAlternarFavorito(id);
+        }}
+      >
+        <Heart size={18} fill={estaFavorito ? "currentColor" : "none"} />
+      </button>
+    );
+  };
 
   return (
     <div className={styles.cardDia}>
@@ -28,31 +83,28 @@ export default function CardapioCard(props: CardapioProps) {
       <div className={styles.cardapioConteudo}>
         <h3 className={styles.refeicaoTitulo}>Almoço</h3>
 
-        <p className={styles.itemCardapio}>
-          <strong>Prato Principal: </strong>
-          <span className={`${styles.badge} ${styles.badgePrincipal}`}>
-            {props.pratoPrincipal}
-          </span>
-        </p>
-
-        <p className={styles.itemCardapio}>
-          <strong>Vegetariano: </strong>
-          <span className={`${styles.badge} ${styles.badgeVegetariano}`}>
-            {props.vegetariano}
-          </span>
-        </p>
-
-        <p className={styles.itemCardapio}>
-          <strong>Guarnição: </strong> {props.guarnicao}
-        </p>
-
-        <p className={styles.itemCardapio}>
-          <strong>Acompanhamentos: </strong> {props.acompanhamentos}
-        </p>
-
-        <p className={styles.itemCardapio}>
-          <strong>Sobremesa: </strong> {props.sobremesa}
-        </p>
+        <div className={styles.listaItens}>
+          {itensCardapio.map((item) => (
+            <div
+              key={item.rotulo}
+              className={`${styles.itemCardapio} ${
+                item.id ? "" : styles.itemSemFavorito
+              }`}
+            >
+              <p>
+                <strong>{item.rotulo}: </strong>
+                {item.destaque ? (
+                  <span className={`${styles.badge} ${item.destaque}`}>
+                    {item.valor}
+                  </span>
+                ) : (
+                  item.valor
+                )}
+              </p>
+              {item.id && renderBotaoFavorito(item.id, item.valor)}
+            </div>
+          ))}
+        </div>
 
         <button
           className={styles.btnAvaliar}
