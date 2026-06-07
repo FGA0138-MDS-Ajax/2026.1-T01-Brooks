@@ -23,14 +23,23 @@ export async function cadastrarPrato(formData: FormData) {
     const codigo = formData.get("codigo") as string;
     const nome = formData.get("nome") as string;
 
-    try {
+    return await inserirPratoNoBanco(codigo, nome);
+}
 
+/** Função de lógica pura para o banco de dados, testável isoladamente */
+export async function inserirPratoNoBanco(codigo: string, nome: string) {
+    try {
         await db.insert(prato).values({
             idPrato: codigo,
             nome: nome
         });
 
-        revalidatePath("/gestao/pratos");
+        try {
+            revalidatePath("/gestao/pratos");
+        } catch (e) {
+            // Ignora erro de revalidação se estiver fora do contexto Next.js (ex: testes)
+            console.warn("Aviso: revalidatePath ignorado no ambiente de teste.");
+        }
 
         return { success: true};
     } catch(error) {
