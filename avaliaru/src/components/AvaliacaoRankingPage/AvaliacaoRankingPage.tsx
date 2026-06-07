@@ -1,13 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import styles from "./AvaliacaoRankingPage.module.css";
-import {
-  Star,
-  BarChart3,
-  UtensilsCrossed,
-  Trophy,
-  Search,
-} from "lucide-react";
+import AvaliacaoModal from "../CardapioPage/AvaliacaoModal";
+import { Star, BarChart3, UtensilsCrossed, Trophy, Search } from "lucide-react";
 
 const pratos = [
   { id: 1, nome: "Estrogonofe de Frango", nota: 4.8, votos: 320 },
@@ -25,6 +21,14 @@ const distribuicao = [
 ];
 
 export default function AvaliacaoRankingPage() {
+  const [isAvaliacaoOpen, setIsAvaliacaoOpen] = useState(false);
+  const [pratoSelecionado, setPratoSelecionado] = useState("");
+
+  const handleRateClick = (nomeDoPrato: string) => {
+    setPratoSelecionado(nomeDoPrato);
+    setIsAvaliacaoOpen(true);
+  };
+
   return (
     <main className={styles.page}>
       <div className={styles.wrapper}>
@@ -78,7 +82,14 @@ export default function AvaliacaoRankingPage() {
 
                 <div className={styles.dishActions}>
                   <span className={styles.dishRating}>⭐ {prato.nota}</span>
-                  <button className={styles.evaluateButton}>Avaliar</button>
+                  <button
+                    onClick={() => {
+                      handleRateClick(prato.nome);
+                    }}
+                    className={styles.evaluateButton}
+                  >
+                    Avaliar
+                  </button>
                 </div>
               </div>
             ))}
@@ -144,6 +155,15 @@ export default function AvaliacaoRankingPage() {
               ))}
             </div>
           </section>
+        </div>
+
+        <div>
+          {isAvaliacaoOpen && (
+            <AvaliacaoModal
+              pratoPrincipal={pratoSelecionado}
+              onClose={() => setIsAvaliacaoOpen(false)}
+            />
+          )}
         </div>
       </div>
     </main>
