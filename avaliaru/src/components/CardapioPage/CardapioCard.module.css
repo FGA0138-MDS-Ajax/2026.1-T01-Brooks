@@ -47,10 +47,28 @@
   padding-bottom: 8px;
 }
 
+.listaItens {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .itemCardapio {
-  margin-bottom: 12px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 32px;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
   font-size: 15px;
   line-height: 1.5;
+}
+
+.itemCardapio p {
+  min-width: 0;
+}
+
+.itemSemFavorito {
+  grid-template-columns: 1fr;
 }
 
 .itemCardapio strong {
@@ -92,6 +110,42 @@
 
 .btnAvaliar:hover {
   background-color: #2a4a7f;
+}
+
+.btnFavorito {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  background-color: #ffffff;
+  border: 1px solid #d8e0ec;
+  border-radius: 50%;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    color 0.2s,
+    transform 0.2s;
+}
+
+.btnFavorito:hover {
+  color: var(--ru-green);
+  border-color: #9ed3aa;
+  background-color: #edf7ef;
+  transform: translateY(-1px);
+}
+
+.btnFavoritoAtivo {
+  color: #ffffff;
+  background-color: var(--ru-green);
+  border-color: var(--ru-green);
+}
+
+.btnFavoritoAtivo:hover {
+  color: #ffffff;
+  background-color: #075f33;
 }
 
 .badgeHoje {
