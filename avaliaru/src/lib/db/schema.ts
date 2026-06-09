@@ -126,7 +126,7 @@ export const pratoDoDia = sqliteTable(
         idPratoDoDia: integer("idPratoDoDia").primaryKey({autoIncrement: true}),
         refeicao: text({enum: ["café", "almoço", "jantar"]}).notNull(),
         data: blob().$type<DataDMA>().notNull(),
-        fkPrato: integer("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
+        fkPrato: text("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
     }
 )
 
@@ -147,7 +147,7 @@ export const estudanteFavoritaPrato = sqliteTable(
     "estudanteFavoritaPrato",
     {
         fkEstudante: text("fkEstudante").notNull().references(() => users.id, { onDelete: "cascade" }),
-        fkPrato: integer("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
+        fkPrato: text("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
     },
     (estudanteFavoritaPrato) => [
         primaryKey({
@@ -160,7 +160,7 @@ export const restricaoContemPrato = sqliteTable(
     "restricaoContemPrato",
     {
         fkRestricao: text("fkRestricao").notNull().references(() => restricaoAlimentar.codigo, { onDelete: "cascade" }),
-        fkPrato: integer("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
+        fkPrato: text("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
     },
     (restricaoContemPrato) => [
         primaryKey({
