@@ -11,6 +11,7 @@
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.2",
     "bcrypt-ts": "^8.0.1",
+    "bcryptjs": "^3.0.3",
     "better-sqlite3": "^12.10.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -32,7 +33,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
-    "@types/react": "^19",
+    "@types/react": "^19.2.16",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
     "dotenv": "^17.4.2",

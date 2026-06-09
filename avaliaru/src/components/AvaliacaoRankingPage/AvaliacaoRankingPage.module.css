@@ -1,0 +1,311 @@
+.page {
+  min-height: 100vh;
+  width: 100%;
+  background: var(--ru-light-bg);
+  padding: 48px 24px;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.title {
+  margin: 0;
+  color: #0b2a59;
+  font-size: clamp(2.4rem, 4vw, 4rem);
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.subtitle {
+  margin: 12px 0 0;
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.statCard {
+  background: #fff;
+  border-radius: 24px;
+  border-left: 6px solid #0b2a59;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.statIcon {
+  color: #0b2a59;
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.statLabel {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+
+.statValue {
+  color: #0b2a59;
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.searchWrap {
+  position: relative;
+  margin-bottom: 32px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+}
+
+.searchInput {
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  background: #fff;
+  padding: 18px 20px 18px 52px;
+  outline: none;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.searchInput:focus {
+  border-color: #0b2a59;
+  box-shadow: 0 0 0 3px rgba(11, 42, 89, 0.12);
+}
+
+.section {
+  background: #fff;
+  border-radius: 24px;
+  border-left: 6px solid #0b2a59;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  margin-bottom: 28px;
+}
+
+.sectionTitle {
+  margin: 0 0 24px;
+  color: #0b2a59;
+  font-size: clamp(1.4rem, 2vw, 2rem);
+  font-weight: 700;
+}
+
+.dishList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dishRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  background: #f9fafb;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.dishInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dishName {
+  margin: 0;
+  color: #111827;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.dishVotes {
+  color: #6b7280;
+  font-size: 0.92rem;
+}
+
+.dishActions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.dishRating {
+  color: #0b2a59;
+  font-weight: 800;
+}
+
+.evaluateButton {
+  background: #0b2a59;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.evaluateButton:hover {
+  opacity: 0.92;
+}
+
+.rankingList {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.rankingItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rankingHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rankingName {
+  color: #111827;
+  font-weight: 600;
+}
+
+.rankingValue {
+  color: #0b2a59;
+  font-weight: 800;
+}
+
+.barTrack {
+  width: 100%;
+  height: 16px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 999px;
+  background: #0b2a59;
+}
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.topList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.topItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 12px;
+}
+
+.topIndex {
+  color: #0b2a59;
+  font-weight: 800;
+  min-width: 22px;
+}
+
+.topName {
+  flex: 1;
+  color: #111827;
+}
+
+.trophyIcon {
+  color: #eab308;
+}
+
+.distributionList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.distributionItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.distributionLabel {
+  width: 40px;
+  color: #111827;
+  font-weight: 700;
+}
+
+.distributionTrack {
+  flex: 1;
+  height: 16px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.distributionFill {
+  height: 100%;
+  border-radius: 999px;
+  background: #16a34a;
+}
+
+@media (max-width: 900px) {
+  .bottomGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 24px 16px;
+  }
+
+  .dishRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dishActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .searchInput {
+    padding-left: 48px;
+  }
+}
