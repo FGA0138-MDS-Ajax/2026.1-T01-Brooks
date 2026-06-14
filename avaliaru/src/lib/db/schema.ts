@@ -93,7 +93,7 @@ export const authenticators = sqliteTable(
 
 export const restricaoAlimentar = sqliteTable(
     "restricaoAlimentar",
-    {
+    {   
         codigo: text("codigo").primaryKey(),
         nome: text("nome").notNull(),
     }
@@ -125,7 +125,7 @@ export const pratoDoDia = sqliteTable(
     {
         idPratoDoDia: integer("idPratoDoDia").primaryKey({autoIncrement: true}),
         refeicao: text({enum: ["café", "almoço", "jantar"]}).notNull(),
-        data: blob().$type<DataDMA>().notNull(),
+        data: text("data", { mode: "json" }).$type<DataDMA>().notNull(),
         fkPrato: text("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
     }
 )

@@ -35,3 +35,51 @@
   font-weight: 700;
   margin-bottom: 40px;
 }
+
+.resumoFavoritos {
+  width: min(90%, 1500px);
+  margin: 0 auto 32px auto;
+  padding: 18px 20px;
+  background-color: #ffffff;
+  border: 1px solid #d8e0ec;
+  border-left: 6px solid var(--ru-green);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.resumoRotulo {
+  color: var(--ru-green);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.resumoTexto {
+  color: #2d3748;
+  font-size: 15px;
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+.listaFavoritos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.favoritoResumo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  max-width: 100%;
+  color: #1b365d;
+  background-color: #edf7ef;
+  border: 1px solid #c8e6cd;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 10px;
+  overflow-wrap: anywhere;
+}
