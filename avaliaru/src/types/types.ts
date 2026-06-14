@@ -12,3 +12,10 @@ export type DataDMA = {
     mes: number;
     ano: number;
 }
+
+export type RestricaoAlimentar = {
+    nome: string;
+    descricao: string;
+    emoji: string;
+    codigo: string;
+}

@@ -37,6 +37,7 @@ export const {
       // Quando o usuário fizer login, injeta o perfil no token JWT
       if (user) {
         token.role = user.perfil;
+        token.id = user.id;
       }
       return token;
     },
@@ -44,6 +45,7 @@ export const {
       // Repassa a role do token para a sessão que o Proxy lê
       if (session.user) {
         session.user.role = token.role as UsuarioPerfil;
+        session.user.id = token.id as string;
       }
       return session;
     },

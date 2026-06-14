@@ -96,6 +96,8 @@ export const restricaoAlimentar = sqliteTable(
     {
         codigo: text("codigo").primaryKey(),
         nome: text("nome").notNull(),
+        emoji: text("emoji").notNull(),
+        descricao: text("descricao").notNull(),
     }
 )
 
