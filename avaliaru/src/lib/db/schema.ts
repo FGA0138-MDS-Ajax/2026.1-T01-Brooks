@@ -125,8 +125,8 @@ export const pratoDoDia = sqliteTable(
     {
         idPratoDoDia: integer("idPratoDoDia").primaryKey({autoIncrement: true}),
         refeicao: text({enum: ["café", "almoço", "jantar"]}).notNull(),
-        data: blob().$type<DataDMA>().notNull(),
-        fkPrato: integer("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
+        data: text("data", { mode: "json" }).$type<DataDMA>().notNull(),
+        fkPrato: text("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
     }
 )
 
