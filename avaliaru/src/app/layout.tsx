@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 import { Toaster } from "@/components/ui/sonner"
+import Header from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "AvaliaRU",
@@ -21,6 +22,7 @@ export default function RootLayout({
     <html lang="pt-BR" className={cn("font-sans", geist.variable)}>
       <body>
         <div>
+          <Header />
           {children}
         </div>
         <Toaster />

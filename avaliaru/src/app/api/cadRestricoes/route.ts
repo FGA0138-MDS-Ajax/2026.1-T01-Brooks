@@ -16,7 +16,7 @@ export async function POST(request:NextRequest) {
         }
 
         // Verifica se o usuário autenticado é o gestor
-        if (session.user.role !== 'gestorru') {
+        if (session.user.perfil !== 'gestorru') {
             return NextResponse.json(
                 {erro: "Acesso Negado"}, 
                 {status: 403});
