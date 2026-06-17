@@ -4,6 +4,7 @@ import { useState } from "react";
 import styles from "./AvaliacaoRankingPage.module.css";
 import AvaliacaoModal from "../CardapioPage/AvaliacaoModal";
 import { Star, BarChart3, UtensilsCrossed, Trophy, Search } from "lucide-react";
+import Link from "next/link";
 
 const pratos = [
   { id: 1, nome: "Estrogonofe de Frango", nota: 4.8, votos: 320 },
@@ -68,7 +69,13 @@ export default function AvaliacaoRankingPage() {
         </div>
 
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Pratos para Avaliação</h2>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Pratos para Avaliação</h2>
+
+            <Link href="/dashboard/lista-pratos" className={styles.seeAllLink}>
+              Ver tudo
+            </Link>
+          </div>
 
           <div className={styles.dishList}>
             {pratos.map((prato) => (

@@ -3,9 +3,9 @@ import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "AvaliaRU",
@@ -20,13 +20,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={cn("font-sans", geist.variable)}>
       <body>
-        <div>
-          {children}
-        </div>
+        <div >{children}</div>
         <Toaster />
-
       </body>
-
     </html>
   );
 }
