@@ -3,7 +3,8 @@ import { DefaultSession } from "next-auth";
 declare module "next-auth" {
   interface Session {
     user: {
-      role?: "gestorru" | "aluno" | "adm";
+      id: string;
+      perfil?: "gestorru" | "aluno" | "adm";
     } & DefaultSession["user"];
   }
 
@@ -14,6 +15,7 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT {
-    role?: "gestorru" | "aluno" | "adm";
+    id: string;
+    perfil?: "gestorru" | "aluno" | "adm";
   }
 }

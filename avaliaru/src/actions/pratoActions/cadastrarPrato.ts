@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db/db";
 import { prato } from "@/lib/db/schema";
+import { Session, User } from "next-auth";
 import { revalidatePath } from "next/cache";
 
 export async function cadastrarPrato(formData: FormData) {
@@ -12,7 +13,7 @@ export async function cadastrarPrato(formData: FormData) {
         throw new Error("Não autorizado.");
     }
 
-    const perfil = (session.user as any).role; 
+    const perfil = (session.user as User & { id: string; perfil: string }).perfil;
 
     const temAcesso = perfil === "gestorru" || perfil === "adm";
 

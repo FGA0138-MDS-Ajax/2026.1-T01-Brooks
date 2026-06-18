@@ -1,50 +1,59 @@
 import { auth } from "@/auth";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-import { NextRequest } from "next/server";
+const PUBLIC_ROUTES = ["/", "/login", "/register", "/forgot-password"];
 
-export default auth((req: NextRequest & {auth: any}) => {
-  const isLoggedIn = !!req.auth;
-  const userRole = req.auth?.user?.role; // "gestorru" | "aluno" | "adm"
+const AUTH_ROUTES = ["/login", "/register", "/forgot-password"];
+
+export default auth((req: NextRequest & { auth: any }) => {
+  const session = req.auth;
+
+  const isLoggedIn = !!session;
+  const userRole = session?.user?.perfil; // "gestorru" | "aluno" | "adm"
+
   const { nextUrl } = req;
+  const path = nextUrl.pathname;
 
-  const isApiAuthRoute = nextUrl.pathname.startsWith("/api/auth");
-  const isPublicRoute = ["/", "/login", "/register"].includes(nextUrl.pathname);
+  const isApiAuthRoute = path.startsWith("/api/auth");
+  const isAuthRoute = AUTH_ROUTES.includes(path);
+  const isPublicRoute = PUBLIC_ROUTES.includes(path);
 
-  if (isApiAuthRoute) return;
+  if (isApiAuthRoute) return NextResponse.next();
 
-  // 1. Bloqueia usuários deslogados de acessar qualquer rota privada
   if (!isLoggedIn && !isPublicRoute) {
-    return Response.redirect(new URL("/login", nextUrl));
+    return NextResponse.redirect(new URL("/login", nextUrl));
   }
 
-  // 2. Se o usuário estiver logado, aplica as travas estritas da tabela:
   if (isLoggedIn) {
-    const path = nextUrl.pathname;
+    if (isAuthRoute || path === "/") {
+      if (userRole === "aluno") return NextResponse.redirect(new URL("/dashboard", nextUrl));
+      if (userRole === "gestorru") return NextResponse.redirect(new URL("/gestao", nextUrl));
+      if (userRole === "adm") return NextResponse.redirect(new URL("/admin", nextUrl));
 
-    // REGRAS PARA O ALUNO (Apenas /dashboard)
-    if (userRole === "aluno") {
-      if (path.startsWith("/gestao") || path.startsWith("/admin")) {
-        return Response.redirect(new URL("/dashboard", nextUrl));
-      }
+      return NextResponse.redirect(new URL("/", nextUrl));
+
     }
 
-    // REGRAS PARA O GESTOR RU (Apenas /gestao)
-    if (userRole === "gestorru") {
-      if (path.startsWith("/dashboard") || path.startsWith("/admin")) {
-        return Response.redirect(new URL("/gestao", nextUrl));
-      }
+    if (!userRole) {
+      return NextResponse.redirect(new URL("/login", nextUrl));
     }
 
-    // REGRAS PARA O ADMIN (Apenas /gestao e /admin)
-    if (userRole === "adm") {
-      if (path.startsWith("/dashboard")) {
-        // Como ele não entra no dashboard, jogamos ele para a rota principal dele (/admin)
-        return Response.redirect(new URL("/admin", nextUrl));
-      }
+    if (userRole === "aluno" && !path.startsWith("/dashboard")) {
+      return NextResponse.redirect(new URL("/dashboard", nextUrl));
     }
+
+    if (userRole === "gestorru" && !path.startsWith("/gestao")) {
+      return NextResponse.redirect(new URL("/gestao", nextUrl));
+    }
+
+    if (userRole === "adm" && !path.startsWith("/admin")) {
+      return NextResponse.redirect(new URL("/admin", nextUrl));
+    }
+
   }
 
-  return;
+  return NextResponse.next();
 });
 
 export const config = {
