@@ -31,5 +31,6 @@ export async function loginUser(formData: FormData) {
     redirectTo,
   });
 
+  if (result)
   console.log("Login result:", result);
 }

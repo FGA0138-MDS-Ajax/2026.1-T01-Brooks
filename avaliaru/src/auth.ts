@@ -59,6 +59,7 @@ export const {
         session.user.perfil = token.perfil as UsuarioPerfil;
         session.user.name = token.name as string;
         session.user.email = token.email as string;
+        session.user.id = token.sub as string;
       }
       return session;
     },

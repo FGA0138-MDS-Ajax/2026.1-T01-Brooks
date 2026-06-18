@@ -12,3 +12,28 @@ export type DataDMA = {
     mes: number;
     ano: number;
 }
+
+export type CardapioDiario = {
+    idPratoDoDia: number;
+    data: DataDMA;
+    panificacao: string;
+    opcao_extra: string;
+    complemento_padrao_cafe: string;
+    complemento_ovolactovegetariano_cafe: string;
+    complemento_vegetariano_estrito_cafe: string;
+    fruta: string;
+
+    prato_principal_padrao_almoco: string;
+    prato_principal_ovolactovegetariano_almoco: string;
+    prato_principal_vegetariano_estrito_almoco: string;
+    guarnicao: string;
+    sobremesa_almoco: string;
+
+    prato_principal_padrão_jantar: string;
+    prato_principal_ovolactovegetariano_jantar: string;
+    prato_principal_vegetariano_estrito_jantar: string;
+    sopa: string;
+    sobremesa_jantar: string;
+};
+
+export type CardapioSemanal = CardapioDiario[];

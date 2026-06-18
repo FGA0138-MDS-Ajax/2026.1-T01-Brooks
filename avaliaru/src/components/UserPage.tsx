@@ -1,5 +1,6 @@
 "use client"
 import { atualizarDados } from "@/actions/user/atualizarDados";
+import myAlert from "@/lib/alert";
 import { Session } from "next-auth";
 import { useState } from "react";
 
@@ -8,17 +9,23 @@ export default function UserPage({session}: { session: Session}) {
     const [name, setName] = useState<string>(session.user.name || ""); // Inicializa com o nome da sessão, ou string vazia se não existir
 
     const handleSalvarDados = async (e: React.SubmitEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
         if (name === "" || email === "" || name === undefined || email === undefined || name === null || email === null) {
             alert("Preencha todos os campos");
             return;
         }
 
         try {
-            const result = await atualizarDados(name, email, session.user.id as string)
+            const result = await atualizarDados(name, email, session.user.id)
 
+            if (result.changes > 0) {
+                myAlert.success("Dados atualizados com sucesso!");
+            }
+            console.log(result);
         } catch (err) {
             console.error(err);
-            alert("Erro ao atualizar dados");
+            myAlert.error("Erro ao atualizar dados");
             return;
         }
     }
