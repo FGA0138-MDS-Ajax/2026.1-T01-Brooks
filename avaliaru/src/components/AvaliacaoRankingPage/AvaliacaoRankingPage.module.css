@@ -309,3 +309,28 @@
     padding-left: 48px;
   }
 }
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.sectionTitle {
+  margin-bottom: 0;
+}
+
+.seeAllLink {
+  color: #003366;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: color 0.2s ease;
+  padding: 4px 8px;
+}
+
+.seeAllLink:hover {
+  color: #006633;
+  text-decoration: underline;
+}

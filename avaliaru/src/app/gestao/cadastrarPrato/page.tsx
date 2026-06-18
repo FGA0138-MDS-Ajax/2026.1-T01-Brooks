@@ -1,13 +1,9 @@
 "use client"
 
-import CadastrarPratoPage from "@/components/CadastrarPratoPage"
+import CadastrarPratosPage from "@/components/CadastrarPratosPage/CadastrarPratosPage"
 
 export default function CadastrarPratoRouter() {
     return (
-        <div className="container">
-            <div className="form-side">
-                <CadastrarPratoPage />
-            </div>
-        </div>
+        <CadastrarPratosPage />
     )
 }

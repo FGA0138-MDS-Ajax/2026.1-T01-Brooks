@@ -5,7 +5,7 @@ import { LogOut, User } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-export default function Header({ perfil }: { perfil: "aluno" | "gestorru" | "adm" }) {
+export default function Header({ perfil }: { perfil: "aluno" | "gestorru" | "adm" | undefined }) {
     const rota = {
         "aluno": "/dashboard/aluno",
         "gestorru": "/gestao/gestor",
@@ -18,7 +18,7 @@ export default function Header({ perfil }: { perfil: "aluno" | "gestorru" | "adm
 
     const handleMeusDados = () => {
         console.log("Perfil:", perfil);
-        router.push(rota[perfil]);
+        router.push(rota[perfil as "aluno" | "gestorru" | "adm"]);
     };
 
     const router = useRouter();

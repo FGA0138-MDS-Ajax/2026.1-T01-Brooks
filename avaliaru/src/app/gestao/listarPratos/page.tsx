@@ -1,17 +1,8 @@
-"use server";
 import { buscarPratos } from "@/actions/pratoActions/buscarPratos";
-import ListarPratosPage from "@/components/ListarPratosPage";
-
+import ListaPratosPage from "@/components/ListaPratosPage/ListaPratosPage";
 
 export default async function ListarPratosRouter() {
-    const pratos = await buscarPratos() || []
+  const pratos = await buscarPratos() || []
 
-    return (
-        <div className="container">
-            <div className="form-side">
-                <h1>Listar Pratos</h1>
-                <ListarPratosPage pratos={pratos}/>
-            </div>
-        </div>
-    )
+  return <ListaPratosPage pratos={pratos} />;
 }

@@ -3,7 +3,7 @@ import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 import { Toaster } from "@/components/ui/sonner"
 import Header from "@/components/Header";
@@ -30,9 +30,7 @@ export default async function RootLayout({
           {children}
         </div>
         <Toaster />
-
       </body>
-
     </html>
   );
 }
