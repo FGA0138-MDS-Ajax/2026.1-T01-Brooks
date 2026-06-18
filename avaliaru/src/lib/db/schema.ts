@@ -8,7 +8,7 @@ import type { AdapterAccount } from "next-auth/adapters"
 
 // Esquema de autenticação do NextAuth.js, adaptado para o Drizzle ORM e SQLite
 
-export const users = sqliteTable("user", {
+export const users = sqliteTable("users", {
     id: text("id")
         .primaryKey()
         .$defaultFn(() => crypto.randomUUID()),

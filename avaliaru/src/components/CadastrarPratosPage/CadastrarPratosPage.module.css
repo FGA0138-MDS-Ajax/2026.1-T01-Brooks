@@ -102,6 +102,18 @@
   flex-direction: column;
 }
 
+.form{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.end{
+  display: flex;
+  align-self: flex-end;
+  width: max-content !important;
+}
+
 .dishItem {
   display: flex;
   justify-content: space-between;
