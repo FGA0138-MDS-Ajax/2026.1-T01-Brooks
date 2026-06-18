@@ -1,6 +1,8 @@
-import { prato, restricaoAlimentar } from './schema'; // Importe seu schema
+import { cardapioDiario, prato, restricaoAlimentar } from './schema'; // Importe seu schema
 
 import { db } from './db';
+
+type NovoCardapioDiario = typeof cardapioDiario.$inferInsert
 
 async function main() {
     console.log('Adicionando registros das restrições alimentares...');
@@ -116,6 +118,140 @@ async function main() {
         { "idPrato": "creme_de_mandioca", "nome": "Creme de mandioca" },
         { "idPrato": "creme_verde_de_ervilha_e_couve", "nome": "Creme verde de ervilha e couve" }
     ])
+
+    const cardapios: NovoCardapioDiario[] = [
+        // ==================== SEGUNDA-FEIRA (15/06) ====================
+
+        {
+            data: "2026-06-15",
+            // Café
+            panificacao: "pao_frances,pao_integral",
+            opcao_extra: "pao_de_queijo",
+            complemento_padrao_cafe: "ovos_mexidos,queijo_minas,manteiga_ou_creme_vegetal",
+            complemento_ovolactovegetariano_cafe: "ovos_mexidos,queijo_minas,manteiga_ou_creme_vegetal",
+            complemento_vegetariano_estrito_cafe: "homus_de_grao_de_bico,geleia_rustica_de_abacaxi_e_chia,pasta_de_amendoim",
+            fruta: "banana",
+            // Almoço
+            prato_principal_padrao_almoco: "frango_assado_com_manjericao",
+            prato_principal_ovolactovegetariano_almoco: "risoto_de_brocolis_com_couve_e_queijo",
+            prato_principal_vegetariano_estrito_almoco: "refogado_de_lentilha_couve_flor_e_brocolis",
+            guarnicao: "arroz_branco,feijao_carioca,farofa_crocante",
+            sobremesa_almoco: "fruta",
+            // Jantar
+            prato_principal_padrao_jantar: "bife_de_carne_bovina_ao_molho",
+            prato_principal_ovolactovegetariano_jantar: "omelete_caprese",
+            prato_principal_vegetariano_estrito_jantar: "berinjela_recheada_com_homus_de_grao_de_bico",
+            sopa: "creme_de_abobora",
+            sobremesa_jantar: "mexerica",
+        },
+
+        // ==================== TERÇA-FEIRA (16/06) ====================
+        {
+            data: "2026-06-16",
+            panificacao: "pao_careca,pao_de_queijo",
+            opcao_extra: "bolo",
+            complemento_padrao_cafe: "pate_de_frango,manteiga_ou_creme_vegetal,queijo_mucarela",
+            complemento_ovolactovegetariano_cafe: "pate_de_frango,manteiga_ou_creme_vegetal,queijo_mucarela",
+            complemento_vegetariano_estrito_cafe: "caponata_de_berinjela,homus_de_abobora",
+            fruta: "maca",
+            prato_principal_padrao_almoco: "suino_ao_molho_de_bacon",
+            prato_principal_ovolactovegetariano_almoco: "quiche_de_legumes_e_lentilha_gratinada",
+            prato_principal_vegetariano_estrito_almoco: "polpetone_de_quinoa",
+            guarnicao: "arroz_branco,feijao_carioca,beterraba_com_salsinha",
+            sobremesa_almoco: "laranja",
+            prato_principal_padrao_jantar: "carne_de_sol",
+            prato_principal_ovolactovegetariano_jantar: "cuscuz_vegetariano_com_queijo_minas",
+            prato_principal_vegetariano_estrito_jantar: "espaguete_com_abobrinha_e_soja_ao_sugo",
+            sopa: "sopa_de_macarrao_com_legumes",
+            sobremesa_jantar: "fruta",
+        },
+
+        // ==================== QUARTA-FEIRA (17/06) ====================
+        {
+            data: "2026-06-17",
+            panificacao: "pao_frances,pao_integral",
+            opcao_extra: "pao_de_queijo",
+            complemento_padrao_cafe: "ovos_mexidos_com_castanhas,queijo_minas,manteiga_ou_creme_vegetal",
+            complemento_ovolactovegetariano_cafe: "ovos_mexidos_com_castanhas,queijo_minas,manteiga_ou_creme_vegetal",
+            complemento_vegetariano_estrito_cafe: "homus_de_grao_de_bico,pasta_de_batata_doce_com_amendoim",
+            fruta: "mamao",
+            prato_principal_padrao_almoco: "strogonoff_de_frango",
+            prato_principal_ovolactovegetariano_almoco: "escondidinho_de_ervilha_gratinado",
+            prato_principal_vegetariano_estrito_almoco: "almondega_de_soja_ao_sugo",
+            guarnicao: "arroz_branco,feijao_carioca,legumes_no_vapor",
+            sobremesa_almoco: "salada_de_frutas",
+            prato_principal_padrao_jantar: "file_de_peixe_ao_molho_de_coco",
+            prato_principal_ovolactovegetariano_jantar: "baiao_de_dois_com_queijo_coalho",
+            prato_principal_vegetariano_estrito_jantar: "tomate_recheado_com_soja",
+            sopa: "creme_verde_de_ervilha_e_couve",
+            sobremesa_jantar: "fruta",
+        },
+
+        // ==================== QUINTA-FEIRA (18/06) ====================
+        {
+            data: "2026-06-18",
+            panificacao: "pao_frances",
+            opcao_extra: "iogurte_natural",
+            complemento_padrao_cafe: "queijo_minas,manteiga_ou_creme_vegetal,pasta_de_ricota",
+            complemento_ovolactovegetariano_cafe: "queijo_minas,manteiga_ou_creme_vegetal,pasta_de_ricota",
+            complemento_vegetariano_estrito_cafe: "homus_de_abobora,maionese_de_abacate",
+            fruta: "melancia",
+            prato_principal_padrao_almoco: "lagarto_ao_molho_escuro",
+            prato_principal_ovolactovegetariano_almoco: "nhoque_ao_molho_branco_com_soja_e_queijo",
+            prato_principal_vegetariano_estrito_almoco: "refogado_de_grao_de_bico",
+            guarnicao: "arroz_integral,feijao_carioca,salada_mista",
+            sobremesa_almoco: "mexerica",
+            prato_principal_padrao_jantar: "cubos_de_carne_acebolada",
+            prato_principal_ovolactovegetariano_jantar: "quibe_de_legumes_com_quinoa_gratinado",
+            prato_principal_vegetariano_estrito_jantar: "bolinho_de_grao_de_bico",
+            sopa: "creme_de_cebola_e_alho_poro",
+            sobremesa_jantar: "fruta",
+        },
+
+        // ==================== SEXTA-FEIRA (19/06) ====================
+        {
+            data: "2026-06-19",
+            panificacao: "pao_frances,pao_careca",
+            opcao_extra: "bolo_vegetariano",
+            complemento_padrao_cafe: "ovos_mexidos,queijo_mucarela,manteiga_ou_creme_vegetal",
+            complemento_ovolactovegetariano_cafe: "ovos_mexidos,queijo_mucarela,manteiga_ou_creme_vegetal",
+            complemento_vegetariano_estrito_cafe: "geleia_rustica_de_abacaxi_e_chia,pasta_de_amendoim",
+            fruta: "abacaxi",
+            prato_principal_padrao_almoco: "feijoada",
+            prato_principal_ovolactovegetariano_almoco: "feijoada_vegetariana",
+            prato_principal_vegetariano_estrito_almoco: "feijoada_vegetariana",
+            guarnicao: "arroz_branco,feijao_carioca,farofa_crocante",
+            sobremesa_almoco: "fruta",
+            prato_principal_padrao_jantar: "suino_com_cebola_caramelizada",
+            prato_principal_ovolactovegetariano_jantar: "omelete_de_cebola_ao_forno",
+            prato_principal_vegetariano_estrito_jantar: "moqueca_de_banana_da_terra_com_proteina_de_soja",
+            sopa: "creme_de_mandioca",
+            sobremesa_jantar: "mix_de_doces",
+        },
+
+        // ==================== SÁBADO (20/06) ====================
+        {
+            data: "2026-06-20",
+            panificacao: "pao_integral,pao_de_queijo",
+            opcao_extra: "pao_de_queijo",
+            complemento_padrao_cafe: "queijo_minas,manteiga_ou_creme_vegetal,bebida_lactea",
+            complemento_ovolactovegetariano_cafe: "queijo_minas,manteiga_ou_creme_vegetal,bebida_lactea",
+            complemento_vegetariano_estrito_cafe: "homus_de_grao_de_bico,caponata_de_berinjela",
+            fruta: "melao",
+            prato_principal_padrao_almoco: "file_de_frango_ao_sugo",
+            prato_principal_ovolactovegetariano_almoco: "hamburguer_de_ervilha_gratinado",
+            prato_principal_vegetariano_estrito_almoco: "bobo_de_legumes_com_soja",
+            guarnicao: "arroz_branco,feijao_carioca,mandioca_cozida",
+            sobremesa_almoco: "fruta",
+            prato_principal_padrao_jantar: "hamburguer_gratinado",
+            prato_principal_ovolactovegetariano_jantar: "delicia_de_lentilha",
+            prato_principal_vegetariano_estrito_jantar: "batata_recheada_com_quinoa",
+            sopa: "sopa_de_fuba",
+            sobremesa_jantar: "fruta",
+        },
+    ]
+
+    await db.insert(cardapioDiario).values(cardapios);
 
     process.exit(0);
 }

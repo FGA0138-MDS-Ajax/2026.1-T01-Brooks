@@ -125,8 +125,7 @@ export const avaliacao = sqliteTable(
 export const cardapioDiario = sqliteTable(
     "cardapioDiario",
     {
-        idCardapioDiario: integer("idPratoDoDia").primaryKey({autoIncrement: true}),
-        data: text("data").notNull(),
+        data: text("data").primaryKey(),
         
         //café
         panificacao: text("panificacao").notNull(),
@@ -144,7 +143,7 @@ export const cardapioDiario = sqliteTable(
         sobremesa_almoco: text("sobremesa_almoco").notNull(),
         
         //jantar
-        prato_principal_padrão_jantar: text("prato_principal_padrao_jantar").notNull(),
+        prato_principal_padrao_jantar: text("prato_principal_padrao_jantar").notNull(),
         prato_principal_ovolactovegetariano_jantar: text("prato_principal_ovolactovegetariano_jantar").notNull(),
         prato_principal_vegetariano_estrito_jantar: text("prato_principal_vegetariano_estrito_jantar").notNull(),
         sopa: text("sopa").notNull(),
