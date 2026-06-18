@@ -25,10 +25,15 @@ export async function buscarCardapioSemana(index_semana: number): Promise<Cardap
 
         const cardapioDoDia = result.find((cardapio) => cardapio.data === dataFormatada);
 
+
         if (cardapioDoDia) {
             cardapioSemanal.push({
                 idPratoDoDia: cardapioDoDia.idCardapioDiario,
-                data: cardapioDoDia.data,
+                data: {
+                    dia: dataAtual.getDate(),
+                    mes: dataAtual.getMonth() + 1,
+                    ano: dataAtual.getFullYear()
+                },
                 panificacao: cardapioDoDia.panificacao,
                 opcao_extra: cardapioDoDia.opcao_extra,
                 complemento_padrao_cafe: cardapioDoDia.complemento_padrao_cafe,
