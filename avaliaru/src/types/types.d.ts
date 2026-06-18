@@ -1,10 +1,13 @@
 import { DefaultSession } from "next-auth";
-import type { UsuarioPerfil } from "./lib/db/schema";
+import type { UsuarioPerfil } from "./types";
+
 
 declare module "next-auth" {
     interface Session {
         user: {
             perfil: UsuarioPerfil;
+            name: string;
+            email: string;
         } & DefaultSession["user"];
     }
 

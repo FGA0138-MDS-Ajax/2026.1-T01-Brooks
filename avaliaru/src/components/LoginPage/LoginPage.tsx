@@ -25,7 +25,11 @@ export default function LoginPage() {
 
         // 2. Trata os erros reais de login aqui embaixo
         if (error instanceof Error) {
-          console.error("Erro ao fazer login:", error);
+          if (error.name === "CredentialsSignin"){
+            myAlert.error("E-mail ou senha incorretos. Por favor, tente novamente.");
+            return;
+          }
+
           myAlert.error(
             "Ocorreu um erro ao tentar fazer login. Por favor, tente novamente.\n" +
               error.message,

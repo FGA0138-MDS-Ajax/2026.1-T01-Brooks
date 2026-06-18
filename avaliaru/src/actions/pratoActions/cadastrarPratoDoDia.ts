@@ -13,7 +13,7 @@ export async function cadastrarPratoDoDia(formData: FormData) {
         throw new Error("Não autorizado.");
     }
 
-    const perfil = (session.user as any).role; 
+    const perfil = (session.user as any).perfil; 
 
     const temAcesso = perfil === "gestorru" || perfil === "adm";
 

@@ -1,9 +1,12 @@
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import Database from "better-sqlite3";
+import path from "path";
 
 const globalForDrizzle = globalThis as unknown as { conn: Database.Database | null}
 
-const databaseUrl = process.env.DATABASE_URL?.replace("file:", "") || "./dev.db";
+const rawUrl = process.env.DATABASE_URL?.replace("file:", "")
+
+const databaseUrl = rawUrl ? rawUrl : path.join(process.cwd(), "avaliaru.db");
 
 export const sqlite = globalForDrizzle.conn || new Database(databaseUrl);
 

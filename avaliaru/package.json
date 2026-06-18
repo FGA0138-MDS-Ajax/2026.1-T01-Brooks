@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:seed": "tsx --env-file=.env.local src/lib/db/seed.ts",
+    "db:migrate-and-seed": "drizzle-kit migrate && npm run db:seed",
+    "db:generate-migrate-and-seed": "drizzle-kit generate && npm run db:migrate-and-seed"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.2",

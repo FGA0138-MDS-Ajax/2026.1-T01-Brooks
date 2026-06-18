@@ -8,7 +8,7 @@ import type { AdapterAccount } from "next-auth/adapters"
 
 // Esquema de autenticação do NextAuth.js, adaptado para o Drizzle ORM e SQLite
 
-export const users = sqliteTable("user", {
+export const users = sqliteTable("users", {
     id: text("id")
         .primaryKey()
         .$defaultFn(() => crypto.randomUUID()),
@@ -93,9 +93,11 @@ export const authenticators = sqliteTable(
 
 export const restricaoAlimentar = sqliteTable(
     "restricaoAlimentar",
-    {
+    {   
         codigo: text("codigo").primaryKey(),
         nome: text("nome").notNull(),
+        descricao: text("descricao").notNull(),
+        emoji: text("emoji").notNull(),
     }
 )
 
@@ -115,18 +117,39 @@ export const avaliacao = sqliteTable(
         dataHoraAvaliacao: integer("dataHoraAvaliacao", { mode: "timestamp_ms" }).notNull(),
         comentario: text("comentario"),
         statusModeracao: integer("statusModeracao", {mode: "boolean"}).notNull(), // true = publico, false = moderado
-        fkPratoDoDia: integer("fkPratoDoDia").notNull().references(() => pratoDoDia.idPratoDoDia, { onDelete: "cascade" }),
+        fkPrato: text("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
         fkEstudante: text("fkEstudante").notNull().references(() => users.id, { onDelete: "cascade" }),
     }
 )
 
-export const pratoDoDia = sqliteTable(
-    "pratoDoDia",
+export const cardapioDiario = sqliteTable(
+    "cardapioDiario",
     {
-        idPratoDoDia: integer("idPratoDoDia").primaryKey({autoIncrement: true}),
-        refeicao: text({enum: ["café", "almoço", "jantar"]}).notNull(),
-        data: text("data", { mode: "json" }).$type<DataDMA>().notNull(),
-        fkPrato: text("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
+        idCardapioDiario: integer("idPratoDoDia").primaryKey({autoIncrement: true}),
+        data: text("data").notNull(),
+        
+        //café
+        panificacao: text("panificacao").notNull(),
+        opcao_extra: text("opcao_extra").notNull(),
+        complemento_padrao_cafe: text("complemento_padrao_cafe").notNull(),
+        complemento_ovolactovegetariano_cafe: text("complemento_ovolactovegetariano_cafe").notNull(),
+        complemento_vegetariano_estrito_cafe: text("complemento_vegetariano_estrito_cafe").notNull(),
+        fruta: text("fruta").notNull(),
+
+        //almoço
+        prato_principal_padrao_almoco: text("prato_principal_padrao_almoco").notNull(),
+        prato_principal_ovolactovegetariano_almoco: text("prato_principal_ovolactovegetariano_almoco").notNull(),
+        prato_principal_vegetariano_estrito_almoco: text("prato_principal_vegetariano_estrito_almoco").notNull(),
+        guarnicao: text("guarnicao").notNull(),
+        sobremesa_almoco: text("sobremesa_almoco").notNull(),
+        
+        //jantar
+        prato_principal_padrão_jantar: text("prato_principal_padrao_jantar").notNull(),
+        prato_principal_ovolactovegetariano_jantar: text("prato_principal_ovolactovegetariano_jantar").notNull(),
+        prato_principal_vegetariano_estrito_jantar: text("prato_principal_vegetariano_estrito_jantar").notNull(),
+        sopa: text("sopa").notNull(),
+        sobremesa_jantar: text("sobremesa_jantar").notNull(),
+        
     }
 )
 
@@ -147,7 +170,7 @@ export const estudanteFavoritaPrato = sqliteTable(
     "estudanteFavoritaPrato",
     {
         fkEstudante: text("fkEstudante").notNull().references(() => users.id, { onDelete: "cascade" }),
-        fkPrato: integer("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
+        fkPrato: text("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
     },
     (estudanteFavoritaPrato) => [
         primaryKey({
@@ -160,7 +183,7 @@ export const restricaoContemPrato = sqliteTable(
     "restricaoContemPrato",
     {
         fkRestricao: text("fkRestricao").notNull().references(() => restricaoAlimentar.codigo, { onDelete: "cascade" }),
-        fkPrato: integer("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
+        fkPrato: text("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
     },
     (restricaoContemPrato) => [
         primaryKey({
