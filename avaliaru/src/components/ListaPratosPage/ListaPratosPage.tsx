@@ -37,7 +37,7 @@ export default function ListaPratosPage({ pratos }: { pratos: Prato[]}) {
         </div>
 
         <div className={styles.card}>
-          {pratos.filter((prato) => prato.nome.includes(input) || prato.idPrato.includes(input)).map((prato) => (
+          {pratos.filter((prato) => prato.nome.toLowerCase().includes(input.toLowerCase()) || prato.idPrato.toLowerCase().includes(input.toLowerCase())).map((prato) => (
             <div key={prato.idPrato} className={styles.dishItem}>
               <div className={styles.dishInfo}>
                 <span className={styles.dishName}>{prato.nome}</span>
