@@ -35,17 +35,31 @@ export const {
   callbacks: {
     async jwt({ token, user }) {
       // Quando o usuário fizer login, injeta o perfil no token JWT
-      if (user) {
-        token.role = user.perfil;
-        token.id = user.id;
+      if (user?.perfil) {
+        token.perfil = user.perfil;
       }
+
+      // Mantém o perfil sincronizado com o banco para sessões antigas ou após troca de perfil
+      if (!token.perfil && token.sub) {
+        const [dbUser] = await db
+          .select({ perfil: users.perfil })
+          .from(users)
+          .where(eq(users.id, token.sub));
+
+        if (dbUser?.perfil) {
+          token.perfil = dbUser.perfil;
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {
-      // Repassa a role do token para a sessão que o Proxy lê
+      // Repassa a perfil do token para a sessão que o Proxy lê
       if (session.user) {
-        session.user.role = token.role as UsuarioPerfil;
-        session.user.id = token.id as string;
+        session.user.perfil = token.perfil as UsuarioPerfil;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+        session.user.id = token.sub as string;
       }
       return session;
     },
@@ -59,7 +73,6 @@ export const {
       },
 
       async authorize(credentials) {
-        console.log(credentials.email, credentials.password);
         if (!credentials?.email || !credentials.password) return null;
 
           const [user] = await db

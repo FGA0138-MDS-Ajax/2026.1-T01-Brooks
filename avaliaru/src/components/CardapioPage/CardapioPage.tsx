@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import styles from "./CardapioPage.module.css";
 import CardapioCard from "./CardapioCard";
+import { CardapioSemanal } from "@/types/types";
 
 export type CardapioDiario = {
   id: number;
@@ -87,7 +88,7 @@ const dadosDoCardapio: CardapioDiario[] = [
   },
 ];
 
-export default function CardapioPage() {
+export default function CardapioPage({cardapio}: {cardapio: CardapioSemanal | null}) {
   const [favoritos, setFavoritos] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
 
@@ -153,9 +154,15 @@ export default function CardapioPage() {
     );
   };
 
+  const printarCardapio = () => {
+    console.log("Cardápio da Semana:", cardapio);
+  };
+
   return (
     <main className={styles.paginaCardapio}>
       <h1 className={styles.tituloPrincipal}>Cardápio da Semana - FGA</h1>
+
+      <button onClick={printarCardapio}>Printar cardapio</button>
 
       <section className={styles.resumoFavoritos} aria-live="polite">
         <div>

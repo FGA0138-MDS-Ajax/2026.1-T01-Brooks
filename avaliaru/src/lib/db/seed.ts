@@ -1,28 +1,126 @@
-import { restricaoAlimentar } from './schema'; // Importe seu schema
+import { prato, restricaoAlimentar } from './schema'; // Importe seu schema
 
 import { db } from './db';
 
 async function main() {
-  console.log('Adicionando registros das restrições alimentares...');
+    console.log('Adicionando registros das restrições alimentares...');
 
-  // Insira seus registros iniciais aqui
-  await db.insert(restricaoAlimentar).values([
-    { codigo: 'cogumelo', emoji: '🍄', nome: 'Cogumelo', descricao: 'Pratos com cogumelos.' },
-    { codigo: 'leite', emoji: '🥛', nome: 'Leite e derivados', descricao: 'Leite, queijo, manteiga e creme.' },
-    { codigo: 'mel', emoji: '🍯', nome: 'Mel', descricao: 'Preparações com mel.' },
-    { codigo: 'pimenta', emoji: '🌶️', nome: 'Pimenta', descricao: 'Molhos e temperos apimentados.' },
-    { codigo: 'soja', emoji: '🌱', nome: 'Soja', descricao: 'Proteína, bebida ou molho de soja.' },
-    { codigo: 'gluten', emoji: '🌾', nome: 'Trigo/Glúten', descricao: 'Pães, massas, torradas e trigo.' },
-    { codigo: 'amendoim', emoji: '🥜', nome: 'Amendoim', descricao: 'Pasta de amendoim e derivados.' },
-    { codigo: 'oleaginosa', emoji: '🌰', nome: 'Oleaginosa', descricao: 'Castanhas, nozes e semelhantes.' },
-    { codigo: 'ovo', emoji: '🥚', nome: 'Ovo', descricao: 'Omelete, ovos mexidos e preparações.' },
-    { codigo: 'suino', emoji: '🐷', nome: 'Suíno', descricao: 'Carne suína, feijoada e derivados.' }
-  ]);
+    // Insira seus registros iniciais aqui
+    await db.insert(restricaoAlimentar).values([
+        { codigo: 'cogumelo', emoji: '🍄', nome: 'Cogumelo', descricao: 'Pratos com cogumelos.' },
+        { codigo: 'leite', emoji: '🥛', nome: 'Leite e derivados', descricao: 'Leite, queijo, manteiga e creme.' },
+        { codigo: 'mel', emoji: '🍯', nome: 'Mel', descricao: 'Preparações com mel.' },
+        { codigo: 'pimenta', emoji: '🌶️', nome: 'Pimenta', descricao: 'Molhos e temperos apimentados.' },
+        { codigo: 'soja', emoji: '🌱', nome: 'Soja', descricao: 'Proteína, bebida ou molho de soja.' },
+        { codigo: 'gluten', emoji: '🌾', nome: 'Trigo/Glúten', descricao: 'Pães, massas, torradas e trigo.' },
+        { codigo: 'amendoim', emoji: '🥜', nome: 'Amendoim', descricao: 'Pasta de amendoim e derivados.' },
+        { codigo: 'oleaginosa', emoji: '🌰', nome: 'Oleaginosa', descricao: 'Castanhas, nozes e semelhantes.' },
+        { codigo: 'ovo', emoji: '🥚', nome: 'Ovo', descricao: 'Omelete, ovos mexidos e preparações.' },
+        { codigo: 'suino', emoji: '🐷', nome: 'Suíno', descricao: 'Carne suína, feijoada e derivados.' }
+    ]);
 
-  process.exit(0);
+    await db.insert(prato).values([
+        { "idPrato": "pao_frances", "nome": "Pão francês" },
+        { "idPrato": "pao_careca", "nome": "Pão careca" },
+        { "idPrato": "pao_integral", "nome": "Pão integral" },
+        { "idPrato": "pao_de_queijo", "nome": "Pão de queijo" },
+        { "idPrato": "bolo", "nome": "Bolo" },
+        { "idPrato": "bolo_vegetariano", "nome": "Bolo vegetariano" },
+        { "idPrato": "carne_desfiada", "nome": "Carne desfiada" },
+        { "idPrato": "frango_desfiada", "nome": "Frango desfiado" },
+        { "idPrato": "ovos_mexidos", "nome": "Ovos mexidos" },
+        { "idPrato": "pate_de_frango", "nome": "Patê de frango" },
+        { "idPrato": "queijo_mucarela", "nome": "Queijo muçarela" },
+        { "idPrato": "carne_moida", "nome": "Carne moída" },
+        { "idPrato": "manteiga_ou_creme_vegetal", "nome": "Manteiga ou creme vegetal" },
+        { "idPrato": "iogurte_natural", "nome": "Iogurte natural" },
+        { "idPrato": "queijo_minas", "nome": "Queijo minas" },
+        { "idPrato": "pasta_de_ricota", "nome": "Pasta de ricota" },
+        { "idPrato": "bebida_lactea", "nome": "Bebida láctea" },
+        { "idPrato": "pasta_de_amendoim", "nome": "Pasta de amendoim" },
+        { "idPrato": "caponata_de_berinjela", "nome": "Caponata de berinjela" },
+        { "idPrato": "homus_de_grao_de_bico", "nome": "Homus de grão de bico" },
+        { "idPrato": "homus_de_abobora", "nome": "Homus de abóbora" },
+        { "idPrato": "geleia_rustica_de_abacaxi_e_chia", "nome": "Geleia rústica de abacaxi e chia" },
+        { "idPrato": "pasta_de_batata_doce_com_amendoim", "nome": "Pasta de batata doce com amendoim" },
+        { "idPrato": "maionese_de_abacate", "nome": "Maionese de abacate" },
+        { "idPrato": "banana", "nome": "Banana" },
+        { "idPrato": "melancia", "nome": "Melancia" },
+        { "idPrato": "abacaxi", "nome": "Abacaxi" },
+        { "idPrato": "melao", "nome": "Melão" },
+        { "idPrato": "maca", "nome": "Maçã" },
+        { "idPrato": "salada_de_frutas", "nome": "Salada de frutas" },
+        { "idPrato": "mamao", "nome": "Mamão" },
+        { "idPrato": "frango_assado_com_manjericao", "nome": "Frango assado com manjericão" },
+        { "idPrato": "suino_ao_molho_de_bacon", "nome": "Suíno ao molho de bacon" },
+        { "idPrato": "isca_de_carne_ao_curry", "nome": "Isca de carne ao curry" },
+        { "idPrato": "strogonoff_de_frango", "nome": "Strogonoff de frango" },
+        { "idPrato": "carne_de_sol", "nome": "Carne de sol" },
+        { "idPrato": "feijoada", "nome": "Feijoada" },
+        { "idPrato": "frango_assado", "nome": "Frango assado" },
+        { "idPrato": "bife_de_carne_bovina_ao_molho", "nome": "Bife de carne bovina ao molho" },
+        { "idPrato": "suino_ao_molho_de_barbecue", "nome": "Suíno ao molho de barbecue" },
+        { "idPrato": "torta_de_frango", "nome": "Torta de frango" },
+        { "idPrato": "quiche_de_legumes_e_lentilha_gratinada", "nome": "Quiche de legumes e lentilha gratinada" },
+        { "idPrato": "ovos_assados_ao_sugo", "nome": "Ovos assados ao sugo" },
+        { "idPrato": "iscas_de_soja_ao_sugo_gratinadas", "nome": "Iscas de soja ao sugo gratinadas" },
+        { "idPrato": "risoto_de_brocolis_com_couve_e_queijo", "nome": "Risoto de brócolis com couve e queijo" },
+        { "idPrato": "omelete_de_cebola_ao_forno", "nome": "Omelete de cebola ao forno" },
+        { "idPrato": "hamburguer_de_ervilha_gratinado", "nome": "Hambúrguer de ervilha gratinado" },
+        { "idPrato": "delicia_de_lentilha", "nome": "Delícia de lentilha" },
+        { "idPrato": "refogado_de_lentilha_couve_flor_e_brocolis", "nome": "Refogado de lentilha, couve-flor e brócolis" },
+        { "idPrato": "berinjela_recheada_com_homus_de_grao_de_bico", "nome": "Berinjela recheada com homus de grão de bico" },
+        { "idPrato": "polpetone_de_quinoa", "nome": "Polpetone de quinoa" },
+        { "idPrato": "almondega_de_soja_ao_sugo", "nome": "Almôndega de soja ao sugo" },
+        { "idPrato": "feijoada_vegetariana", "nome": "Feijoada vegetariana" },
+        { "idPrato": "ervilha_com_couve_flor_ao_curry", "nome": "Ervilha com couve-flor ao curry" },
+        { "idPrato": "espaguete_com_abobrinha_e_soja_ao_sugo", "nome": "Espaguete com abobrinha e soja ao sugo" },
+        { "idPrato": "jardineira_verde_chuchu_e_abobrinha", "nome": "Jardineira verde (Chuchu e abobrinha)" },
+        { "idPrato": "cenoura_refogada_com_salsinha", "nome": "Cenoura refogada com salsinha" },
+        { "idPrato": "batata_saute", "nome": "Batata sauté" },
+        { "idPrato": "mandioca_cozida", "nome": "Mandioca cozida" },
+        { "idPrato": "farofa_crocante", "nome": "Farofa crocante" },
+        { "idPrato": "milho_cozido", "nome": "Milho cozido" },
+        { "idPrato": "beterraba_com_salsinha", "nome": "Beterraba com salsinha" },
+        { "idPrato": "mix_de_doces", "nome": "Mix de doces" },
+        { "idPrato": "fruta", "nome": "Fruta" },
+        { "idPrato": "mexerica", "nome": "Mexerica" },
+        { "idPrato": "laranja", "nome": "Laranja" },
+        { "idPrato": "lagarto_ao_molho_escuro", "nome": "Lagarto ao molho escuro" },
+        { "idPrato": "file_de_peixe_ao_molho_de_coco", "nome": "Filé de peixe ao molho de coco" },
+        { "idPrato": "cubos_de_carne_acebolada", "nome": "Cubos de carne acebolada" },
+        { "idPrato": "suino_com_cebola_caramelizada", "nome": "Suíno com cebola caramelizada" },
+        { "idPrato": "file_de_frango_ao_sugo", "nome": "Filé de frango ao sugo" },
+        { "idPrato": "hamburguer_gratinado", "nome": "Hambúrguer gratinado" },
+        { "idPrato": "isca_de_frango_ao_molho_branco", "nome": "Isca de frango ao molho branco" },
+        { "idPrato": "cubos_de_carne_ao_molho_de_vinho", "nome": "Cubos de carne ao molho de vinho" },
+        { "idPrato": "ovos_mexidos_com_castanhas", "nome": "Ovos mexidos com castanhas" },
+        { "idPrato": "escondidinho_de_ervilha_gratinado", "nome": "Escondidinho de ervilha gratinado" },
+        { "idPrato": "cuscuz_vegetariano_com_queijo_minas", "nome": "Cuscuz vegetariano com queijo minas" },
+        { "idPrato": "quibe_de_legumes_com_quinoa_gratinado", "nome": "Quibe de legumes com quinoa gratinado" },
+        { "idPrato": "nhoque_ao_molho_branco_com_soja_e_queijo", "nome": "Nhoque ao molho branco com soja e queijo" },
+        { "idPrato": "baiao_de_dois_com_queijo_coalho", "nome": "Baião de dois com queijo coalho" },
+        { "idPrato": "omelete_caprese", "nome": "Omelete caprese" },
+        { "idPrato": "tomate_recheado_com_soja", "nome": "Tomate recheado com soja" },
+        { "idPrato": "bolinho_de_ervilha", "nome": "Bolinho de ervilha" },
+        { "idPrato": "bobo_de_legumes_com_soja", "nome": "Bobó de legumes com soja" },
+        { "idPrato": "refogado_de_grao_de_bico", "nome": "Refogado de grão de bico" },
+        { "idPrato": "moqueca_de_banana_da_terra_com_proteina_de_soja", "nome": "Moqueca de banana da terra com proteína de soja" },
+        { "idPrato": "bolinho_de_grao_de_bico", "nome": "Bolinho de grão de bico" },
+        { "idPrato": "batata_recheada_com_quinoa", "nome": "Batata recheada com quinoa" },
+        { "idPrato": "creme_de_abobora", "nome": "Creme de abóbora" },
+        { "idPrato": "sopa_de_fuba", "nome": "Sopa de fubá" },
+        { "idPrato": "creme_de_legumes", "nome": "Creme de legumes" },
+        { "idPrato": "sopa_de_macarrao_com_legumes", "nome": "Sopa de macarrão com legumes" },
+        { "idPrato": "creme_de_cebola_e_alho_poro", "nome": "Creme de cebola e alho poró" },
+        { "idPrato": "creme_de_mandioca", "nome": "Creme de mandioca" },
+        { "idPrato": "creme_verde_de_ervilha_e_couve", "nome": "Creme verde de ervilha e couve" }
+    ])
+
+    process.exit(0);
 }
 
 main().catch((err) => {
-  console.error('Erro ao popular o banco de dados:', err);
-  process.exit(1);
+    console.error('Erro ao popular o banco de dados:', err);
+    process.exit(1);
 });
