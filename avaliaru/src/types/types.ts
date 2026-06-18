@@ -13,6 +13,13 @@ export type DataDMA = {
     ano: number;
 }
 
+export type RestricaoAlimentar = {
+    nome: string;
+    descricao: string;
+    emoji: string;
+    codigo: string;
+}
+
 export type CardapioDiario = {
     idPratoDoDia: number;
     data: DataDMA;

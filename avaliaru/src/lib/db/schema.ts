@@ -1,5 +1,5 @@
 import { DataDMA, usuarioPerfis } from "@/types/types"
-import { integer, sqliteTable, text, primaryKey, blob, } from "drizzle-orm/sqlite-core"
+import { integer, sqliteTable, text, primaryKey, blob} from "drizzle-orm/sqlite-core"
 import type { AdapterAccount } from "next-auth/adapters"
 
 /*
