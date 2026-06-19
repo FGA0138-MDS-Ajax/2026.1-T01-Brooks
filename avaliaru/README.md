@@ -62,3 +62,53 @@ E para criar a migração e criar as tabela no arquivo .db, rode o seguinte coma
 npx drizzle-kit generate
 npx drizzle-kit migrate
 ```
+
+## Testes
+
+1. Certifique-se de ter o `.env.local` configurado e o banco correto definido em `DATABASE_URL`.
+
+    Exemplo mínimo:
+
+    ```env
+    DATABASE_URL=file:./dev.db
+    AUTH_URL=http://localhost:3000
+    AUTH_SECRET=seu_secret_aqui
+    ```
+
+2. Instale as dependências:
+
+    ```bash
+    npm install
+    ```
+
+3. Gere e aplique migrations antes de rodar testes que dependem do banco:
+
+    ```bash
+    npx drizzle-kit generate
+    npx drizzle-kit migrate
+    ```
+
+4. Execute o teste de action diretamente com `tsx`:
+
+    ```bash
+    npx tsx src/actions/cardapioActions/__tests__/cadastrarCardapio.test.ts
+    ```
+
+    Ou, para o teste de prato do dia existente:
+
+    ```bash
+    npx tsx src/actions/pratoActions/__tests__/cadastrarPratoDoDia.test.ts
+    ```
+
+5. Se quiser forçar outro arquivo de banco, use `DATABASE_URL` na execução:
+
+    ```bash
+    DATABASE_URL=file:./avaliaru.db npx tsx src/actions/cardapioActions/__tests__/cadastrarCardapio.test.ts
+    ```
+
+### Observações sobre testes
+
+- Os arquivos de teste estão organizados em `src/actions/*/__tests__/`.
+- Os testes de script usam a lógica de banco isolada (`inserirCardapioNoBanco`, `inserirPratoDoDiaNoBanco`) e não dependem de UI.
+- Em ambiente de teste, `revalidatePath()` pode ser ignorado sem afetar o resultado do insert.
+- Verifique o banco correto ao abrir o viewer: se `DATABASE_URL=file:./dev.db`, abra `dev.db`.
