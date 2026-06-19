@@ -1,5 +1,5 @@
 import { DataDMA, usuarioPerfis } from "@/types/types"
-import { integer, sqliteTable, text, primaryKey, blob} from "drizzle-orm/sqlite-core"
+import { integer, sqliteTable, text, primaryKey, blob } from "drizzle-orm/sqlite-core"
 import type { AdapterAccount } from "next-auth/adapters"
 
 /*
@@ -17,7 +17,7 @@ export const users = sqliteTable("users", {
     emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
     image: text("image"),
     passwordHash: text("passwordHash"),
-    perfil: text("perfil", {enum: usuarioPerfis}).notNull().default("aluno"),
+    perfil: text("perfil", { enum: usuarioPerfis }).notNull().default("aluno"),
 })
 
 export const accounts = sqliteTable(
@@ -93,7 +93,7 @@ export const authenticators = sqliteTable(
 
 export const restricaoAlimentar = sqliteTable(
     "restricaoAlimentar",
-    {   
+    {
         codigo: text("codigo").primaryKey(),
         nome: text("nome").notNull(),
         descricao: text("descricao").notNull(),
@@ -112,11 +112,11 @@ export const prato = sqliteTable(
 export const avaliacao = sqliteTable(
     "avaliacao",
     {
-        idAvaliacao: integer("idAvaliacao").primaryKey({autoIncrement: true}),
+        idAvaliacao: integer("idAvaliacao").primaryKey({ autoIncrement: true }),
         nota: integer("nota").notNull(),
         dataHoraAvaliacao: integer("dataHoraAvaliacao", { mode: "timestamp_ms" }).notNull(),
         comentario: text("comentario"),
-        statusModeracao: integer("statusModeracao", {mode: "boolean"}).notNull(), // true = publico, false = moderado
+        statusModeracao: integer("statusModeracao", { mode: "boolean" }).notNull(), // true = publico, false = moderado
         fkPrato: text("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
         fkEstudante: text("fkEstudante").notNull().references(() => users.id, { onDelete: "cascade" }),
     }
@@ -125,32 +125,30 @@ export const avaliacao = sqliteTable(
 export const cardapioDiario = sqliteTable(
     "cardapioDiario",
     {
-        data: text("data").primaryKey(),
-        
-        //café
-        panificacao: text("panificacao").notNull(),
-        opcao_extra: text("opcao_extra").notNull(),
-        complemento_padrao_cafe: text("complemento_padrao_cafe").notNull(),
-        complemento_ovolactovegetariano_cafe: text("complemento_ovolactovegetariano_cafe").notNull(),
-        complemento_vegetariano_estrito_cafe: text("complemento_vegetariano_estrito_cafe").notNull(),
-        fruta: text("fruta").notNull(),
-
-        //almoço
-        prato_principal_padrao_almoco: text("prato_principal_padrao_almoco").notNull(),
-        prato_principal_ovolactovegetariano_almoco: text("prato_principal_ovolactovegetariano_almoco").notNull(),
-        prato_principal_vegetariano_estrito_almoco: text("prato_principal_vegetariano_estrito_almoco").notNull(),
-        guarnicao: text("guarnicao").notNull(),
-        sobremesa_almoco: text("sobremesa_almoco").notNull(),
-        
-        //jantar
-        prato_principal_padrao_jantar: text("prato_principal_padrao_jantar").notNull(),
-        prato_principal_ovolactovegetariano_jantar: text("prato_principal_ovolactovegetariano_jantar").notNull(),
-        prato_principal_vegetariano_estrito_jantar: text("prato_principal_vegetariano_estrito_jantar").notNull(),
-        sopa: text("sopa").notNull(),
-        sobremesa_jantar: text("sobremesa_jantar").notNull(),
-        
+        data: text("data").primaryKey(), // Formato: "YYYY-MM-DD"
     }
 )
+
+export const cardapioDiarioItem = sqliteTable(
+    "cardapioDiarioItem",
+    {
+        data: text("data")
+            .notNull()
+            .references(() => cardapioDiario.data, { onDelete: "cascade" }),
+
+        campo: text("campo").notNull(), // ex: "panificacao", "guarnicao", "prato_principal_padrao_almoco"...
+
+        idPrato: text("idPrato")
+            .notNull()
+            .references(() => prato.idPrato, { onDelete: "cascade" }),
+    },
+    (cardapioDiarioItem) => [
+        // Chave primária correta → permite múltiplos pratos no mesmo campo
+        primaryKey({
+            columns: [cardapioDiarioItem.data, cardapioDiarioItem.campo, cardapioDiarioItem.idPrato],
+        }),
+    ]
+);
 
 export const estudantePossuiRestricao = sqliteTable(
     "estudantePossuiRestricao",

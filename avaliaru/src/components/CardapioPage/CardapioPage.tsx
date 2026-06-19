@@ -88,7 +88,7 @@ const dadosDoCardapio: CardapioDiario[] = [
   },
 ];
 
-export default function CardapioPage({cardapio}: {cardapio: CardapioSemanal | null}) {
+export default function CardapioPage({ cardapio }: { cardapio: CardapioSemanal | null }) {
   const [favoritos, setFavoritos] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
 
@@ -108,10 +108,11 @@ export default function CardapioPage({cardapio}: {cardapio: CardapioSemanal | nu
     }
   });
 
-  const hoje = new Date();
-  const diaAtual = new Date(
-    hoje.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }),
-  ).getDay();
+  const hojeSP = new Date(
+    new Date().toLocaleString("en-US", {
+      timeZone: "America/Sao_Paulo",
+    })
+  );
 
   const favoritosDisponiveis = useMemo(
     () =>
@@ -186,17 +187,13 @@ export default function CardapioPage({cardapio}: {cardapio: CardapioSemanal | nu
       </section>
 
       <div className={styles.container}>
-        {dadosDoCardapio.map((menu) => (
+        {cardapio?.map((cardapioDia) => (
           <CardapioCard
-            key={menu.id}
-            id={menu.id}
-            dia={menu.dia}
-            pratoPrincipal={menu.pratoPrincipal}
-            vegetariano={menu.vegetariano}
-            guarnicao={menu.guarnicao}
-            acompanhamentos={menu.acompanhamentos}
-            sobremesa={menu.sobremesa}
-            isHoje={menu.diaSemana === diaAtual}
+            key={cardapioDia.data.dia}
+            cardapio={cardapioDia}
+            isHoje={cardapioDia.data.dia === hojeSP.getDate() &&
+              cardapioDia.data.mes === hojeSP.getMonth() + 1 &&
+              cardapioDia.data.ano === hojeSP.getFullYear()}
             favoritos={favoritos}
             onAlternarFavorito={alternarFavorito}
           />
