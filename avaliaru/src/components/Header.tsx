@@ -1,47 +1,54 @@
 "use client";
 
-import { LogOut, User } from "lucide-react";
-
+import type { UsuarioPerfil } from "@/types/types";
+import { LogOut, UserRound } from "lucide-react";
+import Image from "next/image";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import styles from "./Header.module.css";
 
-export default function Header({ perfil }: { perfil: "aluno" | "gestorru" | "adm" | undefined }) {
-    const rota = {
-        "aluno": "/dashboard/aluno",
-        "gestorru": "/gestao/gestor",
-        "adm": "/admin/adm"
-    }
+const ROTA_PERFIL: Record<UsuarioPerfil, string> = {
+  aluno: "/dashboard/aluno",
+  gestorru: "/gestao/gestor",
+  adm: "/admin/adm",
+};
 
-    const handleLogout = () => {
-        signOut({ callbackUrl: "/login" });
-    };
+export default function Header({ perfil }: { perfil: UsuarioPerfil | undefined }) {
+  const router = useRouter();
 
-    const handleMeusDados = () => {
-        console.log("Perfil:", perfil);
-        router.push(rota[perfil as "aluno" | "gestorru" | "adm"]);
-    };
+  if (!perfil) return null;
 
-    const router = useRouter();
+  return (
+    <header className={styles.header}>
+      <div className={styles.brand}>
+        <span className={styles.logoWrapper}>
+          <Image src="/logo-avaliaru.png" alt="" width={42} height={42} priority />
+        </span>
+        <span className={styles.brandText}>
+          <strong>AvaliaRU</strong>
+          <small>Restaurante Universitário - FCTE</small>
+        </span>
+      </div>
 
-    if (!perfil) {
-        return null; // Ou um header genérico para usuários não autenticados
-    }
+      <nav className={styles.actions} aria-label="Ações da conta">
+        <button
+          type="button"
+          className={styles.profileButton}
+          onClick={() => router.push(ROTA_PERFIL[perfil])}
+        >
+          <UserRound size={18} aria-hidden="true" />
+          Meus dados
+        </button>
 
-    return (
-        <header className="bg-green-600 text-white !p-2 flex flex-row items-center justify-between gap-4 rounded-md">
-            <h1 className="text-2xl font-bold">AvaliaRU</h1>
-
-            <div className="flex flex-row items-center gap-4">
-                <button onClick={handleMeusDados} className="!p-1 bg-sky-100 text-sky-600 !rounded-md flex flex-row items-center gap-2 hover:bg-sky-200 transition-colors cursor-pointer">
-                    <User size={20} />
-                    Meus dados
-                </button>
-
-                <button className="bg-white text-red-500 !py-1 !px-2 rounded-md mt-4 cursor-pointer flex flex-row items-center gap-2" onClick={handleLogout}>
-                    <LogOut size={20} />
-                    Sair
-                </button>
-            </div>
-        </header>
-    );
+        <button
+          type="button"
+          className={styles.logoutButton}
+          onClick={() => signOut({ callbackUrl: "/login" })}
+        >
+          <LogOut size={18} aria-hidden="true" />
+          Sair
+        </button>
+      </nav>
+    </header>
+  );
 }
