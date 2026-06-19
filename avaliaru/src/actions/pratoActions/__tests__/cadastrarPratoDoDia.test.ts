@@ -1,5 +1,5 @@
-import { inserirPratoNoBanco } from "./cadastrarPrato";
-import { inserirPratoDoDiaNoBanco } from "./cadastrarPratoDoDia";
+import { inserirPratoNoBanco } from "../cadastrarPrato";
+import { inserirPratoDoDiaNoBanco } from "../cadastrarPratoDoDia";
 import { runMigrations } from "@/lib/db/migrations";
 
 async function testCadastrarPratoDoDia() {
