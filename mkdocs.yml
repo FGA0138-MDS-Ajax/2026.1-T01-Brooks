@@ -1,9 +1,55 @@
-site_name: Documentação
+site_name: AvaliaRU
+site_description: Documentação do projeto AvaliaRU - Grupo Brooks
+site_url: https://fga0138-mds-ajax.github.io/2026.1-T01-Brooks/
+repo_url: https://github.com/FGA0138-MDS-Ajax/2026.1-T01-Brooks
+repo_name: FGA0138-MDS-Ajax/2026.1-T01-Brooks
 
 nav:
-  - Instruções mkdocs: "index.md"
-  - Atas de Reunião:
-    - Ata 1: "atas-reuniao/ata-reuniao-1.md"
+  - Início: index.md
+  - Produto: produto.md
+  - Arquitetura: arquitetura.md
+  - Desenvolvimento: desenvolvimento.md
+  - Qualidade e testes: qualidade.md
+  - Documentos oficiais: documentos.md
+  - Atas de reunião: atas.md
 
 theme:
   name: material
+  language: pt-BR
+  logo: assets/logo-avaliaru.png
+  favicon: assets/logo-avaliaru.png
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: green
+      accent: blue
+      toggle:
+        icon: material/weather-night
+        name: Usar tema escuro
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: green
+      accent: light-blue
+      toggle:
+        icon: material/weather-sunny
+        name: Usar tema claro
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+
+extra_css:
+  - stylesheets/extra.css
+
+copyright: Grupo Brooks · Métodos de Desenvolvimento de Software · FCTE/UnB · 2026.1
