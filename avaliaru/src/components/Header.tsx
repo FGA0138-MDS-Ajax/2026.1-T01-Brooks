@@ -1,7 +1,7 @@
 "use client";
 
 import type { UsuarioPerfil } from "@/types/types";
-import { LogOut, UserRound } from "lucide-react";
+import { LogOut, User, UserRound } from "lucide-react";
 import Image from "next/image";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
