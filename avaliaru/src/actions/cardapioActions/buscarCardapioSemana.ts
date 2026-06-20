@@ -47,7 +47,7 @@ export async function buscarCardapioSemana(indexSemana: number = 0): Promise<Car
     if (!cardapioPorData.has(item.data)) {
       cardapioPorData.set(item.data, {
         data: {
-          dia: new Date(item.data).getDate(),
+          dia: new Date(item.data).getDate() + 1,
           mes: new Date(item.data).getMonth() + 1,
           ano: new Date(item.data).getFullYear(),
         },
