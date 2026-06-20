@@ -143,8 +143,6 @@ export default function CardapioPage({ cardapio, favoritosSalvos, session }: { c
       myAlert.success("Favorito adicionado com sucesso!");
     } catch (error) {
       myAlert.error("Erro ao realizar a operação. Tente novamente. " + error);
-    } finally {
-      console.log("Lista de favoritos atualizada:", favoritosSalvos);
     }
 
 
@@ -184,6 +182,7 @@ export default function CardapioPage({ cardapio, favoritosSalvos, session }: { c
       <div className={styles.container}>
         {cardapio?.map((cardapioDia) => (
           <CardapioCard
+            session={session}
             key={cardapioDia.data.dia}
             cardapio={cardapioDia}
             isHoje={cardapioDia.data.dia === hojeSP.getDate() &&

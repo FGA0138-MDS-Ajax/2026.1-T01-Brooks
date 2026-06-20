@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import styles from "./AvaliacaoModal.module.css";
-import { Star } from "lucide-react";
+import { Loader, Star } from "lucide-react";
+import myAlert from "@/lib/alert";
+import { cadastrarAvaliacao } from "@/actions/avaliacaoActions/cadastrarAvaliacao";
+import { Session } from "next-auth";
 
 type AvaliacaoModalProps = {
   dia?: string;
@@ -10,17 +13,35 @@ type AvaliacaoModalProps = {
   onClose: () => void;
 };
 
-export default function AvaliacaoModal(props: AvaliacaoModalProps) {
+export default function AvaliacaoModal({ props, session, dataCardapio }: { props: AvaliacaoModalProps, session: Session | null, dataCardapio: string }) {
   const [nota, setNota] = useState(0);
   const [comentario, setComentario] = useState("");
   const [enviado, setEnviado] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleEnviar = () => {
-    if (nota === 0) return;
-    setEnviado(true);
-    setTimeout(() => {
-      props.onClose();
-    }, 2000);
+  const handleEnviar = async () => {
+    try {
+      setLoading(true);
+
+      const result = await cadastrarAvaliacao({
+        dataHoraAvaliacao: new Date(),
+        statusModeracao: false,
+        nota,
+        comentario,
+        fkCardapioDiario: dataCardapio,
+        fkEstudante: session?.user.id || "",
+      });
+
+      console.log(result)
+
+      setEnviado(true);
+
+    } catch (error) {
+      myAlert.error("Erro ao enviar avaliação. Tente novamente. " + error);
+
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCliqueEstrela = (
@@ -33,12 +54,27 @@ export default function AvaliacaoModal(props: AvaliacaoModalProps) {
     setNota(cliqueNaEsquerda ? n - 0.5 : n);
   };
 
+  if (loading) {
+    return (
+      <div className={styles.overlay}>
+        <div className={styles.modal}>
+          <Loader size={48} className="animate-spin" />
+          <p>Enviando avaliação...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (enviado) {
     return (
       <div className={styles.overlay}>
         <div className={styles.modal}>
           <p>Avaliação enviada! Obrigado.</p>
+          <button className={styles.btnFechar} onClick={props.onClose}>
+            Fechar
+          </button>
         </div>
+
       </div>
     );
   }
@@ -57,9 +93,9 @@ export default function AvaliacaoModal(props: AvaliacaoModalProps) {
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <h2 className={styles.titulo}>Avaliar Almoço</h2>
         <p className={styles.subtitulo}>
-          {props.dia
+          {/* {props.dia
             ? `${props.dia} — ${props.pratoPrincipal}`
-            : props.pratoPrincipal}
+            : props.pratoPrincipal} */}
         </p>
 
         <div className={styles.estrelas}>

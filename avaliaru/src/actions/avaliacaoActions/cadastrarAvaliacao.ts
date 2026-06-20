@@ -8,23 +8,22 @@ export async function cadastrarAvaliacao({
     comentario,
     dataHoraAvaliacao,
     statusModeracao,
-    fkPratoDoDia,
-    fkEstudante
+    fkEstudante,
+    fkCardapioDiario
 }: {
-    nota: 0 | 1 | 2 | 3 | 4 | 5;
+    nota: number;
     comentario?: string;
     dataHoraAvaliacao: Date;
     statusModeracao: boolean;
-    fkPratoDoDia: string;
     fkEstudante: string;
-    fkPrato: string;
+    fkCardapioDiario: string;
 }) {
     if (nota == null || nota == undefined) {
         throw new Error('O campo "nota" é obrigatório.');
     }
 
-    if (fkPrato == "") {
-        throw new Error("O campo ID do prato do dia é obrigatório.");
+    if (fkCardapioDiario == "") {
+        throw new Error("O campo ID do cardápio diário é obrigatório.");
     }
 
     if (fkEstudante == "") {
@@ -38,7 +37,7 @@ export async function cadastrarAvaliacao({
         dataHoraAvaliacao,
         statusModeracao,
         fkEstudante,
-        fkPrato
+        fkCardapioDiario
     })
 
     return result
