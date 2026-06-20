@@ -1,4 +1,4 @@
-import { cardapioDiario, cardapioDiarioItem, prato, restricaoAlimentar } from './schema'; // Importe seu schema
+import { cardapioDiario, cardapioDiarioItem, prato, restricaoAlimentar, restricaoContemPrato } from './schema'; // Importe seu schema
 
 import { db } from './db';
 
@@ -128,6 +128,9 @@ async function main() {
         { "idPrato": "milho_cozido", "nome": "Milho cozido" },
         { "idPrato": "cenoura_refogada_com_salsinha", "nome": "Cenoura refogada com salsinha" },
         { "idPrato": "batata_saute", "nome": "Batata sauté" },
+        { "idPrato": "torrada", "nome": "Torrada" },
+        { "idPrato": "chipotle_limao", "nome": "Chipotle com limão" },
+        { "idPrato": "mostarda_e_mel", "nome": "Mostarda e mel" },
     ]).onConflictDoNothing()
 
     const dias = [
@@ -325,6 +328,108 @@ async function main() {
         .values(itensCardapio)
         .onConflictDoNothing();
 
+
+    const restricaoContemPratoSeed = [
+        // CAFÉ DA MANHÃ
+        { fkRestricao: "leite", fkPrato: "pao_de_queijo" },
+        { fkRestricao: "leite", fkPrato: "queijo_mucarela" },
+        { fkRestricao: "leite", fkPrato: "queijo_minas" },
+        { fkRestricao: "leite", fkPrato: "pasta_de_ricota" },
+        { fkRestricao: "leite", fkPrato: "iogurte_natural" },
+        { fkRestricao: "leite", fkPrato: "bebida_lactea" },
+        { fkRestricao: "leite", fkPrato: "bolo" },
+        { fkRestricao: "ovo", fkPrato: "ovos_mexidos" },
+        { fkRestricao: "ovo", fkPrato: "pate_de_frango" },
+        { fkRestricao: "amendoim", fkPrato: "pasta_de_amendoim" },
+        { fkRestricao: "amendoim", fkPrato: "pasta_de_batata_doce_com_amendoim" },
+        // { fkRestricao: "soja", fkPrato: "bolonhesa_de_soja" }, ← REMOVIDO: prato não existe
+        { fkRestricao: "gluten", fkPrato: "pao_frances" },
+        { fkRestricao: "gluten", fkPrato: "pao_careca" },
+        { fkRestricao: "gluten", fkPrato: "pao_integral" },
+        { fkRestricao: "gluten", fkPrato: "bolo" },
+        { fkRestricao: "ovo", fkPrato: "bolo" },
+        { fkRestricao: "amendoim", fkPrato: "bolo" },
+        { fkRestricao: "leite", fkPrato: "ovos_mexidos" },
+
+        // ALMOÇO
+        { fkRestricao: "pimenta", fkPrato: "chipotle_limao" },
+        { fkRestricao: "mel", fkPrato: "mostarda_e_mel" },
+        { fkRestricao: "suino", fkPrato: "suino_ao_molho_de_bacon" },
+        { fkRestricao: "pimenta", fkPrato: "isca_de_carne_ao_curry" },
+        { fkRestricao: "leite", fkPrato: "strogonoff_de_frango" },
+        { fkRestricao: "ovo", fkPrato: "strogonoff_de_frango" },
+        { fkRestricao: "amendoim", fkPrato: "strogonoff_de_frango" },
+        { fkRestricao: "leite", fkPrato: "carne_de_sol" },
+        { fkRestricao: "suino", fkPrato: "feijoada" },
+        { fkRestricao: "suino", fkPrato: "suino_ao_molho_de_barbecue" },
+        { fkRestricao: "ovo", fkPrato: "torta_de_frango" },
+        { fkRestricao: "leite", fkPrato: "torta_de_frango" },
+        { fkRestricao: "leite", fkPrato: "quiche_de_legumes_e_lentilha_gratinada" },
+        { fkRestricao: "ovo", fkPrato: "quiche_de_legumes_e_lentilha_gratinada" },
+        { fkRestricao: "amendoim", fkPrato: "quiche_de_legumes_e_lentilha_gratinada" },
+        { fkRestricao: "ovo", fkPrato: "ovos_assados_ao_sugo" },
+        { fkRestricao: "soja", fkPrato: "iscas_de_soja_ao_sugo_gratinadas" },
+        { fkRestricao: "leite", fkPrato: "iscas_de_soja_ao_sugo_gratinadas" },
+        { fkRestricao: "leite", fkPrato: "risoto_de_brocolis_com_couve_e_queijo" },
+        { fkRestricao: "ovo", fkPrato: "risoto_de_brocolis_com_couve_e_queijo" },
+        { fkRestricao: "leite", fkPrato: "omelete_de_cebola_ao_forno" },
+        { fkRestricao: "ovo", fkPrato: "omelete_de_cebola_ao_forno" },
+        { fkRestricao: "leite", fkPrato: "hamburguer_de_ervilha_gratinado" },
+        { fkRestricao: "leite", fkPrato: "delicia_de_lentilha" },
+        { fkRestricao: "ovo", fkPrato: "delicia_de_lentilha" },
+        { fkRestricao: "amendoim", fkPrato: "delicia_de_lentilha" },
+        { fkRestricao: "soja", fkPrato: "almondega_de_soja_ao_sugo" },
+        { fkRestricao: "soja", fkPrato: "feijoada_vegetariana" },
+        { fkRestricao: "pimenta", fkPrato: "ervilha_com_couve_flor_ao_curry" },
+        { fkRestricao: "soja", fkPrato: "espaguete_com_abobrinha_e_soja_ao_sugo" },
+        { fkRestricao: "ovo", fkPrato: "espaguete_com_abobrinha_e_soja_ao_sugo" },
+        { fkRestricao: "soja", fkPrato: "farofa_crocante" },
+
+        // JANTAR
+        { fkRestricao: "soja", fkPrato: "lagarto_ao_molho_escuro" },
+        { fkRestricao: "leite", fkPrato: "file_de_peixe_ao_molho_de_coco" },
+        { fkRestricao: "ovo", fkPrato: "file_de_peixe_ao_molho_de_coco" },
+        { fkRestricao: "suino", fkPrato: "suino_com_cebola_caramelizada" },
+        { fkRestricao: "soja", fkPrato: "suino_com_cebola_caramelizada" },
+        { fkRestricao: "leite", fkPrato: "hamburguer_gratinado" },
+        { fkRestricao: "leite", fkPrato: "isca_de_frango_ao_molho_branco" },
+        { fkRestricao: "ovo", fkPrato: "isca_de_frango_ao_molho_branco" },
+        { fkRestricao: "ovo", fkPrato: "ovos_mexidos_com_castanhas" },
+        { fkRestricao: "amendoim", fkPrato: "ovos_mexidos_com_castanhas" },
+        { fkRestricao: "oleaginosa", fkPrato: "ovos_mexidos_com_castanhas" },
+        { fkRestricao: "leite", fkPrato: "ovos_mexidos_com_castanhas" },
+        { fkRestricao: "leite", fkPrato: "escondidinho_de_ervilha_gratinado" },
+        { fkRestricao: "leite", fkPrato: "cuscuz_vegetariano_com_queijo_minas" },
+        { fkRestricao: "leite", fkPrato: "quibe_de_legumes_com_quinoa_gratinado" },
+        { fkRestricao: "ovo", fkPrato: "quibe_de_legumes_com_quinoa_gratinado" },
+        { fkRestricao: "amendoim", fkPrato: "quibe_de_legumes_com_quinoa_gratinado" },
+        { fkRestricao: "leite", fkPrato: "nhoque_ao_molho_branco_com_soja_e_queijo" },
+        { fkRestricao: "ovo", fkPrato: "nhoque_ao_molho_branco_com_soja_e_queijo" },
+        { fkRestricao: "soja", fkPrato: "nhoque_ao_molho_branco_com_soja_e_queijo" },
+        { fkRestricao: "leite", fkPrato: "baiao_de_dois_com_queijo_coalho" },
+        { fkRestricao: "ovo", fkPrato: "baiao_de_dois_com_queijo_coalho" },
+        { fkRestricao: "leite", fkPrato: "omelete_caprese" },
+        { fkRestricao: "ovo", fkPrato: "omelete_caprese" },
+        { fkRestricao: "soja", fkPrato: "tomate_recheado_com_soja" },
+        { fkRestricao: "soja", fkPrato: "bolinho_de_ervilha" },
+        { fkRestricao: "soja", fkPrato: "bobo_de_legumes_com_soja" },
+        { fkRestricao: "soja", fkPrato: "refogado_de_grao_de_bico" },
+        { fkRestricao: "soja", fkPrato: "moqueca_de_banana_da_terra_com_proteina_de_soja" },
+        { fkRestricao: "soja", fkPrato: "bolinho_de_grao_de_bico" },
+        { fkRestricao: "gluten", fkPrato: "sopa_de_macarrao_com_legumes" },
+        { fkRestricao: "ovo", fkPrato: "sopa_de_macarrao_com_legumes" },
+        { fkRestricao: "gluten", fkPrato: "torrada" },
+
+        // SOBREMESA
+        { fkRestricao: "amendoim", fkPrato: "mix_de_doces" },
+        { fkRestricao: "oleaginosa", fkPrato: "mix_de_doces" },
+        { fkRestricao: "leite", fkPrato: "mix_de_doces" },
+    ];
+
+    await db
+        .insert(restricaoContemPrato)
+        .values(restricaoContemPratoSeed)
+        .onConflictDoNothing();
 
     process.exit(0);
 }
