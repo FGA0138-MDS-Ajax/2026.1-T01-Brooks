@@ -1,4 +1,4 @@
-# AvaliarU
+# AvaliaRU
 
 Projeto web desenvolvido com Next.js.
 
