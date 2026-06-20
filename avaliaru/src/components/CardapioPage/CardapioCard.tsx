@@ -5,12 +5,14 @@ import { Heart } from "lucide-react";
 import styles from "./CardapioCard.module.css";
 import AvaliacaoModal from "./AvaliacaoModal";
 import { CardapioDiario } from "@/types/types";
+import { Session } from "next-auth";
 
 type CardapioProps = {
   cardapio: CardapioDiario;
   isHoje?: boolean;
   favoritos: string[];
   onAlternarFavorito: (id: string) => void;
+  session: Session | null;
 };
 
 
@@ -92,6 +94,7 @@ export default function CardapioCard({
   isHoje,
   favoritos,
   onAlternarFavorito,
+  session
 }: CardapioProps) {
   const [modalAberto, setModalAberto] = useState(false);
 
@@ -181,9 +184,13 @@ export default function CardapioCard({
 
       {modalAberto && (
         <AvaliacaoModal
-          dia={diasSemana[diaSemanaIndex]}
-          pratoPrincipal={cardapio.prato_principal_padrao_almoco?.[0]?.nome || "Prato Principal"}
-          onClose={() => setModalAberto(false)}
+          props={{
+              dia: `${diasSemana[diaSemanaIndex]}, ${cardapio.data.dia.toString().padStart(2, "0")}/${cardapio.data.mes.toString().padStart(2, "0")}/${cardapio.data.ano}`,
+              pratoPrincipal: cardapio.prato_principal_padrao_almoco?.[0]?.nome || "Prato Principal",
+              onClose: () => setModalAberto(false)
+          }}
+          session={session}
+          dataCardapio={`${cardapio.data.ano}-${cardapio.data.mes.toString().padStart(2, "0")}-${cardapio.data.dia.toString().padStart(2, "0")}`}
         />
       )}
 

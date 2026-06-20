@@ -109,6 +109,15 @@ export const prato = sqliteTable(
     }
 )
 
+
+
+export const cardapioDiario = sqliteTable(
+    "cardapioDiario",
+    {
+        data: text("data").primaryKey(), // Formato: "YYYY-MM-DD"
+    }
+)
+
 export const avaliacao = sqliteTable(
     "avaliacao",
     {
@@ -117,15 +126,8 @@ export const avaliacao = sqliteTable(
         dataHoraAvaliacao: integer("dataHoraAvaliacao", { mode: "timestamp_ms" }).notNull(),
         comentario: text("comentario"),
         statusModeracao: integer("statusModeracao", { mode: "boolean" }).notNull(), // true = publico, false = moderado
-        fkPrato: text("fkPrato").notNull().references(() => prato.idPrato, { onDelete: "cascade" }),
+        fkCardapioDiario: text("fkCardapioDiario").references(() => cardapioDiario.data).notNull(),
         fkEstudante: text("fkEstudante").notNull().references(() => users.id, { onDelete: "cascade" }),
-    }
-)
-
-export const cardapioDiario = sqliteTable(
-    "cardapioDiario",
-    {
-        data: text("data").primaryKey(), // Formato: "YYYY-MM-DD"
     }
 )
 

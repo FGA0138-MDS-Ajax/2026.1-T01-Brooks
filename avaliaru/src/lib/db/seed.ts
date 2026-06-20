@@ -1,4 +1,4 @@
-import { cardapioDiario, cardapioDiarioItem, prato, restricaoAlimentar, restricaoContemPrato } from './schema'; // Importe seu schema
+import { cardapioDiario, cardapioDiarioItem, prato, restricaoAlimentar, restricaoContemPrato, users } from './schema'; // Importe seu schema
 
 import { db } from './db';
 
@@ -430,6 +430,15 @@ async function main() {
         .insert(restricaoContemPrato)
         .values(restricaoContemPratoSeed)
         .onConflictDoNothing();
+
+    await db
+    .insert(users)
+    .values({
+        name: "Rafael Laube",
+        passwordHash: "$2b$10$G9L/1sbyyTDJakkMAfCAKe.OeJsWFOn1wBBVxUKsYdSIaX2f4Bc1S",
+        perfil: "aluno",
+        email: "rafaellaube11@gmail.com"
+    })
 
     process.exit(0);
 }
