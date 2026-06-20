@@ -1,16 +1,17 @@
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
 const PUBLIC_ROUTES = ["/", "/login", "/register", "/forgot-password"];
 
 const AUTH_ROUTES = ["/login", "/register", "/forgot-password"];
 
-export default auth((req: NextRequest & { auth: any }) => {
+export default auth((req) => {
   const session = req.auth;
 
   const isLoggedIn = !!session;
   const userRole = session?.user?.perfil; // "gestorru" | "aluno" | "adm"
+  const hasValidRole =
+    userRole === "aluno" || userRole === "gestorru" || userRole === "adm";
 
   const { nextUrl } = req;
   const path = nextUrl.pathname;
@@ -21,11 +22,11 @@ export default auth((req: NextRequest & { auth: any }) => {
 
   if (isApiAuthRoute) return NextResponse.next();
 
-  if (!isLoggedIn && !isPublicRoute) {
+  if ((!isLoggedIn || !hasValidRole) && !isPublicRoute) {
     return NextResponse.redirect(new URL("/login", nextUrl));
   }
 
-  if (isLoggedIn) {
+  if (isLoggedIn && hasValidRole) {
     if (isAuthRoute || path === "/") {
       if (userRole === "aluno") return NextResponse.redirect(new URL("/dashboard", nextUrl));
       if (userRole === "gestorru") return NextResponse.redirect(new URL("/gestao", nextUrl));
@@ -33,10 +34,6 @@ export default auth((req: NextRequest & { auth: any }) => {
 
       return NextResponse.redirect(new URL("/", nextUrl));
 
-    }
-
-    if (!userRole) {
-      return NextResponse.redirect(new URL("/login", nextUrl));
     }
 
     if (userRole === "aluno" && !path.startsWith("/dashboard")) {
@@ -47,7 +44,11 @@ export default auth((req: NextRequest & { auth: any }) => {
       return NextResponse.redirect(new URL("/gestao", nextUrl));
     }
 
-    if (userRole === "adm" && !path.startsWith("/admin")) {
+    if (
+      userRole === "adm" &&
+      !path.startsWith("/admin") &&
+      !path.startsWith("/gestao")
+    ) {
       return NextResponse.redirect(new URL("/admin", nextUrl));
     }
 
