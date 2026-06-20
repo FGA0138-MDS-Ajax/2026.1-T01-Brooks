@@ -130,22 +130,28 @@ export default function CardapioPage({ cardapio, favoritosSalvos, session }: { c
   );
 
   const alternarFavorito = (id: string) => {
+    console.log("Alterando o id: " + id)
+
     try {
-      if (id in favoritosSalvos) {
+      if (favoritosSalvos.includes(id)) {
         removerFavorito(id, session);
         myAlert.success("Favorito removido com sucesso!");
+        return
       }
-
+      
       adicionarFavorito(id, session);
+      myAlert.success("Favorito adicionado com sucesso!");
     } catch (error) {
-      myAlert.error("Erro ao remover favorito. Tente novamente. " + error);
+      myAlert.error("Erro ao realizar a operação. Tente novamente. " + error);
+    } finally {
+      console.log("Lista de favoritos atualizada:", favoritosSalvos);
     }
 
 
   };
 
   const printarCardapio = () => {
-    console.log("Cardápio da Semana:", cardapio);
+    console.log("Cardápio da Semana:", favoritosSalvos);
   };
 
   return (

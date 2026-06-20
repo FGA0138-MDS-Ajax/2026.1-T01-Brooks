@@ -40,6 +40,6 @@ export async function adicionarPratoFavoritoBanco(session: Session, idPrato: str
         return { success: true};
     } catch(error) {
         console.error(error);
-        throw new Error("Erro ao salvar no banco de dados.");
+        throw new Error("Erro ao salvar no banco de dados." + error);
     }
 }

@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db/db";
-import { estudanteFavoritaPrato } from "@/lib/db/schema";
+import { estudanteFavoritaPrato, users } from "@/lib/db/schema";
 import { and, eq } from "drizzle-orm";
 import { Session, User } from "next-auth";
 import { revalidatePath } from "next/cache";
@@ -26,14 +26,14 @@ export async function buscarFavoritos( session: Session) {
 export async function buscarFavoritosBanco(idEstudante: string) {
     try {
         const favoritos = await db.select().from(estudanteFavoritaPrato)
-        .innerJoin(estudanteFavoritaPrato, eq(estudanteFavoritaPrato.fkEstudante, idEstudante))
-        .where(
-            eq(estudanteFavoritaPrato.fkEstudante, idEstudante)
-        ).execute();
+        .where(eq(estudanteFavoritaPrato.fkEstudante, idEstudante))
+        .execute();
 
-        return favoritos;
+        const listaDeFavoritos = favoritos.map(favorito => favorito.fkPrato);
+
+        return listaDeFavoritos;
     } catch (error) {
         console.error(error);
-        throw new Error("Erro ao buscar favoritos no banco de dados.");
+        throw new Error("Erro ao buscar favoritos no banco de dados." + error);
     }
 }

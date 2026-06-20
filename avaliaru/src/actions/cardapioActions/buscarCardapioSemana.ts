@@ -40,8 +40,6 @@ export async function buscarCardapioSemana(indexSemana: number = 0): Promise<Car
       )
     );
 
-  console.table(resultados.slice(0, 20));
-
   // Agrupamento
   const cardapioPorData = new Map<string, CardapioDiario>();
 

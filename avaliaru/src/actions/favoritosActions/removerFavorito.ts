@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/db/db";
 import { estudanteFavoritaPrato } from "@/lib/db/schema";
+import { and, eq } from "drizzle-orm";
 import { Session, User } from "next-auth";
 import { revalidatePath } from "next/cache";
 
@@ -24,10 +25,13 @@ export async function removerFavorito(idPrato: string, session: Session) {
 
 export async function removerPratoFavoritoBanco(session: Session, idPrato: string) {
     try {
-        await db.delete(estudanteFavoritaPrato).values({
-            fkEstudante: session.user.id,
-            fkPrato: idPrato,
-        });
+        await db.delete(estudanteFavoritaPrato)
+            .where(
+                and(
+                    eq(estudanteFavoritaPrato.fkEstudante, session.user.id),
+                    eq(estudanteFavoritaPrato.fkPrato, idPrato)
+                )
+            );
 
         try {
             revalidatePath("/dashboard/cardapio");
@@ -36,9 +40,9 @@ export async function removerPratoFavoritoBanco(session: Session, idPrato: strin
             console.warn("Aviso: revalidatePath ignorado no ambiente de teste.");
         }
 
-        return { success: true};
-    } catch(error) {
+        return { success: true };
+    } catch (error) {
         console.error(error);
-        throw new Error("Erro ao salvar no banco de dados.");
+        throw new Error("Erro ao salvar no banco de dados." + error);
     }
 }
