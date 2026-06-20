@@ -4,6 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import styles from "./CardapioPage.module.css";
 import CardapioCard from "./CardapioCard";
 import { CardapioSemanal } from "@/types/types";
+import myAlert from "@/lib/alert";
+import { adicionarFavorito } from "@/actions/favoritosActions/adicionarFavorito";
+import { Session } from "next-auth";
+import { removerFavorito } from "@/actions/favoritosActions/removerFavorito";
 
 export type CardapioDiario = {
   id: number;
@@ -88,30 +92,13 @@ const dadosDoCardapio: CardapioDiario[] = [
   },
 ];
 
-export default function CardapioPage({cardapio}: {cardapio: CardapioSemanal | null}) {
-  const [favoritos, setFavoritos] = useState<string[]>(() => {
-    if (typeof window === "undefined") return [];
+export default function CardapioPage({ cardapio, favoritosSalvos, session }: { cardapio: CardapioSemanal | null; favoritosSalvos: string[]; session: Session }) {
 
-    const favoritosSalvos = window.localStorage.getItem(FAVORITOS_STORAGE_KEY);
-
-    if (!favoritosSalvos) return [];
-
-    try {
-      const favoritosParseados = JSON.parse(favoritosSalvos);
-
-      return Array.isArray(favoritosParseados)
-        ? favoritosParseados.filter((favorito) => typeof favorito === "string")
-        : [];
-    } catch {
-      window.localStorage.removeItem(FAVORITOS_STORAGE_KEY);
-      return [];
-    }
-  });
-
-  const hoje = new Date();
-  const diaAtual = new Date(
-    hoje.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }),
-  ).getDay();
+  const hojeSP = new Date(
+    new Date().toLocaleString("en-US", {
+      timeZone: "America/Sao_Paulo",
+    })
+  );
 
   const favoritosDisponiveis = useMemo(
     () =>
@@ -139,23 +126,32 @@ export default function CardapioPage({cardapio}: {cardapio: CardapioSemanal | nu
   );
 
   const favoritosSelecionados = favoritosDisponiveis.filter((favorito) =>
-    favoritos.includes(favorito.id),
+    favoritosSalvos.includes(favorito.id),
   );
 
-  useEffect(() => {
-    localStorage.setItem(FAVORITOS_STORAGE_KEY, JSON.stringify(favoritos));
-  }, [favoritos]);
-
   const alternarFavorito = (id: string) => {
-    setFavoritos((favoritosAtuais) =>
-      favoritosAtuais.includes(id)
-        ? favoritosAtuais.filter((favorito) => favorito !== id)
-        : [...favoritosAtuais, id],
-    );
+    console.log("Alterando o id: " + id)
+
+    try {
+      if (favoritosSalvos.includes(id)) {
+        removerFavorito(id, session);
+        myAlert.success("Favorito removido com sucesso!");
+        return
+      }
+      
+      adicionarFavorito(id, session);
+      myAlert.success("Favorito adicionado com sucesso!");
+    } catch (error) {
+      myAlert.error("Erro ao realizar a operação. Tente novamente. " + error);
+    } finally {
+      console.log("Lista de favoritos atualizada:", favoritosSalvos);
+    }
+
+
   };
 
   const printarCardapio = () => {
-    console.log("Cardápio da Semana:", cardapio);
+    console.log("Cardápio da Semana:", favoritosSalvos);
   };
 
   return (
@@ -186,18 +182,14 @@ export default function CardapioPage({cardapio}: {cardapio: CardapioSemanal | nu
       </section>
 
       <div className={styles.container}>
-        {dadosDoCardapio.map((menu) => (
+        {cardapio?.map((cardapioDia) => (
           <CardapioCard
-            key={menu.id}
-            id={menu.id}
-            dia={menu.dia}
-            pratoPrincipal={menu.pratoPrincipal}
-            vegetariano={menu.vegetariano}
-            guarnicao={menu.guarnicao}
-            acompanhamentos={menu.acompanhamentos}
-            sobremesa={menu.sobremesa}
-            isHoje={menu.diaSemana === diaAtual}
-            favoritos={favoritos}
+            key={cardapioDia.data.dia}
+            cardapio={cardapioDia}
+            isHoje={cardapioDia.data.dia === hojeSP.getDate() &&
+              cardapioDia.data.mes === hojeSP.getMonth() + 1 &&
+              cardapioDia.data.ano === hojeSP.getFullYear()}
+            favoritos={favoritosSalvos}
             onAlternarFavorito={alternarFavorito}
           />
         ))}

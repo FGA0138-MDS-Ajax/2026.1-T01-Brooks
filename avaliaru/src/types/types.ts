@@ -1,3 +1,5 @@
+import { Prato } from "@/lib/db/schema";
+
 export const usuarioPerfis = [
     "gestorru",
     "aluno",
@@ -21,26 +23,23 @@ export type RestricaoAlimentar = {
 }
 
 export type CardapioDiario = {
-    idPratoDoDia: number;
     data: DataDMA;
-    panificacao: string;
-    opcao_extra: string;
-    complemento_padrao_cafe: string;
-    complemento_ovolactovegetariano_cafe: string;
-    complemento_vegetariano_estrito_cafe: string;
-    fruta: string;
-
-    prato_principal_padrao_almoco: string;
-    prato_principal_ovolactovegetariano_almoco: string;
-    prato_principal_vegetariano_estrito_almoco: string;
-    guarnicao: string;
-    sobremesa_almoco: string;
-
-    prato_principal_padrão_jantar: string;
-    prato_principal_ovolactovegetariano_jantar: string;
-    prato_principal_vegetariano_estrito_jantar: string;
-    sopa: string;
-    sobremesa_jantar: string;
+    panificacao: Prato[];
+    opcao_extra?: Prato[];
+    complemento_padrao_cafe?: Prato[];
+    complemento_ovolactovegetariano_cafe?: Prato[];
+    complemento_vegetariano_estrito_cafe?: Prato[];
+    fruta?: Prato[];
+    prato_principal_padrao_almoco?: Prato[];
+    prato_principal_ovolactovegetariano_almoco?: Prato[];
+    prato_principal_vegetariano_estrito_almoco?: Prato[];
+    guarnicao?: Prato[];
+    sobremesa_almoco?: Prato[];
+    prato_principal_padrao_jantar?: Prato[];
+    prato_principal_ovolactovegetariano_jantar?: Prato[];
+    prato_principal_vegetariano_estrito_jantar?: Prato[];
+    sopa?: Prato[];
+    sobremesa_jantar?: Prato[];
 };
 
 export type CardapioSemanal = CardapioDiario[];

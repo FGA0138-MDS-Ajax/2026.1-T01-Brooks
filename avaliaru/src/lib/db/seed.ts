@@ -1,6 +1,8 @@
-import { prato, restricaoAlimentar } from './schema'; // Importe seu schema
+import { cardapioDiario, cardapioDiarioItem, prato, restricaoAlimentar } from './schema'; // Importe seu schema
 
 import { db } from './db';
+
+type NovoCardapioDiario = typeof cardapioDiario.$inferInsert
 
 async function main() {
     console.log('Adicionando registros das restrições alimentares...');
@@ -17,7 +19,7 @@ async function main() {
         { codigo: 'oleaginosa', emoji: '🌰', nome: 'Oleaginosa', descricao: 'Castanhas, nozes e semelhantes.' },
         { codigo: 'ovo', emoji: '🥚', nome: 'Ovo', descricao: 'Omelete, ovos mexidos e preparações.' },
         { codigo: 'suino', emoji: '🐷', nome: 'Suíno', descricao: 'Carne suína, feijoada e derivados.' }
-    ]);
+    ]).onConflictDoNothing();
 
     await db.insert(prato).values([
         { "idPrato": "pao_frances", "nome": "Pão francês" },
@@ -114,11 +116,219 @@ async function main() {
         { "idPrato": "sopa_de_macarrao_com_legumes", "nome": "Sopa de macarrão com legumes" },
         { "idPrato": "creme_de_cebola_e_alho_poro", "nome": "Creme de cebola e alho poró" },
         { "idPrato": "creme_de_mandioca", "nome": "Creme de mandioca" },
-        { "idPrato": "creme_verde_de_ervilha_e_couve", "nome": "Creme verde de ervilha e couve" }
-    ])
+        { "idPrato": "creme_verde_de_ervilha_e_couve", "nome": "Creme verde de ervilha e couve" },
+        { "idPrato": "arroz_branco", "nome": "Arroz branco" },
+        { "idPrato": "arroz_integral", "nome": "Arroz integral" },
+        { "idPrato": "feijao_carioca", "nome": "Feijão carioca" },
+        { "idPrato": "farofa_crocante", "nome": "Farofa crocante" },
+        { "idPrato": "legumes_no_vapor", "nome": "Legumes no vapor" },
+        { "idPrato": "salada_mista", "nome": "Salada mista" },
+        { "idPrato": "beterraba_com_salsinha", "nome": "Beterraba com salsinha" },
+        { "idPrato": "mandioca_cozida", "nome": "Mandioca cozida" },
+        { "idPrato": "milho_cozido", "nome": "Milho cozido" },
+        { "idPrato": "cenoura_refogada_com_salsinha", "nome": "Cenoura refogada com salsinha" },
+        { "idPrato": "batata_saute", "nome": "Batata sauté" },
+    ]).onConflictDoNothing()
+
+    const dias = [
+        { data: "2026-06-15" }, // Segunda
+        { data: "2026-06-16" }, // Terça
+        { data: "2026-06-17" }, // Quarta
+        { data: "2026-06-18" }, // Quinta
+        { data: "2026-06-19" }, // Sexta
+        { data: "2026-06-20" }, // Sábado
+    ];
+
+    await db.insert(cardapioDiario).values(dias).onConflictDoNothing();
+
+    const itensCardapio: Array<{
+        data: string;
+        campo: string;
+        idPrato: string;
+    }> = [
+            // ==================== SEGUNDA-FEIRA (15/06) ====================
+            // Café
+            { data: "2026-06-15", campo: "panificacao", idPrato: "pao_frances" },
+            { data: "2026-06-15", campo: "panificacao", idPrato: "pao_integral" },
+            { data: "2026-06-15", campo: "opcao_extra", idPrato: "pao_de_queijo" },
+            { data: "2026-06-15", campo: "complemento_padrao_cafe", idPrato: "ovos_mexidos" },
+            { data: "2026-06-15", campo: "complemento_padrao_cafe", idPrato: "queijo_minas" },
+            { data: "2026-06-15", campo: "complemento_padrao_cafe", idPrato: "manteiga_ou_creme_vegetal" },
+            { data: "2026-06-15", campo: "complemento_ovolactovegetariano_cafe", idPrato: "ovos_mexidos" },
+            { data: "2026-06-15", campo: "complemento_ovolactovegetariano_cafe", idPrato: "queijo_minas" },
+            { data: "2026-06-15", campo: "complemento_ovolactovegetariano_cafe", idPrato: "manteiga_ou_creme_vegetal" },
+            { data: "2026-06-15", campo: "complemento_vegetariano_estrito_cafe", idPrato: "homus_de_grao_de_bico" },
+            { data: "2026-06-15", campo: "complemento_vegetariano_estrito_cafe", idPrato: "geleia_rustica_de_abacaxi_e_chia" },
+            { data: "2026-06-15", campo: "complemento_vegetariano_estrito_cafe", idPrato: "pasta_de_amendoim" },
+            { data: "2026-06-15", campo: "fruta", idPrato: "banana" },
+
+            // Almoço
+            { data: "2026-06-15", campo: "prato_principal_padrao_almoco", idPrato: "frango_assado_com_manjericao" },
+            { data: "2026-06-15", campo: "prato_principal_ovolactovegetariano_almoco", idPrato: "risoto_de_brocolis_com_couve_e_queijo" },
+            { data: "2026-06-15", campo: "prato_principal_vegetariano_estrito_almoco", idPrato: "refogado_de_lentilha_couve_flor_e_brocolis" },
+            { data: "2026-06-15", campo: "guarnicao", idPrato: "arroz_branco" },
+            { data: "2026-06-15", campo: "guarnicao", idPrato: "feijao_carioca" },
+            { data: "2026-06-15", campo: "guarnicao", idPrato: "farofa_crocante" },
+            { data: "2026-06-15", campo: "sobremesa_almoco", idPrato: "fruta" },
+
+            // Jantar
+            { data: "2026-06-15", campo: "prato_principal_padrao_jantar", idPrato: "bife_de_carne_bovina_ao_molho" },
+            { data: "2026-06-15", campo: "prato_principal_ovolactovegetariano_jantar", idPrato: "omelete_caprese" },
+            { data: "2026-06-15", campo: "prato_principal_vegetariano_estrito_jantar", idPrato: "berinjela_recheada_com_homus_de_grao_de_bico" },
+            { data: "2026-06-15", campo: "sopa", idPrato: "creme_de_abobora" },
+            { data: "2026-06-15", campo: "sobremesa_jantar", idPrato: "mexerica" },
+
+            // ==================== TERÇA-FEIRA (16/06) ====================
+            { data: "2026-06-16", campo: "panificacao", idPrato: "pao_careca" },
+            { data: "2026-06-16", campo: "panificacao", idPrato: "pao_de_queijo" },
+            { data: "2026-06-16", campo: "opcao_extra", idPrato: "bolo" },
+            { data: "2026-06-16", campo: "complemento_padrao_cafe", idPrato: "pate_de_frango" },
+            { data: "2026-06-16", campo: "complemento_padrao_cafe", idPrato: "manteiga_ou_creme_vegetal" },
+            { data: "2026-06-16", campo: "complemento_padrao_cafe", idPrato: "queijo_mucarela" },
+            { data: "2026-06-16", campo: "complemento_ovolactovegetariano_cafe", idPrato: "pate_de_frango" },
+            { data: "2026-06-16", campo: "complemento_ovolactovegetariano_cafe", idPrato: "manteiga_ou_creme_vegetal" },
+            { data: "2026-06-16", campo: "complemento_ovolactovegetariano_cafe", idPrato: "queijo_mucarela" },
+            { data: "2026-06-16", campo: "complemento_vegetariano_estrito_cafe", idPrato: "caponata_de_berinjela" },
+            { data: "2026-06-16", campo: "complemento_vegetariano_estrito_cafe", idPrato: "homus_de_abobora" },
+            { data: "2026-06-16", campo: "fruta", idPrato: "maca" },
+
+            { data: "2026-06-16", campo: "prato_principal_padrao_almoco", idPrato: "suino_ao_molho_de_bacon" },
+            { data: "2026-06-16", campo: "prato_principal_ovolactovegetariano_almoco", idPrato: "quiche_de_legumes_e_lentilha_gratinada" },
+            { data: "2026-06-16", campo: "prato_principal_vegetariano_estrito_almoco", idPrato: "polpetone_de_quinoa" },
+            { data: "2026-06-16", campo: "guarnicao", idPrato: "arroz_branco" },
+            { data: "2026-06-16", campo: "guarnicao", idPrato: "feijao_carioca" },
+            { data: "2026-06-16", campo: "guarnicao", idPrato: "beterraba_com_salsinha" },
+            { data: "2026-06-16", campo: "sobremesa_almoco", idPrato: "laranja" },
+
+            { data: "2026-06-16", campo: "prato_principal_padrao_jantar", idPrato: "carne_de_sol" },
+            { data: "2026-06-16", campo: "prato_principal_ovolactovegetariano_jantar", idPrato: "cuscuz_vegetariano_com_queijo_minas" },
+            { data: "2026-06-16", campo: "prato_principal_vegetariano_estrito_jantar", idPrato: "espaguete_com_abobrinha_e_soja_ao_sugo" },
+            { data: "2026-06-16", campo: "sopa", idPrato: "sopa_de_macarrao_com_legumes" },
+            { data: "2026-06-16", campo: "sobremesa_jantar", idPrato: "fruta" },
+
+            // ==================== QUARTA-FEIRA (17/06) ====================
+            { data: "2026-06-17", campo: "panificacao", idPrato: "pao_frances" },
+            { data: "2026-06-17", campo: "panificacao", idPrato: "pao_integral" },
+            { data: "2026-06-17", campo: "opcao_extra", idPrato: "pao_de_queijo" },
+            { data: "2026-06-17", campo: "complemento_padrao_cafe", idPrato: "ovos_mexidos_com_castanhas" },
+            { data: "2026-06-17", campo: "complemento_padrao_cafe", idPrato: "queijo_minas" },
+            { data: "2026-06-17", campo: "complemento_padrao_cafe", idPrato: "manteiga_ou_creme_vegetal" },
+            { data: "2026-06-17", campo: "complemento_ovolactovegetariano_cafe", idPrato: "ovos_mexidos_com_castanhas" },
+            { data: "2026-06-17", campo: "complemento_ovolactovegetariano_cafe", idPrato: "queijo_minas" },
+            { data: "2026-06-17", campo: "complemento_ovolactovegetariano_cafe", idPrato: "manteiga_ou_creme_vegetal" },
+            { data: "2026-06-17", campo: "complemento_vegetariano_estrito_cafe", idPrato: "homus_de_grao_de_bico" },
+            { data: "2026-06-17", campo: "complemento_vegetariano_estrito_cafe", idPrato: "pasta_de_batata_doce_com_amendoim" },
+            { data: "2026-06-17", campo: "fruta", idPrato: "mamao" },
+
+            { data: "2026-06-17", campo: "prato_principal_padrao_almoco", idPrato: "strogonoff_de_frango" },
+            { data: "2026-06-17", campo: "prato_principal_ovolactovegetariano_almoco", idPrato: "escondidinho_de_ervilha_gratinado" },
+            { data: "2026-06-17", campo: "prato_principal_vegetariano_estrito_almoco", idPrato: "almondega_de_soja_ao_sugo" },
+            { data: "2026-06-17", campo: "guarnicao", idPrato: "arroz_branco" },
+            { data: "2026-06-17", campo: "guarnicao", idPrato: "feijao_carioca" },
+            { data: "2026-06-17", campo: "guarnicao", idPrato: "legumes_no_vapor" },
+            { data: "2026-06-17", campo: "sobremesa_almoco", idPrato: "salada_de_frutas" },
+
+            { data: "2026-06-17", campo: "prato_principal_padrao_jantar", idPrato: "file_de_peixe_ao_molho_de_coco" },
+            { data: "2026-06-17", campo: "prato_principal_ovolactovegetariano_jantar", idPrato: "baiao_de_dois_com_queijo_coalho" },
+            { data: "2026-06-17", campo: "prato_principal_vegetariano_estrito_jantar", idPrato: "tomate_recheado_com_soja" },
+            { data: "2026-06-17", campo: "sopa", idPrato: "creme_verde_de_ervilha_e_couve" },
+            { data: "2026-06-17", campo: "sobremesa_jantar", idPrato: "fruta" },
+
+            // ==================== QUINTA-FEIRA (18/06) ====================
+            { data: "2026-06-18", campo: "panificacao", idPrato: "pao_frances" },
+            { data: "2026-06-18", campo: "opcao_extra", idPrato: "iogurte_natural" },
+            { data: "2026-06-18", campo: "complemento_padrao_cafe", idPrato: "queijo_minas" },
+            { data: "2026-06-18", campo: "complemento_padrao_cafe", idPrato: "manteiga_ou_creme_vegetal" },
+            { data: "2026-06-18", campo: "complemento_padrao_cafe", idPrato: "pasta_de_ricota" },
+            { data: "2026-06-18", campo: "complemento_ovolactovegetariano_cafe", idPrato: "queijo_minas" },
+            { data: "2026-06-18", campo: "complemento_ovolactovegetariano_cafe", idPrato: "manteiga_ou_creme_vegetal" },
+            { data: "2026-06-18", campo: "complemento_ovolactovegetariano_cafe", idPrato: "pasta_de_ricota" },
+            { data: "2026-06-18", campo: "complemento_vegetariano_estrito_cafe", idPrato: "homus_de_abobora" },
+            { data: "2026-06-18", campo: "complemento_vegetariano_estrito_cafe", idPrato: "maionese_de_abacate" },
+            { data: "2026-06-18", campo: "fruta", idPrato: "melancia" },
+
+            { data: "2026-06-18", campo: "prato_principal_padrao_almoco", idPrato: "lagarto_ao_molho_escuro" },
+            { data: "2026-06-18", campo: "prato_principal_ovolactovegetariano_almoco", idPrato: "nhoque_ao_molho_branco_com_soja_e_queijo" },
+            { data: "2026-06-18", campo: "prato_principal_vegetariano_estrito_almoco", idPrato: "refogado_de_grao_de_bico" },
+            { data: "2026-06-18", campo: "guarnicao", idPrato: "arroz_integral" },
+            { data: "2026-06-18", campo: "guarnicao", idPrato: "feijao_carioca" },
+            { data: "2026-06-18", campo: "guarnicao", idPrato: "salada_mista" },
+            { data: "2026-06-18", campo: "sobremesa_almoco", idPrato: "mexerica" },
+
+            { data: "2026-06-18", campo: "prato_principal_padrao_jantar", idPrato: "cubos_de_carne_acebolada" },
+            { data: "2026-06-18", campo: "prato_principal_ovolactovegetariano_jantar", idPrato: "quibe_de_legumes_com_quinoa_gratinado" },
+            { data: "2026-06-18", campo: "prato_principal_vegetariano_estrito_jantar", idPrato: "bolinho_de_grao_de_bico" },
+            { data: "2026-06-18", campo: "sopa", idPrato: "creme_de_cebola_e_alho_poro" },
+            { data: "2026-06-18", campo: "sobremesa_jantar", idPrato: "fruta" },
+
+            // ==================== SEXTA-FEIRA (19/06) ====================
+            { data: "2026-06-19", campo: "panificacao", idPrato: "pao_frances" },
+            { data: "2026-06-19", campo: "panificacao", idPrato: "pao_careca" },
+            { data: "2026-06-19", campo: "opcao_extra", idPrato: "bolo_vegetariano" },
+            { data: "2026-06-19", campo: "complemento_padrao_cafe", idPrato: "ovos_mexidos" },
+            { data: "2026-06-19", campo: "complemento_padrao_cafe", idPrato: "queijo_mucarela" },
+            { data: "2026-06-19", campo: "complemento_padrao_cafe", idPrato: "manteiga_ou_creme_vegetal" },
+            { data: "2026-06-19", campo: "complemento_ovolactovegetariano_cafe", idPrato: "ovos_mexidos" },
+            { data: "2026-06-19", campo: "complemento_ovolactovegetariano_cafe", idPrato: "queijo_mucarela" },
+            { data: "2026-06-19", campo: "complemento_ovolactovegetariano_cafe", idPrato: "manteiga_ou_creme_vegetal" },
+            { data: "2026-06-19", campo: "complemento_vegetariano_estrito_cafe", idPrato: "geleia_rustica_de_abacaxi_e_chia" },
+            { data: "2026-06-19", campo: "complemento_vegetariano_estrito_cafe", idPrato: "pasta_de_amendoim" },
+            { data: "2026-06-19", campo: "fruta", idPrato: "abacaxi" },
+
+            { data: "2026-06-19", campo: "prato_principal_padrao_almoco", idPrato: "feijoada" },
+            { data: "2026-06-19", campo: "prato_principal_ovolactovegetariano_almoco", idPrato: "feijoada_vegetariana" },
+            { data: "2026-06-19", campo: "prato_principal_vegetariano_estrito_almoco", idPrato: "feijoada_vegetariana" },
+            { data: "2026-06-19", campo: "guarnicao", idPrato: "arroz_branco" },
+            { data: "2026-06-19", campo: "guarnicao", idPrato: "feijao_carioca" },
+            { data: "2026-06-19", campo: "guarnicao", idPrato: "farofa_crocante" },
+            { data: "2026-06-19", campo: "sobremesa_almoco", idPrato: "fruta" },
+
+            { data: "2026-06-19", campo: "prato_principal_padrao_jantar", idPrato: "suino_com_cebola_caramelizada" },
+            { data: "2026-06-19", campo: "prato_principal_ovolactovegetariano_jantar", idPrato: "omelete_de_cebola_ao_forno" },
+            { data: "2026-06-19", campo: "prato_principal_vegetariano_estrito_jantar", idPrato: "moqueca_de_banana_da_terra_com_proteina_de_soja" },
+            { data: "2026-06-19", campo: "sopa", idPrato: "creme_de_mandioca" },
+            { data: "2026-06-19", campo: "sobremesa_jantar", idPrato: "mix_de_doces" },
+
+            // ==================== SÁBADO (20/06) ====================
+            { data: "2026-06-20", campo: "panificacao", idPrato: "pao_integral" },
+            { data: "2026-06-20", campo: "panificacao", idPrato: "pao_de_queijo" },
+            { data: "2026-06-20", campo: "opcao_extra", idPrato: "pao_de_queijo" },
+            { data: "2026-06-20", campo: "complemento_padrao_cafe", idPrato: "queijo_minas" },
+            { data: "2026-06-20", campo: "complemento_padrao_cafe", idPrato: "manteiga_ou_creme_vegetal" },
+            { data: "2026-06-20", campo: "complemento_padrao_cafe", idPrato: "bebida_lactea" },
+            { data: "2026-06-20", campo: "complemento_ovolactovegetariano_cafe", idPrato: "queijo_minas" },
+            { data: "2026-06-20", campo: "complemento_ovolactovegetariano_cafe", idPrato: "manteiga_ou_creme_vegetal" },
+            { data: "2026-06-20", campo: "complemento_ovolactovegetariano_cafe", idPrato: "bebida_lactea" },
+            { data: "2026-06-20", campo: "complemento_vegetariano_estrito_cafe", idPrato: "homus_de_grao_de_bico" },
+            { data: "2026-06-20", campo: "complemento_vegetariano_estrito_cafe", idPrato: "caponata_de_berinjela" },
+            { data: "2026-06-20", campo: "fruta", idPrato: "melao" },
+
+            { data: "2026-06-20", campo: "prato_principal_padrao_almoco", idPrato: "file_de_frango_ao_sugo" },
+            { data: "2026-06-20", campo: "prato_principal_ovolactovegetariano_almoco", idPrato: "hamburguer_de_ervilha_gratinado" },
+            { data: "2026-06-20", campo: "prato_principal_vegetariano_estrito_almoco", idPrato: "bobo_de_legumes_com_soja" },
+            { data: "2026-06-20", campo: "guarnicao", idPrato: "arroz_branco" },
+            { data: "2026-06-20", campo: "guarnicao", idPrato: "feijao_carioca" },
+            { data: "2026-06-20", campo: "guarnicao", idPrato: "mandioca_cozida" },
+            { data: "2026-06-20", campo: "sobremesa_almoco", idPrato: "fruta" },
+
+            { data: "2026-06-20", campo: "prato_principal_padrao_jantar", idPrato: "hamburguer_gratinado" },
+            { data: "2026-06-20", campo: "prato_principal_ovolactovegetariano_jantar", idPrato: "delicia_de_lentilha" },
+            { data: "2026-06-20", campo: "prato_principal_vegetariano_estrito_jantar", idPrato: "batata_recheada_com_quinoa" },
+            { data: "2026-06-20", campo: "sopa", idPrato: "sopa_de_fuba" },
+            { data: "2026-06-20", campo: "sobremesa_jantar", idPrato: "fruta" },
+
+
+        ];
+
+    await db
+        .insert(cardapioDiarioItem)
+        .values(itensCardapio)
+        .onConflictDoNothing();
+
 
     process.exit(0);
 }
+
 
 main().catch((err) => {
     console.error('Erro ao popular o banco de dados:', err);

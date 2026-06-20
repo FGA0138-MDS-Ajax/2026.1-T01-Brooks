@@ -1,58 +1,127 @@
 "use server";
 
 import { db } from "@/lib/db/db";
-import { cardapioDiario } from "@/lib/db/schema";
-import { CardapioSemanal } from "@/types/types";
-import { gte } from "drizzle-orm";
+import { cardapioDiarioItem, prato } from "@/lib/db/schema";
+import { and, eq, gte, lte } from "drizzle-orm";
+import { CardapioSemanal, CardapioDiario } from "@/types/types";
+import { formatarDataLocal } from "@/lib/utils";
 
-export async function buscarCardapioSemana(index_semana: number): Promise<CardapioSemanal | null> {
-    const inicio_semana_atual = new Date();
-    const dia_semana_atual = inicio_semana_atual.getDay();
-    inicio_semana_atual.setDate(inicio_semana_atual.getDate() + (dia_semana_atual === 0 ? 1 : - (dia_semana_atual - 1)))
-    const inicio_semana_atual_ISO = inicio_semana_atual.toISOString().split("T")[0];
+export async function buscarCardapioSemana(indexSemana: number = 0): Promise<CardapioSemanal> {
+  const hoje = new Date();
+  const diaDaSemana = hoje.getDay();
+  const diasParaSegunda = diaDaSemana === 0 ? -6 : 1 - diaDaSemana;
 
-    console.log("Inicio da semana atual: ", inicio_semana_atual.toLocaleDateString("pt-BR"));
+  const segundaAtual = new Date(hoje);
+  segundaAtual.setDate(hoje.getDate() + diasParaSegunda);
 
-    const result = db.select().from(cardapioDiario).where(gte(cardapioDiario.data, inicio_semana_atual_ISO)).all();
+  const segundaDesejada = new Date(segundaAtual);
+  segundaDesejada.setDate(segundaAtual.getDate() + indexSemana * 7);
 
-    const cardapioSemanal: CardapioSemanal = [];
+  const domingoDesejado = new Date(segundaDesejada);
+  domingoDesejado.setDate(segundaDesejada.getDate() + 6);
 
-    for (let i = 0; i < 7; i++) {
-        const dataAtual = new Date(inicio_semana_atual);
-        dataAtual.setDate(inicio_semana_atual.getDate() + i + (index_semana * 7));
+  const dataInicio = formatarDataLocal(segundaDesejada);
+  const dataFim = formatarDataLocal(domingoDesejado);
 
-        const dataFormatada = `${dataAtual.getDate().toString().padStart(2, "0")}/${(dataAtual.getMonth() + 1).toString().padStart(2, "0")}/${dataAtual.getFullYear()}`;
+  // Busca com join no prato
+  const resultados = await db
+    .select({
+      data: cardapioDiarioItem.data,
+      campo: cardapioDiarioItem.campo,
+      idPrato: prato.idPrato,
+      nome: prato.nome,
+    })
+    .from(cardapioDiarioItem)
+    .innerJoin(prato, eq(prato.idPrato, cardapioDiarioItem.idPrato))
+    .where(
+      and(
+        gte(cardapioDiarioItem.data, dataInicio),
+        lte(cardapioDiarioItem.data, dataFim)
+      )
+    );
 
-        const cardapioDoDia = result.find((cardapio) => cardapio.data === dataFormatada);
+  // Agrupamento
+  const cardapioPorData = new Map<string, CardapioDiario>();
 
-
-        if (cardapioDoDia) {
-            cardapioSemanal.push({
-                idPratoDoDia: cardapioDoDia.idCardapioDiario,
-                data: {
-                    dia: dataAtual.getDate(),
-                    mes: dataAtual.getMonth() + 1,
-                    ano: dataAtual.getFullYear()
-                },
-                panificacao: cardapioDoDia.panificacao,
-                opcao_extra: cardapioDoDia.opcao_extra,
-                complemento_padrao_cafe: cardapioDoDia.complemento_padrao_cafe,
-                complemento_ovolactovegetariano_cafe: cardapioDoDia.complemento_ovolactovegetariano_cafe,
-                complemento_vegetariano_estrito_cafe: cardapioDoDia.complemento_vegetariano_estrito_cafe,
-                fruta: cardapioDoDia.fruta,
-                prato_principal_padrao_almoco: cardapioDoDia.prato_principal_padrao_almoco,
-                prato_principal_ovolactovegetariano_almoco: cardapioDoDia.prato_principal_ovolactovegetariano_almoco,
-                prato_principal_vegetariano_estrito_almoco: cardapioDoDia.prato_principal_vegetariano_estrito_almoco,
-                guarnicao: cardapioDoDia.guarnicao,
-                sobremesa_almoco: cardapioDoDia.sobremesa_almoco,
-                prato_principal_padrão_jantar: cardapioDoDia.prato_principal_padrão_jantar,
-                prato_principal_ovolactovegetariano_jantar: cardapioDoDia.prato_principal_ovolactovegetariano_jantar,
-                prato_principal_vegetariano_estrito_jantar: cardapioDoDia.prato_principal_vegetariano_estrito_jantar,
-                sopa: cardapioDoDia.sopa,
-                sobremesa_jantar: cardapioDoDia.sobremesa_jantar,
-            });
-        }
+  for (const item of resultados) {
+    if (!cardapioPorData.has(item.data)) {
+      cardapioPorData.set(item.data, {
+        data: {
+          dia: new Date(item.data).getDate(),
+          mes: new Date(item.data).getMonth() + 1,
+          ano: new Date(item.data).getFullYear(),
+        },
+        panificacao: [],
+        opcao_extra: [],
+        complemento_padrao_cafe: [],
+        complemento_ovolactovegetariano_cafe: [],
+        complemento_vegetariano_estrito_cafe: [],
+        fruta: [],
+        prato_principal_padrao_almoco: [],
+        prato_principal_ovolactovegetariano_almoco: [],
+        prato_principal_vegetariano_estrito_almoco: [],
+        guarnicao: [],
+        sobremesa_almoco: [],
+        prato_principal_padrao_jantar: [],
+        prato_principal_ovolactovegetariano_jantar: [],
+        prato_principal_vegetariano_estrito_jantar: [],
+        sopa: [],
+        sobremesa_jantar: [],
+      });
     }
 
-    return cardapioSemanal
+    const dia = cardapioPorData.get(item.data)!;
+    const campoKey = item.campo as keyof Omit<CardapioDiario, "data">;
+
+    if (!(campoKey in dia)) {
+      console.warn(
+        `Campo inválido encontrado no banco: ${item.campo}`
+      );
+      continue;
+    }
+
+    dia[campoKey]!.push({
+      idPrato: item.idPrato,
+      nome: item.nome,
+    });
+  }
+
+  // Monta o array final
+  const cardapioSemanal: CardapioSemanal = [];
+
+  for (let i = 0; i < 7; i++) {
+    const dataAtual = new Date(segundaDesejada);
+    dataAtual.setDate(segundaDesejada.getDate() + i);
+    const dataISO = formatarDataLocal(dataAtual);
+
+    const dia = cardapioPorData.get(dataISO);
+
+    cardapioSemanal.push(
+      dia ?? {
+        data: {
+          dia: dataAtual.getDate(),
+          mes: dataAtual.getMonth() + 1,
+          ano: dataAtual.getFullYear(),
+        },
+        panificacao: [],
+        opcao_extra: [],
+        complemento_padrao_cafe: [],
+        complemento_ovolactovegetariano_cafe: [],
+        complemento_vegetariano_estrito_cafe: [],
+        fruta: [],
+        prato_principal_padrao_almoco: [],
+        prato_principal_ovolactovegetariano_almoco: [],
+        prato_principal_vegetariano_estrito_almoco: [],
+        guarnicao: [],
+        sobremesa_almoco: [],
+        prato_principal_padrao_jantar: [],
+        prato_principal_ovolactovegetariano_jantar: [],
+        prato_principal_vegetariano_estrito_jantar: [],
+        sopa: [],
+        sobremesa_jantar: [],
+      }
+    );
+  }
+
+  return cardapioSemanal;
 }
