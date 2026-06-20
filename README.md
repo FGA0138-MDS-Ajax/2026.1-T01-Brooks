@@ -1,23 +1,114 @@
-# template-repository - Branch Developer
+# AvaliarU
 
-Template de Repositório para a matéria de Métodos de Desenvolvimento de Software lecionado pelo professor Ricardo Ajax.
+Projeto web desenvolvido com Next.js.
 
-Essa Branch deve ser usada exclusivamente para a versão de desenvolvimento do software antes de ir para produção.
+## Como iniciar o projeto
 
-## Especificações Técnicas do Repositório
+1. Crie o arquivo `.env.local` na raiz do projeto.
+2. Combine com o grupo quais variáveis de ambiente serão necessárias para o funcionamento da aplicação.
+3. Instale as dependências:
 
-Este repositório é planejado e estruturado para que seja realizado documentações de software. Caso haja outra necessidades, deve-se consultar a professora.
+```bash
+npm install
+```
 
-Atualmente se usa a ferramenta MkDocs para gerar sua documentação baseado nos seus arquivos markdowns, vocês podem achar mais instruções sobre o MkDocs através do link da documentação da ferramenta: [https://www.mkdocs.org/](https://www.mkdocs.org/).
+4. Inicie o servidor de desenvolvimento:
 
-Também é usado uma "sub-ferramenta" do MkDocs para sua estilização, o Material Theme, que pode ser consultado através do link: [https://squidfunk.github.io/mkdocs-material/](https://squidfunk.github.io/mkdocs-material/).
+```bash
+npm run dev
+```
 
-Este repositório também conta com uma pipeline de automatização de deploy do seu conteúdo MkDocs, para que a cada commit feito na main, a pipeline gere uma versão atualizada da sua documentação em minutos. Vale ressaltar que é importante realizar uma configuração para que tudo funcione da forma correta, as instruções são as seguintes:
+Depois disso, o projeto ficará disponível em modo de desenvolvimento.
 
-* Acesse as configurações do repositório;
-* Procure a aba de "Pages"
-* Em "Source" escolha a opção "Deploy from a branch";
-* Em "Branch" escolha "gh-pages";
-* Clique em salvar e pronto;
+## Organização das pastas
 
-Após essas etapas de configuração, o seu GitPages deve funcionar normalmente.
+- `/src/db`: arquivos e rotinas relacionados ao banco de dados.
+- `/src/push_notifications`: implementação das notificações push.
+- `/src/utils`: funções e códigos úteis compartilhados pelo projeto.
+- `/src/types`: tipos e definições de tipos usados na aplicação.
+
+## Observações
+
+Antes de subir a aplicação, verifique se o arquivo `.env.local` está configurado corretamente e se todas as variáveis de ambiente esperadas pelo projeto foram definidas.
+
+
+## Inicialização do banco de dados
+```bash
+    npx drizzle-kit generate #.../avaliaru/$
+    npx drizzle-kit migrate #.../avaliaru/$
+```
+
+## Páginas e acesso
+
+| Perfil | /dashboard | /gestao | /admin |
+|---|---|---|---|
+| Gestor Ru | Não | Sim | Não
+| Aluno | Sim | Não | Não
+| Admin | Não | Sim | Sim
+
+## Banco de dados
+
+Para que o banco de dados funcione corretamente com as tabelas corretas, faça o seguinte.
+
+Se ainda não instalou os pacotes do projeto, (```Confira se você está na pasta /avaliaru ```) rode: 
+
+```bash
+$ npm -i
+```
+
+E para criar a migração e criar as tabela no arquivo .db, rode o seguinte comando (```Confira se você está na pasta /avaliaru ```):
+
+```bash
+npx drizzle-kit generate
+npx drizzle-kit migrate
+```
+
+## Testes
+
+1. Certifique-se de ter o `.env.local` configurado e o banco correto definido em `DATABASE_URL`.
+
+    Exemplo mínimo:
+
+    ```env
+    DATABASE_URL=file:./dev.db
+    AUTH_URL=http://localhost:3000
+    AUTH_SECRET=seu_secret_aqui
+    ```
+
+2. Instale as dependências:
+
+    ```bash
+    npm install
+    ```
+
+3. Gere e aplique migrations antes de rodar testes que dependem do banco:
+
+    ```bash
+    npx drizzle-kit generate
+    npx drizzle-kit migrate
+    ```
+
+4. Execute o teste de action diretamente com `tsx`:
+
+    ```bash
+    npx tsx src/actions/cardapioActions/__tests__/cadastrarCardapio.test.ts
+    ```
+
+    Ou, para o teste de prato do dia existente:
+
+    ```bash
+    npx tsx src/actions/pratoActions/__tests__/cadastrarPratoDoDia.test.ts
+    ```
+
+5. Se quiser forçar outro arquivo de banco, use `DATABASE_URL` na execução:
+
+    ```bash
+    DATABASE_URL=file:./avaliaru.db npx tsx src/actions/cardapioActions/__tests__/cadastrarCardapio.test.ts
+    ```
+
+### Observações sobre testes
+
+- Os arquivos de teste estão organizados em `src/actions/*/__tests__/`.
+- Os testes de script usam a lógica de banco isolada (`inserirCardapioNoBanco`, `inserirPratoDoDiaNoBanco`) e não dependem de UI.
+- Em ambiente de teste, `revalidatePath()` pode ser ignorado sem afetar o resultado do insert.
+- Verifique o banco correto ao abrir o viewer: se `DATABASE_URL=file:./dev.db`, abra `dev.db`.
