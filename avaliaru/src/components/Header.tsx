@@ -1,7 +1,8 @@
 "use client";
 
-import { LogOut, User } from "lucide-react";
-
+import type { UsuarioPerfil } from "@/types/types";
+import { LogOut, UserRound } from "lucide-react";
+import Image from "next/image";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 

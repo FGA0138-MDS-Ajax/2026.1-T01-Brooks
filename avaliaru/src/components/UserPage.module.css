@@ -1,0 +1,233 @@
+.pageWrapper {
+  width: calc(100vw - 40px);
+  max-width: 100%;
+  min-height: calc(100vh - 108px);
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  color: #1e293b;
+  background: #f4f6f9;
+}
+
+.container,
+.container * {
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--ru-green);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.pageHeader h1 {
+  color: var(--ru-dark-blue);
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.pageHeader p {
+  margin-top: 7px;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.profileBadge {
+  min-height: 40px;
+  padding: 9px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #075f33;
+  background: #edf7ef;
+  border: 1px solid #c8e6cd;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.formCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-left: 6px solid var(--ru-dark-blue);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
+}
+
+.cardHeading {
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fbfcfd;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.cardHeading > span:last-child {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cardHeading strong,
+.cardHeading small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardHeading strong {
+  color: var(--ru-dark-blue);
+  font-size: 0.95rem;
+}
+
+.cardHeading small {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background: var(--ru-dark-blue);
+  border-radius: 50%;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.form {
+  padding: 26px 24px 24px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.field {
+  min-width: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: #475569;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.inputWrapper {
+  min-height: 44px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #64748b;
+  background: #ffffff;
+  border: 1px solid #d8e0ec;
+  border-radius: 8px;
+}
+
+.inputWrapper:focus-within {
+  color: var(--ru-green);
+  border-color: var(--ru-green);
+  box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.1);
+}
+
+.inputWrapper input {
+  width: 100%;
+  min-width: 0;
+  color: #1e293b;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+}
+
+.formActions {
+  grid-column: 1 / -1;
+  padding-top: 4px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.formActions button {
+  min-height: 42px;
+  margin: 0;
+  padding: 9px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #ffffff;
+  background: var(--ru-dark-blue);
+  border: 1px solid var(--ru-dark-blue);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.formActions button:hover:not(:disabled) {
+  background: #174d80;
+}
+
+.formActions button:disabled {
+  color: #94a3b8;
+  background: #e2e8f0;
+  border-color: #e2e8f0;
+  cursor: not-allowed;
+}
+
+@media (max-width: 620px) {
+  .pageWrapper {
+    width: calc(100vw - 68px);
+    padding: 28px 0;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+  }
+
+  .profileBadge {
+    width: 100%;
+  }
+
+  .form {
+    grid-template-columns: 1fr;
+  }
+
+  .formActions {
+    grid-column: auto;
+  }
+
+  .formActions button {
+    width: 100%;
+  }
+}
