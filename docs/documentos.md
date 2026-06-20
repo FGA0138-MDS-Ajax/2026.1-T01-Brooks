@@ -14,5 +14,11 @@ Descreve o modelo cliente-servidor, as camadas da aplicação, as tecnologias, a
 
 [Abrir Documento de Arquitetura](Doc_Arquitetura_Grupo_Brooks.PDF){ .md-button .md-button--primary }
 
+## Relatório de métricas
+
+Apresenta a análise das métricas do AvaliaRU referente à sprint de 13/07 a 20/07.
+
+[Abrir Relatório de Métricas](Relatorio_Metricas_AvaliaRU_Sprint_13-07_a_20-07.pdf){ .md-button .md-button--primary }
+
 !!! note
     Os PDFs são mantidos como fonte completa. As demais páginas deste site oferecem uma visão resumida para facilitar a navegação durante pontos de controle e revisões do projeto.
