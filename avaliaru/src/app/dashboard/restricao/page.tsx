@@ -1,5 +1,3 @@
-import './style.css';
-
 import RestricoesPage from "@/components/RestricoesPage/RestricoesPage";
 import { auth } from '@/auth';
 import { buscarRestricoes } from '@/actions/restricaoActions/buscarRestricoes';
