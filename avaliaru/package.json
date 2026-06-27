@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.2",
+    "@aws-sdk/client-ses": "^3.1075.0",
     "bcrypt-ts": "^8.0.1",
     "bcryptjs": "^3.0.3",
     "better-sqlite3": "^12.10.0",

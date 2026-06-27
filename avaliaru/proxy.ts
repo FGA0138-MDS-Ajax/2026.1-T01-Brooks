@@ -9,7 +9,7 @@ export default auth((req) => {
   const session = req.auth;
 
   const isLoggedIn = !!session;
-  const userRole = session?.user?.perfil; // "gestorru" | "aluno" | "adm"
+  const userRole = session?.user?.perfil; 
   const hasValidRole =
     userRole === "aluno" || userRole === "gestorru" || userRole === "adm";
 
@@ -17,10 +17,14 @@ export default auth((req) => {
   const path = nextUrl.pathname;
 
   const isApiAuthRoute = path.startsWith("/api/auth");
+  // --- ADICIONADA: Identificador da nossa rota de cron ---
+  const isCronRoute = path.startsWith("/api/cron"); 
+  
   const isAuthRoute = AUTH_ROUTES.includes(path);
   const isPublicRoute = PUBLIC_ROUTES.includes(path);
 
-  if (isApiAuthRoute) return NextResponse.next();
+  // --- ALTERADO: Liberar tanto as rotas de auth quanto a de cron ---
+  if (isApiAuthRoute || isCronRoute) return NextResponse.next();
 
   if ((!isLoggedIn || !hasValidRole) && !isPublicRoute) {
     return NextResponse.redirect(new URL("/login", nextUrl));
@@ -33,7 +37,6 @@ export default auth((req) => {
       if (userRole === "adm") return NextResponse.redirect(new URL("/admin", nextUrl));
 
       return NextResponse.redirect(new URL("/", nextUrl));
-
     }
 
     if (userRole === "aluno" && !path.startsWith("/dashboard")) {
@@ -51,7 +54,6 @@ export default auth((req) => {
     ) {
       return NextResponse.redirect(new URL("/admin", nextUrl));
     }
-
   }
 
   return NextResponse.next();
