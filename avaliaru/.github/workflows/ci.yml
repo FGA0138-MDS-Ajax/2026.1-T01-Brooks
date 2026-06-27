@@ -3,9 +3,15 @@ name: Integração Contínua
 on: 
   push:
     branches: ["main", "developer"]
+    
+    paths: # Para testar o github actions
+      - '.github/workflows/ci.yml'
+      - 'src/**'
+      - 'package.json'
+
   pull_request:
     branches: ["main", "developer"]
-
+    types: [opened, synchronize, reopened, ready_for_review]
     paths: # Para testar o github actions
       - '.github/workflows/ci.yml'
       - 'src/**'
