@@ -31,6 +31,13 @@ const destaquesSecundarios = [
   "prato_principal_vegetariano_estrito_jantar",
 ]
 
+const categoriasFavoritaveis = new Set([
+  ...destaquesPrimarios,
+  ...destaquesSecundarios,
+  "sobremesa_almoco",
+  "sobremesa_jantar",
+]);
+
 const itensCafe = [
   "panificacao",
   "opcao_extra",
@@ -79,7 +86,13 @@ const ItemCardapioDiario = ({ item, favoritos, onAlternarFavorito, }: { item: { 
         item.valor.map(prato => (
           <span key={prato.idPrato} className={styles.badge + " " + (destaquesPrimarios.includes(item.codigo) ? styles.badgePrincipal : (destaquesSecundarios.includes(item.codigo) ? styles.badgeSecundario : ""))}>
             {prato.nome}
-            {prato.idPrato && <BotaoFavorito id={prato.idPrato} estaFavorito={favoritos.includes(prato.idPrato)} handleClick={onAlternarFavorito} />}
+            {prato.idPrato && categoriasFavoritaveis.has(item.codigo) && (
+              <BotaoFavorito
+                id={prato.idPrato}
+                estaFavorito={favoritos.includes(prato.idPrato)}
+                handleClick={onAlternarFavorito}
+              />
+            )}
           </span>
         ))
       ) : (

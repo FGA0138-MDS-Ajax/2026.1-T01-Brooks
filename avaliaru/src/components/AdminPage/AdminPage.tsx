@@ -1,29 +1,33 @@
 "use client";
 
+import {
+  cadastrarUsuarioAdmin,
+  type UsuarioAdmin,
+} from "@/actions/adminActions/usuarios";
 import myAlert from "@/lib/alert";
 import type { UsuarioPerfil } from "@/types/types";
 import {
+  CircleX,
   ClipboardList,
   Database,
   GraduationCap,
+  LoaderCircle,
+  LockKeyhole,
+  Mail,
+  Plus,
   Search,
   ShieldCheck,
   Trash2,
   UserCog,
+  UserPlus,
+  UserRound,
   Users,
   UtensilsCrossed,
 } from "lucide-react";
 import type { Session } from "next-auth";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import styles from "./AdminPage.module.css";
-
-type UsuarioAdmin = {
-  id: string;
-  nome: string;
-  email: string;
-  perfil: UsuarioPerfil;
-};
 
 const PERFIL_ROTULO: Record<UsuarioPerfil, string> = {
   aluno: "Aluno",
@@ -31,21 +35,61 @@ const PERFIL_ROTULO: Record<UsuarioPerfil, string> = {
   adm: "Administrador",
 };
 
-const USUARIOS_INICIAIS: UsuarioAdmin[] = [
-  { id: "usr-001", nome: "Ana Costa", email: "ana.costa@aluno.unb.br", perfil: "aluno" },
-  { id: "usr-002", nome: "Bruno Martins", email: "bruno.martins@aluno.unb.br", perfil: "aluno" },
-  { id: "usr-003", nome: "Carla Ribeiro", email: "carla.ribeiro@aluno.unb.br", perfil: "aluno" },
-  { id: "usr-004", nome: "Daniel Souza", email: "daniel.souza@aluno.unb.br", perfil: "aluno" },
-  { id: "usr-005", nome: "Equipe RU", email: "gestao.ru@unb.br", perfil: "gestorru" },
-  { id: "usr-006", nome: "Marina Alves", email: "marina.alves@unb.br", perfil: "gestorru" },
-  { id: "usr-007", nome: "Administrador", email: "admin@avaliaru.unb.br", perfil: "adm" },
-];
-
-export default function AdminPage({ session }: { session: Session }) {
+export default function AdminPage({
+  session,
+  usuariosIniciais,
+}: {
+  session: Session;
+  usuariosIniciais: UsuarioAdmin[];
+}) {
   const router = useRouter();
-  const [usuarios, setUsuarios] = useState<UsuarioAdmin[]>(USUARIOS_INICIAIS);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [usuarios, setUsuarios] = useState<UsuarioAdmin[]>(usuariosIniciais);
   const [busca, setBusca] = useState("");
   const [filtroPerfil, setFiltroPerfil] = useState<"todos" | UsuarioPerfil>("todos");
+  const [modalAberto, setModalAberto] = useState(false);
+  const [salvandoUsuario, setSalvandoUsuario] = useState(false);
+
+  const fecharModal = () => {
+    if (salvandoUsuario) return;
+    setModalAberto(false);
+    formRef.current?.reset();
+  };
+
+  const cadastrarUsuario = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const senha = String(formData.get("senha") || "");
+    const confirmarSenha = String(formData.get("confirmarSenha") || "");
+
+    if (senha !== confirmarSenha) {
+      myAlert.error("As senhas não coincidem.");
+      return;
+    }
+
+    try {
+      setSalvandoUsuario(true);
+      const usuario = await cadastrarUsuarioAdmin({
+        nome: String(formData.get("nome") || ""),
+        email: String(formData.get("email") || ""),
+        senha,
+        perfil: String(formData.get("perfil") || "aluno") as UsuarioPerfil,
+      });
+
+      setUsuarios((usuariosAtuais) =>
+        [...usuariosAtuais, usuario].sort((a, b) =>
+          a.nome.localeCompare(b.nome, "pt-BR"),
+        ),
+      );
+      setModalAberto(false);
+      formRef.current?.reset();
+      myAlert.success("Conta cadastrada com sucesso.");
+    } catch (error) {
+      myAlert.error(error instanceof Error ? error.message : "Não foi possível cadastrar a conta.");
+    } finally {
+      setSalvandoUsuario(false);
+    }
+  };
 
   const usuariosFiltrados = useMemo(() => {
     const termo = busca.trim().toLocaleLowerCase("pt-BR");
@@ -102,6 +146,14 @@ export default function AdminPage({ session }: { session: Session }) {
               <ShieldCheck size={18} aria-hidden="true" />
               {session.user.name || "Administrador"}
             </span>
+            <button
+              type="button"
+              className={styles.primaryButton}
+              onClick={() => setModalAberto(true)}
+            >
+              <UserPlus size={18} aria-hidden="true" />
+              Nova conta
+            </button>
             <button
               type="button"
               className={styles.secondaryButton}
@@ -267,6 +319,124 @@ export default function AdminPage({ session }: { session: Session }) {
           </div>
         </section>
       </div>
+
+      {modalAberto && (
+        <div className={styles.modalBackdrop} onMouseDown={fecharModal}>
+          <section
+            className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cadastro-usuario-titulo"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className={styles.modalHeader}>
+              <span className={styles.modalIcon} aria-hidden="true">
+                <UserPlus size={22} />
+              </span>
+              <div>
+                <h2 id="cadastro-usuario-titulo">Cadastrar conta</h2>
+                <p>Crie uma conta e defina o perfil de acesso ao AvaliaRU.</p>
+              </div>
+              <button
+                type="button"
+                className={styles.closeButton}
+                onClick={fecharModal}
+                aria-label="Fechar cadastro"
+                title="Fechar"
+              >
+                <CircleX size={21} aria-hidden="true" />
+              </button>
+            </div>
+
+            <form ref={formRef} className={styles.registrationForm} onSubmit={cadastrarUsuario}>
+              <label className={styles.formField}>
+                <span>Nome completo</span>
+                <span className={styles.formInput}>
+                  <UserRound size={18} aria-hidden="true" />
+                  <input
+                    type="text"
+                    name="nome"
+                    autoComplete="name"
+                    placeholder="Nome do usuário"
+                    required
+                    autoFocus
+                  />
+                </span>
+              </label>
+
+              <label className={styles.formField}>
+                <span>E-mail</span>
+                <span className={styles.formInput}>
+                  <Mail size={18} aria-hidden="true" />
+                  <input
+                    type="email"
+                    name="email"
+                    autoComplete="email"
+                    placeholder="usuario@unb.br"
+                    required
+                  />
+                </span>
+              </label>
+
+              <label className={styles.formField}>
+                <span>Perfil de acesso</span>
+                <span className={styles.formInput}>
+                  <UserCog size={18} aria-hidden="true" />
+                  <select name="perfil" defaultValue="aluno" required>
+                    <option value="aluno">Aluno</option>
+                    <option value="gestorru">Gestor RU</option>
+                    <option value="adm">Administrador</option>
+                  </select>
+                </span>
+              </label>
+
+              <label className={styles.formField}>
+                <span>Senha temporária</span>
+                <span className={styles.formInput}>
+                  <LockKeyhole size={18} aria-hidden="true" />
+                  <input
+                    type="password"
+                    name="senha"
+                    autoComplete="new-password"
+                    placeholder="Mínimo de 8 caracteres"
+                    minLength={8}
+                    required
+                  />
+                </span>
+              </label>
+
+              <label className={`${styles.formField} ${styles.confirmPasswordField}`}>
+                <span>Confirmar senha</span>
+                <span className={styles.formInput}>
+                  <LockKeyhole size={18} aria-hidden="true" />
+                  <input
+                    type="password"
+                    name="confirmarSenha"
+                    autoComplete="new-password"
+                    placeholder="Repita a senha"
+                    minLength={8}
+                    required
+                  />
+                </span>
+              </label>
+
+              <div className={styles.modalActions}>
+                <button type="button" className={styles.cancelButton} onClick={fecharModal}>
+                  Cancelar
+                </button>
+                <button type="submit" className={styles.submitButton} disabled={salvandoUsuario}>
+                  {salvandoUsuario ? (
+                    <LoaderCircle className={styles.spinner} size={18} aria-hidden="true" />
+                  ) : (
+                    <Plus size={18} aria-hidden="true" />
+                  )}
+                  {salvandoUsuario ? "Cadastrando..." : "Cadastrar conta"}
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+      )}
     </main>
   );
 }

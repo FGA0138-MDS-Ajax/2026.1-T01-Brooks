@@ -1,74 +1,183 @@
 "use client";
 
-import type { UsuarioPerfil } from "@/types/types";
-import { LogOut, User, UserRound } from "lucide-react";
-import Image from "next/image";
+import {
+  CalendarDays,
+  Heart,
+  ListChecks,
+  LogOut,
+  Menu,
+  Plus,
+  ShieldCheck,
+  Star,
+  User,
+  UtensilsCrossed,
+  Wheat,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import styles from "./Header.module.css";
 
-export default function Header({ perfil }: { perfil: "aluno" | "gestorru" | "adm" | undefined }) {
-    const rota = {
-        "aluno": "/dashboard/aluno",
-        "gestorru": "/gestao/gestor",
-        "adm": "/admin/adm"
-    }
+type Perfil = "aluno" | "gestorru" | "adm";
 
-    const handleLogout = () => {
-        signOut({ callbackUrl: "/login" });
-    };
+type MenuOption = {
+  label: string;
+  rota: string;
+  icon: LucideIcon;
+};
 
-    const handleMeusDados = () => {
-        console.log("Perfil:", perfil);
-        router.push(rota[perfil as "aluno" | "gestorru" | "adm"]);
-    };
+const ROTAS_PERFIL: Record<Perfil, string> = {
+  aluno: "/dashboard/aluno",
+  gestorru: "/gestao/gestor",
+  adm: "/admin/adm",
+};
 
-    const router = useRouter();
+const ROTAS_INICIAIS: Record<Perfil, string> = {
+  aluno: "/dashboard",
+  gestorru: "/gestao",
+  adm: "/admin",
+};
 
-    if (!perfil) {
-        return null; // Ou um header genérico para usuários não autenticados
-    }
+const MENU_OPTIONS: Record<Perfil, MenuOption[]> = {
+  aluno: [
+    { label: "Cardápio", rota: "/dashboard/cardapio", icon: CalendarDays },
+    { label: "Restrições", rota: "/dashboard/restricao", icon: Wheat },
+    { label: "Favoritos", rota: "/dashboard/favoritos", icon: Heart },
+    { label: "Ranking", rota: "/dashboard/ranking", icon: Star },
+  ],
+  gestorru: [
+    { label: "Lista de pratos", rota: "/gestao/listarPratos", icon: ListChecks },
+    { label: "Cadastrar prato", rota: "/gestao/cadastrarPrato", icon: Plus },
+    {
+      label: "Cardápio semanal",
+      rota: "/gestao/cadastrarCardapio",
+      icon: CalendarDays,
+    },
+  ],
+  adm: [
+    { label: "Usuários", rota: "/admin", icon: ShieldCheck },
+    { label: "Lista de pratos", rota: "/gestao/listarPratos", icon: ListChecks },
+    { label: "Cadastrar prato", rota: "/gestao/cadastrarPrato", icon: Plus },
+    {
+      label: "Cardápio semanal",
+      rota: "/gestao/cadastrarCardapio",
+      icon: CalendarDays,
+    },
+  ],
+};
 
-    const menuOptions = {
-        "aluno": [
-            {label: "Cardapio", onClick: () => router.push("/dashboard/cardapio")},
-            {label: "Minhas Avaliações", onClick: () => router.push("/dashboard/avaliacoes")},
-            {label: "Restrições Alimentares", onClick: () => router.push("/dashboard/restricao")},
-            {label: "Favoritos", onClick: () => router.push("/dashboard/favoritos")},
-            {label: "Ranking", onClick: () => router.push("/dashboard/ranking")},
-        ],
-        "gestorru": [
-            {label: "Gestão de Pratos", onClick: () => router.push("/gestao/pratos")},
-            {label: "Gestão de Avaliações", onClick: () => router.push("/gestao/avaliacoes")},
-            {label: "Gestão de Usuários", onClick: () => router.push("/gestao/usuarios")},
-        ],
-        "adm": [
-            {label: "Admin", onClick: () => router.push("/admin/adm")},
-        ],
-    };
+export default function Header({ perfil }: { perfil: Perfil | undefined }) {
+  const [menuAberto, setMenuAberto] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
-    return (
-        <header className="bg-green-600 text-white !p-2 flex flex-row items-center justify-between gap-4 rounded-md">
-            <h1 className="text-2xl font-bold">AvaliaRU</h1>
+  if (!perfil) return null;
 
-            <div className="flex flex-row items-center rounded-md overflow-hidden">
-                {menuOptions[perfil].map((option) => (
-                    <button key={option.label} onClick={option.onClick} className="!py-1 !px-2 bg-white text-slate-600 font-bold  flex flex-row items-center gap-2 hover:bg-sky-200 transition-colors cursor-pointer">
-                        {option.label}
-                    </button>
-                ))}
-            </div>
+  const navegar = (rota: string) => {
+    setMenuAberto(false);
+    router.push(rota);
+  };
 
-            <div className="flex flex-row items-center gap-4">
-                <button onClick={handleMeusDados} className="!p-1 bg-sky-100 text-sky-600 !rounded-md flex flex-row items-center gap-2 hover:bg-sky-200 transition-colors cursor-pointer">
-                    <User size={20} />
-                    Meus dados
+  const handleLogout = () => {
+    signOut({ callbackUrl: "/login" });
+  };
+
+  return (
+    <header className={styles.header}>
+      <button
+        type="button"
+        className={styles.brand}
+        onClick={() => navegar(ROTAS_INICIAIS[perfil])}
+        aria-label="Ir para o início do AvaliaRU"
+      >
+        <span className={styles.brandIcon} aria-hidden="true">
+          <UtensilsCrossed size={21} />
+        </span>
+        <span>AvaliaRU</span>
+      </button>
+
+      <nav className={styles.desktopNav} aria-label="Navegação principal">
+        {MENU_OPTIONS[perfil].map((option) => {
+          const Icon = option.icon;
+          const ativo = pathname === option.rota;
+
+          return (
+            <button
+              type="button"
+              key={option.rota}
+              className={`${styles.navButton} ${ativo ? styles.navButtonActive : ""}`}
+              onClick={() => navegar(option.rota)}
+              aria-current={ativo ? "page" : undefined}
+            >
+              <Icon size={16} aria-hidden="true" />
+              {option.label}
+            </button>
+          );
+        })}
+      </nav>
+
+      <div className={styles.desktopActions}>
+        <button
+          type="button"
+          className={styles.profileButton}
+          onClick={() => navegar(ROTAS_PERFIL[perfil])}
+        >
+          <User size={18} aria-hidden="true" />
+          Meus dados
+        </button>
+        <button type="button" className={styles.logoutButton} onClick={handleLogout}>
+          <LogOut size={18} aria-hidden="true" />
+          Sair
+        </button>
+      </div>
+
+      <button
+        type="button"
+        className={styles.menuToggle}
+        onClick={() => setMenuAberto((aberto) => !aberto)}
+        aria-expanded={menuAberto}
+        aria-controls="menu-mobile"
+        aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
+      >
+        {menuAberto ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
+      </button>
+
+      {menuAberto && (
+        <div className={styles.mobileMenu} id="menu-mobile">
+          <nav className={styles.mobileNav} aria-label="Navegação móvel">
+            {MENU_OPTIONS[perfil].map((option) => {
+              const Icon = option.icon;
+              const ativo = pathname === option.rota;
+
+              return (
+                <button
+                  type="button"
+                  key={option.rota}
+                  className={ativo ? styles.mobileNavActive : ""}
+                  onClick={() => navegar(option.rota)}
+                  aria-current={ativo ? "page" : undefined}
+                >
+                  <Icon size={18} aria-hidden="true" />
+                  {option.label}
                 </button>
+              );
+            })}
+          </nav>
 
-                <button className="bg-white text-red-500 !py-1 !px-2 rounded-md mt-4 cursor-pointer flex flex-row items-center gap-2" onClick={handleLogout}>
-                    <LogOut size={20} />
-                    Sair
-                </button>
-            </div>
-        </header>
-    );
+          <div className={styles.mobileActions}>
+            <button type="button" onClick={() => navegar(ROTAS_PERFIL[perfil])}>
+              <User size={18} aria-hidden="true" />
+              Meus dados
+            </button>
+            <button type="button" className={styles.mobileLogout} onClick={handleLogout}>
+              <LogOut size={18} aria-hidden="true" />
+              Sair
+            </button>
+          </div>
+        </div>
+      )}
+    </header>
+  );
 }
