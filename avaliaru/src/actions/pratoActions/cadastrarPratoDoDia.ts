@@ -2,9 +2,9 @@
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db/db";
-import { pratoDoDia } from "@/lib/db/schema";
+import { cardapioDiario, cardapioDiarioItem } from "@/lib/db/schema";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { DataDMA } from "@/types/types";
 
 export async function cadastrarPratoDoDia(formData: FormData) {
     const session = await auth();
@@ -13,8 +13,8 @@ export async function cadastrarPratoDoDia(formData: FormData) {
         throw new Error("Não autorizado.");
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const perfil = (session.user as any).perfil; 
-
     const temAcesso = perfil === "gestorru" || perfil === "adm";
 
     if (!temAcesso) {
@@ -24,7 +24,7 @@ export async function cadastrarPratoDoDia(formData: FormData) {
     const fkPrato = formData.get("idPrato") as string;
     const refeicao = formData.get("refeicao") as "café" | "almoço" | "jantar";
 
-    // 1. Validação de presença
+    // Validação de presença
     if (!fkPrato || !refeicao) {
         throw new Error("Preencha todos os campos obrigatórios.");
     }
@@ -36,16 +36,34 @@ export async function cadastrarPratoDoDia(formData: FormData) {
 export async function inserirPratoDoDiaNoBanco(fkPrato: string, refeicao: "café" | "almoço" | "jantar") {
     try {
         const hoje = new Date();
-        const data: DataDMA = {
-            dia: hoje.getDate(),
-            mes: hoje.getMonth() + 1, // getMonth() retorna 0-11
-            ano: hoje.getFullYear(),
-        };
+        const dia = String(hoje.getDate()).padStart(2, '0');
+        const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+        const ano = hoje.getFullYear();
+        
+        // Formata a data para "YYYY-MM-DD"
+        const dataFormatada = `${ano}-${mes}-${dia}`;
 
-        await db.insert(pratoDoDia).values({
-            refeicao,
-            data,
-            fkPrato: fkPrato
+        // 1. Garante de forma segura que o registro do dia pai existe na tabela cardapioDiario
+        try {
+            await db.insert(cardapioDiario).values({ data: dataFormatada });
+        } catch (e) {
+            // Ignora se a data já estiver registrada no dev.db
+        }
+
+        // 2. Remove qualquer prato alocado nesta mesma refeição de hoje
+        // Isso resolve o conflito de PRIMARY KEY/UNIQUE composta do SQLite
+        await db.delete(cardapioDiarioItem).where(
+            and(
+                eq(cardapioDiarioItem.data, dataFormatada),
+                eq(cardapioDiarioItem.campo, refeicao)
+            )
+        );
+
+        // 3. Insere o novo registro com segurança
+        await db.insert(cardapioDiarioItem).values({
+            data: dataFormatada,
+            campo: refeicao,
+            idPrato: fkPrato
         });
 
         // Revalida as páginas que dependem dos dados do cardápio
@@ -53,17 +71,15 @@ export async function inserirPratoDoDiaNoBanco(fkPrato: string, refeicao: "café
             revalidatePath("/gestao/cardapio");
             revalidatePath("/dashboard");
         } catch (e) {
-            // Ignora erro de revalidação no ambiente de teste
             console.warn("Aviso: revalidatePath ignorado no ambiente de teste.");
         }
 
-        return { success: true};
+        return { success: true };
     } catch(error) {
         console.error(error);
         if (error instanceof Error) {
-            throw error; // Re-lança o erro específico para ser capturado pela UI
+            throw error;
         }
         throw new Error("Erro ao salvar no banco de dados.");
     }
-
 }

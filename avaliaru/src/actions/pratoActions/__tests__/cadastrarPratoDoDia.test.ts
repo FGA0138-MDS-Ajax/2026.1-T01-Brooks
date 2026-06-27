@@ -1,40 +1,62 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { inserirPratoNoBanco } from "../cadastrarPrato";
 import { inserirPratoDoDiaNoBanco } from "../cadastrarPratoDoDia";
-import { runMigrations } from "@/lib/db/migrations";
+import { db } from "@/lib/db/db";
+import { cardapioDiario, cardapioDiarioItem } from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
 
 async function testCadastrarPratoDoDia() {
     console.log("Iniciando teste de cadastrarPratoDoDia...");
 
     try {
-        // Garante que as migrações foram executadas para que as tabelas existam
-        runMigrations();
+        // runMigrations(); // Comentado para evitar conflitos com o histórico do drizzle push
 
-        // 1. Criar um prato de teste usando a lógica de banco
-        const testPratoId = "PRATO_TESTE_001";
+        // 1. Gerar a data de hoje no formato YYYY-MM-DD para o teste bater com a Action
+        const hoje = new Date();
+        const dia = String(hoje.getDate()).padStart(2, '0');
+        const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+        const ano = hoje.getFullYear();
+        const dataFormatada = `${ano}-${mes}-${dia}`;
         
+        const testPratoId = "PRATO_TESTE_001";
+        const refeicaoTeste = "almoço";
+
+        // 2. Criar o registro do dia na tabela pai para evitar o erro de FOREIGN KEY
+        try {
+            await db.insert(cardapioDiario).values({ data: dataFormatada });
+        } catch (e) {
+            // Ignora se a data já estiver cadastrada no dev.db
+        }
+
+        // 3. Criar o prato base no banco de dados
         console.log("Tentando cadastrar prato base no banco...");
         try {
             await inserirPratoNoBanco(testPratoId, "Prato de Teste Automatizado");
-            console.log(`Prato base "${testPratoId}" cadastrado com sucesso.`);
+            console.log(`Prato base "${testPratoId}" verificado/cadastrado.`);
         } catch (e: any) {
-            console.warn("Nota sobre o cadastro do prato base:", e.message);
+            // Ignora se o prato com ID único já existir no banco de desenvolvimento
         }
 
-        // 2. Chamar a função de lógica do Prato do Dia
+        // 4. Limpa qualquer registro prévio correspondente a este teste para torná-lo idempotente
+        console.log(`Limpando registro antigo para o teste rodar limpo...`);
+        await db.delete(cardapioDiarioItem).where(
+            and(
+                eq(cardapioDiarioItem.data, dataFormatada),
+                eq(cardapioDiarioItem.campo, refeicaoTeste)
+            )
+        );
+
+        // 5. Chamar a função de lógica interna do banco
         const result = await inserirPratoDoDiaNoBanco(
             testPratoId, 
-            "almoço"
+            refeicaoTeste
         );
 
         if (result.success) {
-            console.log("✅ Sucesso: Prato do Dia cadastrado com sucesso no banco de dados!");
+            console.log("Sucesso: Prato do Dia cadastrado com sucesso no banco de dados!");
         }
     } catch (error: any) {
-        console.error("❌ Falha no teste:", error.message);
-    } finally {
-        // Opcional: Limpar dados de teste ou fechar a conexão se necessário
-        // Para SQLite, a conexão é fechada automaticamente em scripts simples
+        console.error("Falha no teste:", error.message);
     }
 }
 
