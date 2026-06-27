@@ -8,6 +8,8 @@ on:
 
     paths: # Para testar o github actions
       - '.github/workflows/ci.yml'
+      - 'src/**'
+      - 'package.json'
 
 permissions:
   contents: read
