@@ -1,20 +1,11 @@
 name: Integração Contínua 
 
-on: 
-  workflow_dispatch: 
+on:  
   push:
     branches: ["main", "developer"]
-    paths:
-      - '.github/workflows/ci.yml'
-      - 'src/**'
-      - 'package.json'
   pull_request:
     branches: ["main", "developer"]
-    types: [opened, synchronize, reopened, ready_for_review]
-    paths:
-      - '.github/workflows/ci.yml'
-      - 'src/**'
-      - 'package.json'
+    
 
 permissions:
   contents: read
