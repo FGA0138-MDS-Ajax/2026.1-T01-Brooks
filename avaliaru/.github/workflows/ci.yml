@@ -68,7 +68,7 @@ jobs:
           cache: 'npm'
 
       - name: Run tests
-        run: echo "Executando script de teste aqui..."
+        run: npx vitest run
 
   # 4. Job de Build (Só roda se o Lint e os Testes passarem)
   build:
