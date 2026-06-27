@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db/db";
-import { cardapioDiario } from "@/lib/db/schema";
+import { cardapioDiario, cardapioDiarioItem } from "@/lib/db/schema";
 import { revalidatePath } from "next/cache";
 
 type CadastrarCardapioValues = {
@@ -80,7 +80,27 @@ export async function cadastrarCardapio(formData: FormData) {
 
 export async function inserirCardapioNoBanco(values: CadastrarCardapioValues) {
   try {
-    await db.insert(cardapioDiario).values(values);
+    // 1. Primeiro insere o registro do dia na tabela pai cardapioDiario
+    // Usamos um bloco try/catch interno para o caso da data já existir (evita crash)
+    try {
+      await db.insert(cardapioDiario).values({ data: values.data });
+    } catch (e) {
+      console.log(`Data ${values.data} já registrada no cardapioDiario. Avançando para os itens.`);
+    }
+
+    // 2. Transforma o objeto de valores em um array de itens para a tabela cardapioDiarioItem
+    const itensDoCardapio = Object.entries(values)
+      .filter(([campo, idPrato]) => campo !== "data" && idPrato) // Ignora a data e campos vazios
+      .map(([campo, idPrato]) => ({
+        data: values.data,
+        campo: campo, // Ex: "panificacao", "guarnicao"
+        idPrato: idPrato as string, // O ID do prato correspondente
+      }));
+
+    // 3. Insere todos os itens de uma vez no banco de dados
+    if (itensDoCardapio.length > 0) {
+      await db.insert(cardapioDiarioItem).values(itensDoCardapio);
+    }
 
     try {
       revalidatePath("/gestao/cardapio");
@@ -90,7 +110,7 @@ export async function inserirCardapioNoBanco(values: CadastrarCardapioValues) {
 
     return { success: true };
   } catch (error) {
-    console.error(error);
+    console.error("Erro interno ao inserir cardápio:", error);
     throw new Error("Erro ao salvar o cardápio no banco de dados.");
   }
 }

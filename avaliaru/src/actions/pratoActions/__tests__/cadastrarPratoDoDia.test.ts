@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { inserirPratoNoBanco } from "../cadastrarPrato";
 import { inserirPratoDoDiaNoBanco } from "../cadastrarPratoDoDia";
 import { runMigrations } from "@/lib/db/migrations";
