@@ -1,0 +1,35 @@
+.alert-box {
+  background-color: var(--alert-bg);
+  border: 1px solid var(--alert-border);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 0.75rem;
+  color: var(--alert-text);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.btn-register {
+  background-color: var(--ru-green);
+}
+
+.btn-register:hover {
+  background-color: #2d5e3a;
+}
+
+.btn-register:disabled {
+  background-color: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.switch-btn-register {
+  color: var(--ru-dark-blue);
+}
+
+.switch-btn-register {
+  color: var(--ru-dark-blue);
+}
