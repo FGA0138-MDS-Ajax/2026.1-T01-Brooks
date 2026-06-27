@@ -38,4 +38,38 @@ document.addEventListener('DOMContentLoaded', () => {
   // Mostra a seção inicial com base no hash da URL ou padrão para #cadastro
   const initialHash = window.location.hash || '#cadastro';
   showSection(initialHash);
+
+  // Sistema de Notificações Toast
+  const toastContainer = document.getElementById('toast-container');
+
+  function showToast(message, type = 'success', duration = 3000) {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    let icon = '🔔';
+    if (type === 'success') icon = '✅';
+    if (type === 'error') icon = '❌';
+    if (type === 'warning') icon = '⚠️';
+
+    toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+    toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.add('show');
+    }, 10);
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+      toast.addEventListener('transitionend', () => {
+        toast.remove();
+      });
+    }, duration);
+  }
+
+  window.showToast = showToast;
+
+  // Toast de boas-vindas
+  setTimeout(() => {
+    showToast('Painel do Gestor inicializado!', 'success');
+  }, 600);
 });
