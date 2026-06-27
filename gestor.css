@@ -1,7 +1,6 @@
-/* CSS Module para a Tela do Gestor */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
-.gestorContainer {
+:root {
   --primary-color: #0f766e; /* Deep teal/green */
   --primary-hover: #115e59;
   --primary-light: #f0fdfa;
@@ -18,24 +17,24 @@
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
   --shadow-lg: 0 10px 15px -3px rgba(15, 118, 110, 0.08), 0 4px 6px -2px rgba(15, 118, 110, 0.04);
   --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-
-  display: flex;
-  background: var(--bg-color);
-  color: var(--text-primary);
-  min-height: 100vh;
-  width: 100%;
-  font-family: var(--font-family);
 }
 
-.gestorContainer * {
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: var(--font-family);
 }
 
+body {
+  display: flex;
+  background: var(--bg-color);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
 /* Sidebar Menu */
-.menuLateral {
+.menu-lateral {
   width: 260px;
   min-height: 100vh;
   background: linear-gradient(180deg, var(--primary-color) 0%, #115e59 100%);
@@ -47,7 +46,7 @@
   flex-direction: column;
 }
 
-.menuLateral h1 {
+.menu-lateral h1 {
   margin-bottom: 40px;
   font-size: 26px;
   font-weight: 800;
@@ -58,7 +57,7 @@
   color: #fff;
 }
 
-.menuLateral h1::before {
+.menu-lateral h1::before {
   content: '';
   display: inline-block;
   width: 14px;
@@ -67,7 +66,7 @@
   border-radius: 4px;
 }
 
-.menuLateral a {
+.menu-lateral a {
   display: flex;
   align-items: center;
   color: rgba(255, 255, 255, 0.85);
@@ -79,16 +78,15 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  cursor: pointer;
 }
 
-.menuLateral a:hover {
+.menu-lateral a:hover {
   background: rgba(255, 255, 255, 0.12);
   color: #fff;
   transform: translateX(4px);
 }
 
-.menuLateral a.ativo {
+.menu-lateral a.ativo {
   background: #ffffff;
   color: var(--primary-color);
   font-weight: 600;
@@ -183,14 +181,14 @@
 }
 
 /* Forms */
-.linhaForm {
+.linha-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   margin-bottom: 24px;
 }
 
-.gestorContainer label {
+label {
   font-weight: 600;
   font-size: 14px;
   color: var(--text-primary);
@@ -198,9 +196,9 @@
   margin-bottom: 8px;
 }
 
-.gestorContainer input,
-.gestorContainer select,
-.gestorContainer textarea {
+input,
+select,
+textarea {
   width: 100%;
   border: 1.5px solid var(--border-color);
   border-radius: 10px;
@@ -212,22 +210,22 @@
   outline: none;
 }
 
-.gestorContainer input:focus,
-.gestorContainer select:focus,
-.gestorContainer textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
   border-color: var(--primary-color);
   background: #fff;
   box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
 }
 
-.gestorContainer textarea {
+textarea {
   min-height: 90px;
   resize: vertical;
   line-height: 1.5;
 }
 
 /* Table Area */
-.tabelaArea {
+.tabela-area {
   overflow-x: auto;
   border-radius: 12px;
   border: 1px solid var(--border-color);
@@ -235,14 +233,14 @@
   box-shadow: var(--shadow-sm);
 }
 
-.gestorContainer table {
+table {
   width: 100%;
   border-collapse: collapse;
   min-width: 950px;
   background: #ffffff;
 }
 
-.gestorContainer th {
+th {
   background: #f1f5f9;
   color: var(--text-primary);
   font-weight: 700;
@@ -252,7 +250,7 @@
   text-align: left;
 }
 
-.gestorContainer td {
+td {
   border-bottom: 1px solid var(--border-color);
   padding: 12px;
   vertical-align: top;
@@ -260,22 +258,22 @@
 }
 
 /* Selected row or cell visual cues */
-.gestorContainer td.activeCell {
+td.active-cell {
   background: var(--primary-light);
   outline: 2px solid var(--primary-color);
   outline-offset: -2px;
 }
 
-.campoComposicao {
+.campo-composicao {
   font-weight: 700;
-  background: #f8fafc !important;
-  border-color: transparent !important;
+  background: #f8fafc;
+  border-color: transparent;
   color: var(--text-primary);
 }
 
-.campoComposicao:focus {
-  background: #fff !important;
-  border-color: var(--primary-color) !important;
+.campo-composicao:focus {
+  background: #fff;
+  border-color: var(--primary-color);
 }
 
 /* Allergen selection (checkboxes styled as beautiful check chips) */
@@ -286,14 +284,14 @@
   margin: 32px 0 16px;
 }
 
-.restricoesCheck {
+.restricoes-check {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 12px;
   margin-bottom: 32px;
 }
 
-.restricoesCheck label {
+.restricoes-check label {
   background: #f1f5f9;
   padding: 14px 16px;
   border-radius: 12px;
@@ -309,12 +307,12 @@
   margin-bottom: 0; /* Override default label margin */
 }
 
-.restricoesCheck label:hover {
+.restricoes-check label:hover {
   background: #e2e8f0;
   color: var(--text-primary);
 }
 
-.restricoesCheck input[type="checkbox"] {
+.restricoes-check input[type="checkbox"] {
   width: 18px;
   height: 18px;
   border-radius: 4px;
@@ -323,7 +321,7 @@
 }
 
 /* Active style for checkbox labels if we want to toggle via JS later */
-.restricoesCheck label.checked {
+.restricoes-check label.checked {
   background: var(--primary-light);
   border-color: var(--primary-color);
   color: var(--primary-color);
@@ -331,7 +329,7 @@
 }
 
 /* Buttons */
-.gestorContainer button {
+button {
   background: var(--primary-color);
   color: #fff;
   border: none;
@@ -348,17 +346,17 @@
   gap: 8px;
 }
 
-.gestorContainer button:hover {
+button:hover {
   background: var(--primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(15, 118, 110, 0.3);
 }
 
-.gestorContainer button:active {
+button:active {
   transform: translateY(0);
 }
 
-.gestorContainer button:disabled {
+button:disabled {
   background: #94a3b8;
   cursor: not-allowed;
   box-shadow: none;
@@ -373,7 +371,7 @@
   margin-bottom: 24px;
 }
 
-.listaVazia {
+.lista-vazia {
   height: 90px;
   border-radius: 12px;
   background: #f8fafc;
@@ -387,13 +385,13 @@
 }
 
 /* Restrictions Grid */
-.restricoesGrid {
+.restricoes-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
 
-.restricoesGrid div {
+.restricoes-grid div {
   background: #f8fafc;
   border: 1px solid var(--border-color);
   padding: 16px 20px;
@@ -407,12 +405,12 @@
   transition: all 0.2s ease;
 }
 
-.restricoesGrid div:hover {
+.restricoes-grid div:hover {
   border-color: var(--primary-color);
   background: var(--primary-light);
 }
 
-.restricoesGrid span {
+.restricoes-grid span {
   width: 48px;
   height: 28px;
   background: #ffffff;
@@ -427,7 +425,7 @@
 }
 
 /* Toast Notifications styling */
-.toastContainer {
+#toast-container {
   position: fixed;
   bottom: 24px;
   right: 24px;
@@ -482,11 +480,11 @@
 }
 
 @media (max-width: 900px) {
-  .gestorContainer {
+  body {
     flex-direction: column;
   }
 
-  .menuLateral {
+  .menu-lateral {
     position: static;
     width: 100%;
     min-height: auto;
@@ -494,11 +492,11 @@
     box-shadow: 0 4px 20px rgba(15, 118, 110, 0.1);
   }
 
-  .menuLateral h1 {
+  .menu-lateral h1 {
     margin-bottom: 24px;
   }
 
-  .menuLateral a {
+  .menu-lateral a {
     margin-bottom: 8px;
   }
 
@@ -509,9 +507,9 @@
   }
 
   .resumo,
-  .linhaForm,
+  .linha-form,
   .filtros,
-  .restricoesGrid {
+  .restricoes-grid {
     grid-template-columns: 1fr;
   }
 
@@ -519,7 +517,7 @@
     grid-column: span 1;
   }
 
-  .restricoesCheck {
+  .restricoes-check {
     grid-template-columns: 1fr 1fr;
   }
 }

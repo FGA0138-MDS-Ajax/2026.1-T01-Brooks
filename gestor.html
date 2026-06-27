@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AvaliaRU - Gestor</title>
+  <link rel="stylesheet" href="gestor.css">
+  <script src="gestor.js" defer></script>
+</head>
+<body>
+
+  <aside class="menu-lateral">
+    <h1>AvaliaRU</h1>
+    <a href="#cadastro">Cardápio Semanal</a>
+    <a href="#avaliacoes">Avaliações</a>
+    <a href="#restricoes">Restrições</a>
+  </aside>
+
+  <main class="conteudo">
+    <header class="topo">
+      <h2>Painel do Gestor</h2>
+      <p>Cadastro do cardápio semanal, avaliações e restrições alimentares.</p>
+    </header>
+
+    <section class="resumo">
+      <div class="card">
+        <h3>Pratos cadastrados</h3>
+        <span></span>
+      </div>
+
+      <div class="card">
+        <h3>Avaliações recebidas</h3>
+        <span></span>
+      </div>
+
+      <div class="card">
+        <h3>Pessoas com restrições</h3>
+        <span></span>
+      </div>
+    </section>
+
+    <section id="cadastro" class="caixa">
+      <h2>Cadastro do Cardápio Semanal</h2>
+
+      <div class="linha-form">
+        <div>
+          <label for="refeicao">Refeição</label>
+          <select id="refeicao">
+            <option></option>
+            <option>Café da manhã</option>
+            <option>Almoço</option>
+            <option>Jantar</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="semana">Semana</label>
+          <input type="text" id="semana">
+        </div>
+      </div>
+
+      <div class="tabela-area">
+        <table>
+          <thead>
+            <tr>
+              <th>Composição</th>
+              <th>2ª Feira</th>
+              <th>3ª Feira</th>
+              <th>4ª Feira</th>
+              <th>5ª Feira</th>
+              <th>6ª Feira</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td><input type="text" class="campo-composicao"></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+            </tr>
+
+            <tr>
+              <td><input type="text" class="campo-composicao"></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+            </tr>
+
+            <tr>
+              <td><input type="text" class="campo-composicao"></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+            </tr>
+
+            <tr>
+              <td><input type="text" class="campo-composicao"></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+            </tr>
+
+            <tr>
+              <td><input type="text" class="campo-composicao"></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+            </tr>
+
+            <tr>
+              <td><input type="text" class="campo-composicao"></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+            </tr>
+
+            <tr>
+              <td><input type="text" class="campo-composicao"></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+            </tr>
+
+            <tr>
+              <td><input type="text" class="campo-composicao"></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+              <td><textarea></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="subtitulo">Alergênicos / Restrições do prato selecionado</h3>
+
+      <div class="restricoes-check">
+        <label><input type="checkbox"> Cogumelo</label>
+        <label><input type="checkbox"> Leite e derivados</label>
+        <label><input type="checkbox"> Mel</label>
+        <label><input type="checkbox"> Pimenta</label>
+        <label><input type="checkbox"> Soja</label>
+        <label><input type="checkbox"> Trigo/Glúten</label>
+        <label><input type="checkbox"> Amendoim</label>
+        <label><input type="checkbox"> Oleaginosa</label>
+        <label><input type="checkbox"> Ovo</label>
+        <label><input type="checkbox"> Suíno</label>
+      </div>
+
+      <button>Salvar cardápio</button>
+    </section>
+
+    <section id="avaliacoes" class="caixa">
+      <h2>Avaliações</h2>
+
+      <div class="filtros">
+        <input type="text">
+        <select>
+          <option></option>
+          <option>Café da manhã</option>
+          <option>Almoço</option>
+          <option>Jantar</option>
+        </select>
+      </div>
+
+      <div class="lista-vazia"></div>
+      <div class="lista-vazia"></div>
+      <div class="lista-vazia"></div>
+    </section>
+
+    <section id="restricoes" class="caixa">
+      <h2>Quantidade de Pessoas com Restrições</h2>
+
+      <div class="restricoes-grid">
+        <div>Cogumelo <span></span></div>
+        <div>Leite e derivados <span></span></div>
+        <div>Mel <span></span></div>
+        <div>Pimenta <span></span></div>
+        <div>Soja <span></span></div>
+        <div>Trigo/Glúten <span></span></div>
+        <div>Amendoim <span></span></div>
+        <div>Oleaginosa <span></span></div>
+        <div>Ovo <span></span></div>
+        <div>Suíno <span></span></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast-container"></div>
+</body>
+</html>
