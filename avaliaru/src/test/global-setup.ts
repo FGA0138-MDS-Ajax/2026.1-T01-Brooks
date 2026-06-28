@@ -10,10 +10,10 @@ export default async () => {
 	try {
 		// Use the existing CLI command to apply migrations.
 		// This ensures the database defined in `.env.local` is migrated.
-		execSync("npx drizzle-kit migrate", { stdio: "inherit" });
+		execSync("drizzle-kit migrate", { stdio: "inherit" });
 		console.log("[TEST SETUP] Migrations applied successfully.");
 	} catch (error) {
 		console.error("[TEST SETUP] Failed to apply migrations:", error);
-		process.exit(1);
+		throw error;
 	}
 };
