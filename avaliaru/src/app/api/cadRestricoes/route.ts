@@ -23,7 +23,7 @@ export async function POST(request:NextRequest) {
         }
 
         const body = await request.json();
-        const { codigo, nome} = body;
+        const { codigo, nome, descricao, emoji } = body;
 
         if (!codigo || !nome) {
             return NextResponse.json (
@@ -59,7 +59,7 @@ export async function POST(request:NextRequest) {
 
         const novaRestricao = await db
         .insert(restricaoAlimentar)
-        .values({codigo, nome})
+        .values({codigo, nome, descricao, emoji})
         .returning();
 
         return NextResponse.json(

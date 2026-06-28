@@ -5,7 +5,6 @@ on:
     branches: ["main", "developer"]
   pull_request:
     branches: ["main", "developer"]
-    
 
 permissions:
   contents: read
@@ -16,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./
+        working-directory: avaliaru
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -24,10 +23,19 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20 
+          node-version: '24' 
           cache: 'npm'
+          cache-dependency-path: avaliaru/package-lock.json
+
+      - name: Cache Node Modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: avaliaru/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('avaliaru/package-lock.json') }}
 
       - name: Install dependencies
+        if: ${{ steps.cache-node-modules.outputs.cache-hit != 'true' }}
         run: npm ci
 
   # 2. Job de Lint (Depende do Setup)
@@ -36,7 +44,7 @@ jobs:
     needs: setup
     defaults:
       run:
-        working-directory: ./
+        working-directory: avaliaru
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -44,8 +52,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
+          node-version: '24'
+
+      - name: Load Node Modules Cache
+        uses: actions/cache@v4
+        with:
+          path: avaliaru/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('avaliaru/package-lock.json') }}
 
       - name: Run lint
         run: npm run lint
@@ -56,7 +69,7 @@ jobs:
     needs: setup
     defaults:
       run:
-        working-directory: ./
+        working-directory: avaliaru
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -64,11 +77,23 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
+          node-version: '24'
 
+      - name: Load Node Modules Cache
+        uses: actions/cache@v4
+        with:
+          path: avaliaru/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('avaliaru/package-lock.json') }}
+
+      - name: Push Database Schema
+        run: npx drizzle-kit push
+        env:
+          DATABASE_URL: "file:./dev.db"
+          
       - name: Run tests
         run: npx vitest run
+        env:
+          DATABASE_URL: "file:./dev.db"
 
   # 4. Job de Build (Só roda se o Lint e os Testes passarem)
   build:
@@ -76,7 +101,7 @@ jobs:
     needs: [lint, test]
     defaults:
       run:
-        working-directory: ./
+        working-directory: avaliaru
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -84,8 +109,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
+          node-version: '24'
+
+      - name: Load Node Modules Cache
+        uses: actions/cache@v4
+        with:
+          path: avaliaru/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('avaliaru/package-lock.json') }}
         
       - name: Build
         run: npm run build

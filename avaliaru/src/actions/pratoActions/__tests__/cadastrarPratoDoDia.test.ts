@@ -1,40 +1,42 @@
+import { describe, test, expect, beforeEach } from "vitest";
 import { inserirPratoNoBanco } from "../cadastrarPrato";
 import { inserirPratoDoDiaNoBanco } from "../cadastrarPratoDoDia";
-import { runMigrations } from "@/lib/db/migrations";
+import { db } from "@/lib/db/db";
+import { cardapioDiario, cardapioDiarioItem, prato } from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
 
-async function testCadastrarPratoDoDia() {
+describe("Testes de Prato do Dia", () => {
+  const testPratoId = "PRATO_TESTE_001";
+  const refeicaoTeste = "almoço";
+  const dataFormatada = "2026-06-20";
+
+  // O beforeEach roda ANTES do teste, limpando qualquer sujeira de execuções passadas
+  beforeEach(async () => {
+    // 1. Limpa o item do cardápio diário antigo
+    await db.delete(cardapioDiarioItem).where(
+      and(
+        eq(cardapioDiarioItem.data, dataFormatada),
+        eq(cardapioDiarioItem.campo, refeicaoTeste)
+      )
+    ).catch(() => {});
+
+    // 2. Limpa o prato base para evitar o UNIQUE constraint failed
+    await db.delete(prato).where(eq(prato.idPrato, testPratoId)).catch(() => {});
+  });
+
+  test("deve cadastrar o prato do dia com sucesso", async () => {
     console.log("Iniciando teste de cadastrarPratoDoDia...");
 
-    try {
-        // Garante que as migrações foram executadas para que as tabelas existam
-        runMigrations();
+    // Criar o registro do dia na tabela pai se não existir
+    await db.insert(cardapioDiario).values({ data: dataFormatada }).catch(() => {});
 
-        // 1. Criar um prato de teste usando a lógica de banco
-        const testPratoId = "PRATO_TESTE_001";
-        
-        console.log("Tentando cadastrar prato base no banco...");
-        try {
-            await inserirPratoNoBanco(testPratoId, "Prato de Teste Automatizado");
-            console.log(`Prato base "${testPratoId}" cadastrado com sucesso.`);
-        } catch (e: any) {
-            console.warn("Nota sobre o cadastro do prato base:", e.message);
-        }
+    console.log("Tentando cadastrar prato base no banco...");
+    await inserirPratoNoBanco(testPratoId, "Prato de Teste Automatizado");
 
-        // 2. Chamar a função de lógica do Prato do Dia
-        const result = await inserirPratoDoDiaNoBanco(
-            testPratoId, 
-            "almoço"
-        );
+    console.log("Limpando registro antigo para o teste rodar limpo...");
 
-        if (result.success) {
-            console.log("✅ Sucesso: Prato do Dia cadastrado com sucesso no banco de dados!");
-        }
-    } catch (error: any) {
-        console.error("❌ Falha no teste:", error.message);
-    } finally {
-        // Opcional: Limpar dados de teste ou fechar a conexão se necessário
-        // Para SQLite, a conexão é fechada automaticamente em scripts simples
-    }
-}
-
-testCadastrarPratoDoDia();
+    const result = await inserirPratoDoDiaNoBanco(testPratoId, refeicaoTeste);
+    
+    expect(result.success).toBe(true);
+  });
+});
