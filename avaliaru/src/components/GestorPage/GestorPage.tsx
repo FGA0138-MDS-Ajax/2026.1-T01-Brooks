@@ -42,16 +42,16 @@ interface PratoRef {
 }
 
 const CATEGORIAS_RESTRICOES = [
-  { codigo: "cogumelo", nome: "Cogumelo", emoji: "🍄" },
-  { codigo: "leite", nome: "Leite e derivados", emoji: "🥛" },
-  { codigo: "mel", nome: "Mel", emoji: "🍯" },
-  { codigo: "pimenta", nome: "Pimenta", emoji: "🌶️" },
-  { codigo: "soja", nome: "Soja", emoji: "🌱" },
-  { codigo: "gluten", nome: "Trigo/Glúten", emoji: "🌾" },
-  { codigo: "amendoim", nome: "Amendoim", emoji: "🥜" },
-  { codigo: "oleaginosa", nome: "Oleaginosa", emoji: "🌰" },
-  { codigo: "ovo", nome: "Ovo", emoji: "🥚" },
-  { codigo: "suino", nome: "Suíno", emoji: "🐷" }
+  { codigo: "cogumelo", nome: "Cogumelo", emoji: "" },
+  { codigo: "leite", nome: "Leite e derivados", emoji: "" },
+  { codigo: "mel", nome: "Mel", emoji: "" },
+  { codigo: "pimenta", nome: "Pimenta", emoji: "" },
+  { codigo: "soja", nome: "Soja", emoji: "" },
+  { codigo: "gluten", nome: "Trigo/Glúten", emoji: "" },
+  { codigo: "amendoim", nome: "Amendoim", emoji: "" },
+  { codigo: "oleaginosa", nome: "Oleaginosa", emoji: "" },
+  { codigo: "ovo", nome: "Ovo", emoji: "" },
+  { codigo: "suino", nome: "Suíno", emoji: "" }
 ];
 
 const CAMPOS_POR_REFEICAO: Record<string, string[]> = {
@@ -586,7 +586,7 @@ export default function GestorPage() {
                     disabled={!selectedDishForAllergens}
                     onChange={() => handleToggleRestriction(cat.codigo)}
                   />
-                  {cat.emoji} {cat.nome}
+                  {cat.nome}
                 </label>
               );
             })}
@@ -684,7 +684,7 @@ export default function GestorPage() {
               return (
                 <div key={cat.codigo}>
                   <span>
-                    {cat.emoji} {cat.nome}
+                    {cat.nome}
                   </span>
                   <span>{count}</span>
                 </div>
@@ -707,13 +707,6 @@ export default function GestorPage() {
                 : styles.warning
             }`}
           >
-            <span>
-              {t.type === "success"
-                ? "✅"
-                : t.type === "error"
-                ? "❌"
-                : "⚠️"}
-            </span>
             <span>{t.message}</span>
           </div>
         ))}
