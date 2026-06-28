@@ -85,8 +85,15 @@ jobs:
           path: avaliaru/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('avaliaru/package-lock.json') }}
 
+      - name: Run migrations
+        run: npx drizzle-kit migrate
+        env:
+          DATABASE_URL: "file:./dev.db"
+          
       - name: Run tests
         run: npx vitest run
+        env:
+          DATABASE_URL: "file:./dev.db"
 
   # 4. Job de Build (Só roda se o Lint e os Testes passarem)
   build:
