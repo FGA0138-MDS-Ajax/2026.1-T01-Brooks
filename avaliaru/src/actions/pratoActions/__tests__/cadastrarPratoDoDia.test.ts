@@ -1,63 +1,42 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { describe, test, expect, beforeEach } from "vitest";
 import { inserirPratoNoBanco } from "../cadastrarPrato";
 import { inserirPratoDoDiaNoBanco } from "../cadastrarPratoDoDia";
 import { db } from "@/lib/db/db";
-import { cardapioDiario, cardapioDiarioItem } from "@/lib/db/schema";
+import { cardapioDiario, cardapioDiarioItem, prato } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 
-async function testCadastrarPratoDoDia() {
+describe("Testes de Prato do Dia", () => {
+  const testPratoId = "PRATO_TESTE_001";
+  const refeicaoTeste = "almoço";
+  const dataFormatada = "2026-06-20";
+
+  // O beforeEach roda ANTES do teste, limpando qualquer sujeira de execuções passadas
+  beforeEach(async () => {
+    // 1. Limpa o item do cardápio diário antigo
+    await db.delete(cardapioDiarioItem).where(
+      and(
+        eq(cardapioDiarioItem.data, dataFormatada),
+        eq(cardapioDiarioItem.campo, refeicaoTeste)
+      )
+    ).catch(() => {});
+
+    // 2. Limpa o prato base para evitar o UNIQUE constraint failed
+    await db.delete(prato).where(eq(prato.idPrato, testPratoId)).catch(() => {});
+  });
+
+  test("deve cadastrar o prato do dia com sucesso", async () => {
     console.log("Iniciando teste de cadastrarPratoDoDia...");
 
-    try {
-        // runMigrations(); // Comentado para evitar conflitos com o histórico do drizzle push
+    // Criar o registro do dia na tabela pai se não existir
+    await db.insert(cardapioDiario).values({ data: dataFormatada }).catch(() => {});
 
-        // 1. Gerar a data de hoje no formato YYYY-MM-DD para o teste bater com a Action
-        const hoje = new Date();
-        const dia = String(hoje.getDate()).padStart(2, '0');
-        const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-        const ano = hoje.getFullYear();
-        const dataFormatada = `${ano}-${mes}-${dia}`;
-        
-        const testPratoId = "PRATO_TESTE_001";
-        const refeicaoTeste = "almoço";
+    console.log("Tentando cadastrar prato base no banco...");
+    await inserirPratoNoBanco(testPratoId, "Prato de Teste Automatizado");
 
-        // 2. Criar o registro do dia na tabela pai para evitar o erro de FOREIGN KEY
-        try {
-            await db.insert(cardapioDiario).values({ data: dataFormatada });
-        } catch (e) {
-            // Ignora se a data já estiver cadastrada no dev.db
-        }
+    console.log("Limpando registro antigo para o teste rodar limpo...");
 
-        // 3. Criar o prato base no banco de dados
-        console.log("Tentando cadastrar prato base no banco...");
-        try {
-            await inserirPratoNoBanco(testPratoId, "Prato de Teste Automatizado");
-            console.log(`Prato base "${testPratoId}" verificado/cadastrado.`);
-        } catch (e: any) {
-            // Ignora se o prato com ID único já existir no banco de desenvolvimento
-        }
-
-        // 4. Limpa qualquer registro prévio correspondente a este teste para torná-lo idempotente
-        console.log(`Limpando registro antigo para o teste rodar limpo...`);
-        await db.delete(cardapioDiarioItem).where(
-            and(
-                eq(cardapioDiarioItem.data, dataFormatada),
-                eq(cardapioDiarioItem.campo, refeicaoTeste)
-            )
-        );
-
-        // 5. Chamar a função de lógica interna do banco
-        const result = await inserirPratoDoDiaNoBanco(
-            testPratoId, 
-            refeicaoTeste
-        );
-
-        if (result.success) {
-            console.log("Sucesso: Prato do Dia cadastrado com sucesso no banco de dados!");
-        }
-    } catch (error: any) {
-        console.error("Falha no teste:", error.message);
-    }
-}
-
-testCadastrarPratoDoDia();
+    const result = await inserirPratoDoDiaNoBanco(testPratoId, refeicaoTeste);
+    
+    expect(result.success).toBe(true);
+  });
+});

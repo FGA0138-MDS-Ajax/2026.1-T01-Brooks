@@ -11,6 +11,7 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
     css: true,
-    exclude: [...configDefaults.exclude, "src/actions/**/__tests__/**"],
+    exclude: [...configDefaults.exclude],
+    fileParallelism: false,
   },
 });
