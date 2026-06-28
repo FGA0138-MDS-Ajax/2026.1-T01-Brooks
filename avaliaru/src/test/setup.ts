@@ -1,4 +1,6 @@
 import "@testing-library/jest-dom/vitest";
+// A configuração do .env.local agora é gerenciada pelo `vitest.config.ts`
+
 import { cleanup } from "@testing-library/react";
 import { afterEach, vi } from "vitest";
 
