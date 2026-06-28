@@ -42,9 +42,17 @@ Antes de subir a aplicação, verifique se o arquivo `.env.local` está configur
 
 | Perfil | /dashboard | /gestao | /admin |
 |---|---|---|---|
-| Gestor Ru | Não | Sim | Não
-| Aluno | Sim | Não | Não
-| Admin | Não | Sim | Sim
+| Gestor Ru | Não | Sim | Não |
+| Aluno | Sim | Não | Não |
+| Admin | Não | Sim | Sim |
+
+### Credenciais de Teste
+
+Para testar localmente com os diferentes perfis, utilize os seguintes acessos padrão (senha padrão: `123456`):
+
+- **Aluno:** `rafaellaube11@gmail.com`
+- **Gestor RU:** `gestor@teste.com`
+- **Administrador:** `admin@teste.com`
 
 ## Banco de dados
 
