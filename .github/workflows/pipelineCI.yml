@@ -86,9 +86,7 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('avaliaru/package-lock.json') }}
 
       - name: Run migrations
-        run: npx drizzle-kit migrate
-        env:
-          DATABASE_URL: "file:./dev.db"
+        run: DATABASE_URL="file:./dev.db" npx drizzle-kit migrate
           
       - name: Run tests
         run: npx vitest run
