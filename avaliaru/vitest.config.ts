@@ -1,22 +1,23 @@
-import { defineConfig } from "vitest/config";
+import { fileURLToPath } from "node:url";
 import { loadEnv } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig(({ mode }) => {
-	// Carrega as variáveis de ambiente do arquivo .env.local para o processo de teste.
-	// Isso garante que o DATABASE_URL esteja disponível quando o `db` for inicializado.
 	const env = loadEnv(mode, process.cwd(), "");
 
 	return {
-		plugins: [tsconfigPaths()],
+		resolve: {
+			alias: {
+				"@": fileURLToPath(new URL("./src", import.meta.url)),
+			},
+		},
 		test: {
-			include: ["**/*.{test,tests,spec}.?(c|m)[jt]s?(x)"],
-			// Disponibiliza as variáveis de ambiente para os testes
+			environment: "node",
+			include: ["**/*.test.ts", "**/*.tests.ts", "**/*.integration.test.ts"],
 			env,
-			// Este arquivo roda uma vez antes de todos os testes, garantindo que o BD esteja pronto.
 			globalSetup: "./src/test/global-setup.ts",
-			// Este arquivo roda antes de cada arquivo de teste, fornecendo mocks e globais.
 			setupFiles: ["./src/test/setup.ts"],
+			fileParallelism: false,
 		},
 	};
 });
