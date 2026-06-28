@@ -471,6 +471,97 @@
   border-left-color: var(--warning-color);
 }
 
+/* Evaluation Cards Styles */
+.avaliacaoCard {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.avaliacaoCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.avaliacaoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  border-bottom: 1px dashed var(--border-color);
+  padding-bottom: 8px;
+}
+
+.estudanteNome {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 15px;
+}
+
+.avaliacaoNota {
+  color: var(--warning-color);
+  font-weight: 700;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.avaliacaoData {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.avaliacaoComentario {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  background: #f8fafc;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border-left: 3px solid var(--primary-color);
+}
+
+.avaliacaoAcoes {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.btnModerar {
+  background: var(--danger-color) !important;
+  font-size: 12px !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.btnModerar:hover {
+  background: #dc2626 !important;
+}
+
+.btnPublicar {
+  background: var(--success-color) !important;
+  font-size: 12px !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.btnPublicar:hover {
+  background: #059669 !important;
+}
+
 /* Responsive Styles */
 @media (max-width: 1024px) {
   .resumo {
