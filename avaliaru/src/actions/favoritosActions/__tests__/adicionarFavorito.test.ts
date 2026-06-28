@@ -21,7 +21,7 @@ describe("adicionarFavorito (Testes Unitários)", () => {
 	} as Session;
 
 	const sessaoGestorMock: Session = {
-		user: { id: "gestor-1", perfil: "gestor", name: "Gestor Teste" },
+		user: { id: "gestor-1", perfil: "gestorru", name: "Gestor Teste" },
 		expires: "9999-12-31",
 	} as Session;
 
