@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
                 dataHoraAvaliacao: new Date(),
                 statusModeracao: false,
                 fkEstudante: usuarioIdReal,
-                fkPrato: idPratoDoDia
+                fkCardapioDiario: idPratoDoDia
             })
             .returning();
 
