@@ -67,6 +67,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: setup
+    env: # <-- VARIÁVEL MOVIDA PARA O NÍVEL DO JOB
+      DATABASE_URL: "file:./dev.db"
     defaults:
       run:
         working-directory: avaliaru
@@ -87,18 +89,18 @@ jobs:
 
       - name: Push Database Schema
         run: npx drizzle-kit push
-        env:
-          DATABASE_URL: "file:./dev.db"
           
       - name: Run tests
         run: npx vitest run
-        env:
-          DATABASE_URL: "file:./dev.db"
 
   # 4. Job de Build (Só roda se o Lint e os Testes passarem)
   build:
     runs-on: ubuntu-latest
     needs: [lint, test]
+    env: # <-- VARIÁVEIS MOVIDAS PARA O NÍVEL DO JOB
+      DATABASE_URL: "file:./dev.db"
+      AUTH_URL: http://localhost:3000
+      AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
     defaults:
       run:
         working-directory: avaliaru
@@ -119,7 +121,3 @@ jobs:
         
       - name: Build
         run: npm run build
-        env:
-          DATABASE_URL: "file:./dev.db"
-          AUTH_URL: http://localhost:3000
-          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
