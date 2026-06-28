@@ -1,62 +1,70 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { describe, test, expect, beforeEach } from "vitest";
-import { inserirCardapioNoBanco } from "../cadastrarCardapio";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+import { cadastrarCardapio } from "../cadastrarCardapio";
+import { auth } from "@/auth";
 import { db } from "@/lib/db/db";
-import { prato, cardapioDiario, cardapioDiarioItem } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { Session } from "next-auth";
 
-describe("Testes de Cadastro de Cardápio", () => {
-  const ID_PRATO_TESTE = "PRATO_MOCK_TESTE";
-  const DATA_TESTE = "2026-06-20";
+// Mocks
+vi.mock("@/auth", () => ({
+  auth: vi.fn(),
+}));
 
-  // Roda antes do teste começar, garantindo banco limpo e sem conflitos de UNIQUE constraint
-  beforeEach(async () => {
-    // 1. Remove dependências de itens da data de teste
-    await db.delete(cardapioDiarioItem).where(eq(cardapioDiarioItem.data, DATA_TESTE)).catch(() => {});
-    
-    // 2. Remove o registro pai da data de teste se houver
-    await db.delete(cardapioDiario).where(eq(cardapioDiario.data, DATA_TESTE)).catch(() => {});
-    
-    // 3. Remove o prato mockado para reinseri-lo limpo
-    await db.delete(prato).where(eq(prato.idPrato, ID_PRATO_TESTE)).catch(() => {});
+vi.mock("@/lib/db/db", () => ({
+  db: {
+    insert: vi.fn(() => ({
+      values: vi.fn().mockResolvedValue(true),
+    })),
+  },
+}));
+
+vi.mock("next/cache", () => ({
+  revalidatePath: vi.fn(),
+}));
+
+describe("Testes Unitários: cadastrarCardapio", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  test("deve cadastrar um cardápio completo com sucesso", async () => {
-    console.log("Iniciando teste de cadastrarCardapio...");
+  function criarFormDataMock() {
+    const formData = new FormData();
+    formData.append("data", "2026-06-28");
+    formData.append("panificacao", "prato-1");
+    formData.append("sopa", "prato-2");
+    return formData;
+  }
 
-    console.log("Cadastrando prato base de teste no banco...");
-    await db.insert(prato).values({
-      idPrato: ID_PRATO_TESTE,
-      nome: "Item de Teste do Cardápio",
+  test("deve bloquear o acesso se o usuário não estiver logado", async () => {
+    vi.mocked(auth as unknown as () => Promise<Session | null>).mockResolvedValueOnce(null);
+    const formData = criarFormDataMock();
+
+    await expect(cadastrarCardapio(formData)).rejects.toThrow("Não autorizado.");
+    expect(db.insert).not.toHaveBeenCalled();
+  });
+
+  test("deve bloquear o acesso se o perfil for aluno", async () => {
+    vi.mocked(auth as unknown as () => Promise<Session | null>).mockResolvedValueOnce({
+      user: { id: "123", perfil: "aluno", name: "Aluno Teste" },
+      expires: "9999-12-31",
     });
+    const formData = criarFormDataMock();
 
-    await db.insert(cardapioDiario).values({ data: DATA_TESTE });
+    await expect(cadastrarCardapio(formData)).rejects.toThrow("Acesso negado: você não tem permissão.");
+    expect(db.insert).not.toHaveBeenCalled();
+  });
 
-    const values = {
-      data: DATA_TESTE,
-      panificacao: ID_PRATO_TESTE,
-      opcao_extra: ID_PRATO_TESTE,
-      complemento_padrao_cafe: ID_PRATO_TESTE,
-      complemento_ovolactovegetariano_cafe: ID_PRATO_TESTE,
-      complemento_vegetariano_estrito_cafe: ID_PRATO_TESTE,
-      fruta: ID_PRATO_TESTE,
-      prato_principal_padrao_almoco: ID_PRATO_TESTE,
-      prato_principal_ovolactovegetariano_almoco: ID_PRATO_TESTE,
-      prato_principal_vegetariano_estrito_almoco: ID_PRATO_TESTE,
-      guarnicao: ID_PRATO_TESTE,
-      sobremesa_almoco: ID_PRATO_TESTE,
-      prato_principal_padrão_jantar: ID_PRATO_TESTE,
-      prato_principal_ovolactovegetariano_jantar: ID_PRATO_TESTE,
-      prato_principal_vegetariano_estrito_jantar: ID_PRATO_TESTE,
-      sopa: ID_PRATO_TESTE,
-      sobremesa_jantar: ID_PRATO_TESTE,
-    };
+  test("deve processar o FormData e chamar a inserção no banco se for gestor", async () => {
+    vi.mocked(auth as unknown as () => Promise<Session | null>).mockResolvedValueOnce({
+  user: { id: "456", perfil: "gestorru", name: "Gestor RU" },
+  expires: "9999-12-31",
+});
+    const formData = criarFormDataMock();
 
-    // Executa a action real
-    const result = await inserirCardapioNoBanco(values);
-    console.log("Resultado:", result);
+    const resultado = await cadastrarCardapio(formData);
 
-    // Asserção do Vitest para validar o sucesso
-    expect(result.success).toBe(true);
+    expect(db.insert).toHaveBeenCalled(); // Chamado para cardapioDiario e cardapioDiarioItem
+    expect(revalidatePath).toHaveBeenCalledWith("/gestao/cardapio");
+    expect(resultado).toEqual({ success: true });
   });
 });
