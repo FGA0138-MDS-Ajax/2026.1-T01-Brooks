@@ -14,7 +14,10 @@ vi.mock("next/cache", () => ({
 
 vi.mock("next/server", () => ({
   NextResponse: {
-    json: (data: any) => ({ ...data }),
+    json: (data: unknown) => ({ 
+      ... (data as Record<string, unknown>), // Casting explícito para manter a estrutura
+      json: () => Promise.resolve(data) 
+    }),
     next: vi.fn(),
   },
 }));
