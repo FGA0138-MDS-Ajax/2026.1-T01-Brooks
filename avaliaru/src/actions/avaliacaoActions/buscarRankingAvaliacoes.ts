@@ -4,8 +4,9 @@ import { db } from "@/lib/db/db";
 import { avaliacao, cardapioDiarioItem, prato } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
-export const ROTULOS_CAMPOS: Record<string, string> = {
-    prato_principal_padrao_almoco:              "Prato Principal (Almoço)",
+// Removido o 'export' para não quebrar o build do Next.js
+const ROTULOS_CAMPOS: Record<string, string> = {
+  prato_principal_padrao_almoco:              "Prato Principal (Almoço)",
   prato_principal_ovolactovegetariano_almoco: "Ovolactovegetariano (Almoço)",
   prato_principal_vegetariano_estrito_almoco: "Vegetariano (Almoço)",
   guarnicao:                                  "Guarnição",
@@ -22,7 +23,6 @@ export const ROTULOS_CAMPOS: Record<string, string> = {
   complemento_ovolactovegetariano_cafe:       "Ovolactovegetariano (Café)",
   complemento_vegetariano_estrito_cafe:       "Vegetariano (Café)",
 };
-
 
 export type PratoRanking = {
     idPrato: string;
@@ -59,13 +59,12 @@ export type RankingCompleto = {
 // Função principal
 
 export async function buscarRankingAvaliacoes(): Promise<RankingCompleto> {
-    //Busca as avaliações puras, sem fazer join
+    // Busca as avaliações puras, sem fazer join
     const avaliacoesPuras = await db
         .select({ nota: avaliacao.nota })
         .from(avaliacao);
 
-    //join completo, sem filtro
-
+    // Join completo, sem filtro
     const resultados = await db
         .select({
             campo: cardapioDiarioItem.campo,
@@ -80,8 +79,7 @@ export async function buscarRankingAvaliacoes(): Promise<RankingCompleto> {
         )
         .innerJoin(prato, eq(cardapioDiarioItem.idPrato, prato.idPrato));
     
-    //Agrupamento: campo -> prato -> notas
-
+    // Agrupamento: campo -> prato -> notas
     const porCategoria = new Map<string, Map<string, { nome: string; notas: number[] }>>();
 
     for (const item of resultados) {
@@ -97,7 +95,7 @@ export async function buscarRankingAvaliacoes(): Promise<RankingCompleto> {
         categoriaMapa.get(item.idPrato)!.notas.push(Number(item.nota));
     }
 
-    //Calcula as médias e monta as categorias com ranking
+    // Calcula as médias e monta as categorias com ranking
     const ordemCampos = Object.keys(ROTULOS_CAMPOS);
 
     const categorias: CategoriaRanking[] = Array.from(porCategoria.entries())
@@ -122,13 +120,13 @@ export async function buscarRankingAvaliacoes(): Promise<RankingCompleto> {
         })
         .sort((a, b) => ordemCampos.indexOf(a.campo) - ordemCampos.indexOf(b.campo));
 
-        //Calcula estatísticas gerais
+        // Calcula estatísticas gerais
         const todasAsNotas = avaliacoesPuras.map((a) => Number(a.nota));
         const totalAvaliacoes = todasAsNotas.length;
         const somaGeral = todasAsNotas.reduce((acumulador, nota) => acumulador + nota, 0);
         const mediaGeral = totalAvaliacoes > 0 ? Number((somaGeral / totalAvaliacoes).toFixed(1)) : 0;
         
-        //MELHOR AVALIADO: prato com a maior média de todas as categorias
+        // MELHOR AVALIADO: prato com a maior média de todas as categorias
         const todosOsPratos = categorias.flatMap((c) => c.ranking);
         const melhorPrato = [...todosOsPratos].sort((a, b) => b.media - a.media)[0];
 
@@ -139,7 +137,7 @@ export async function buscarRankingAvaliacoes(): Promise<RankingCompleto> {
             melhorAvaliado: melhorPrato?.nome ?? "—",
         };
 
-        //Calcula a distribuição por estrelas usando avaliacoesPuras
+        // Calcula a distribuição por estrelas usando avaliacoesPuras
         const contagemPorEstrela: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
         for (const nota of todasAsNotas) {
             const estrelas = Math.round(nota);
