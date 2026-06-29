@@ -14,7 +14,6 @@ describe("Testes Unitários: buscarCardapioSemana", () => {
   });
 
   test("deve retornar uma estrutura com exatos 7 dias, mesmo se o banco estiver vazio", async () => {
-    // Simula o banco não retornando nenhum prato para a semana
     const whereMock = vi.fn().mockResolvedValueOnce([]);
     const innerJoinMock = vi.fn().mockReturnValue({ where: whereMock });
     const fromMock = vi.fn().mockReturnValue({ innerJoin: innerJoinMock });
@@ -22,22 +21,18 @@ describe("Testes Unitários: buscarCardapioSemana", () => {
 
     const resultado = await buscarCardapioSemana(0);
 
-    expect(resultado).toHaveLength(7); // Segunda a Domingo
-    
-    // Verifica a estrutura básica do primeiro dia (Segunda-feira)
+    expect(resultado).toHaveLength(7);
     expect(resultado[0]).toHaveProperty("data");
-    expect(resultado[0]).toHaveProperty("panificacao");
     expect(resultado[0].panificacao).toEqual([]);
     expect(resultado[0]).toHaveProperty("prato_principal_padrao_almoco");
   });
 
   test("deve agrupar corretamente os pratos retornados do banco por dia", async () => {
-    // 1. Congelamos o tempo para garantir que o teste rode igual independente do dia real
+    // 1. Congela o tempo para garantir que o teste seja determinístico
     vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-06-28T12:00:00.000Z")); // Fixado num domingo
+    vi.setSystemTime(new Date("2026-08-16T12:00:00.000Z")); // Domingo
 
-    // Como fixamos hoje no dia 28 (Domingo), a função vai buscar a partir do dia 22 (Segunda-feira)
-    const dataIso = "2026-06-22";
+    const dataIso = "2026-08-10"; // Segunda-feira correspondente
 
     const retornoDoBanco = [
       {
@@ -61,17 +56,16 @@ describe("Testes Unitários: buscarCardapioSemana", () => {
 
     const resultado = await buscarCardapioSemana(0);
 
-    // Encontra o dia correspondente ao mock (dia 22)
+    // Encontra o dia correspondente ao mock (dia 10 de Agosto de 2026)
     const diaComCardapio = resultado.find(
-      (d) => d.data.ano === 2026 && d.data.mes === 6 && d.data.dia === 22
+      (d) => d.data.ano === 2026 && d.data.mes === 8 && d.data.dia === 10
     );
 
     expect(diaComCardapio).toBeDefined();
     expect(diaComCardapio?.panificacao).toEqual([{ idPrato: "p1", nome: "Pão de Queijo" }]);
     expect(diaComCardapio?.prato_principal_padrao_almoco).toEqual([{ idPrato: "p2", nome: "Estrogonofe" }]);
-    expect(diaComCardapio?.sopa).toEqual([]); // Campo que não veio do banco deve estar vazio
+    expect(diaComCardapio?.sopa).toEqual([]); 
 
-    // 2. Restaura o relógio normal ao final do teste
     vi.useRealTimers();
   });
 });
