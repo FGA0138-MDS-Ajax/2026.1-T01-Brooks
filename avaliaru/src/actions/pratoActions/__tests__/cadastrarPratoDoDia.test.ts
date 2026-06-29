@@ -1,50 +1,73 @@
-import { describe, test, expect, beforeEach, vi, afterEach } from "vitest";
-import { inserirPratoDoDiaNoBanco } from "../cadastrarPratoDoDia";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+import { cadastrarPratoDoDia } from "../cadastrarPratoDoDia";
+import { auth } from "@/auth";
 import { db } from "@/lib/db/db";
-import { cardapioDiario, cardapioDiarioItem, prato } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { Session, User } from "next-auth";
 
-describe("Testes de Prato do Dia", () => {
-  const testPratoId = "PRATO_TESTE_001";
-  const refeicaoTeste = "almoço"; // ou "jantar"
-  const dataTeste = new Date("2026-06-20T12:00:00.000Z");
-  const dataFormatada = "2026-06-20";
+// Criamos um tipo local que estende a Session para evitar o uso de 'any'
+type CustomSession = Session & {
+  user: User & { id: string; perfil: string };
+};
 
-  // O beforeEach roda ANTES do teste, limpando qualquer sujeira de execuções passadas
-  beforeEach(async () => {
-    // Controla o tempo para que a action use uma data determinística
-    vi.useFakeTimers();
-    vi.setSystemTime(dataTeste);
+vi.mock("@/auth", () => ({ auth: vi.fn() }));
+vi.mock("@/lib/db/db", () => ({
+  db: {
+    insert: vi.fn(() => ({ values: vi.fn().mockResolvedValue(true) })),
+    delete: vi.fn(() => ({ where: vi.fn().mockResolvedValue(true) })),
+  },
+}));
+vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 
-    // 1. Limpa o item do cardápio que referencia o prato (quebra a FK)
-    await db.delete(cardapioDiarioItem).where(eq(cardapioDiarioItem.idPrato, testPratoId)).catch(() => {});
-    // 2. Limpa o prato base
-    await db.delete(prato).where(eq(prato.idPrato, testPratoId)).catch(() => {});
-    // 3. Limpa o cardápio do dia do teste
-    await db.delete(cardapioDiario).where(eq(cardapioDiario.data, dataFormatada)).catch(() => {});
+describe("Testes Unitários: cadastrarPratoDoDia", () => {
+  beforeEach(() => { vi.clearAllMocks(); });
+
+  function criarFormData(idPrato: string, refeicao: string) {
+    const formData = new FormData();
+    formData.append("idPrato", idPrato);
+    formData.append("refeicao", refeicao);
+    return formData;
+  }
+
+  test("deve bloquear acesso para alunos", async () => {
+    const mockSession: CustomSession = {
+      user: { id: "123", perfil: "aluno", name: "Aluno" },
+      expires: "9999-12-31T23:59:59.999Z"
+    };
+
+    vi.mocked(auth as unknown as () => Promise<Session | null>).mockResolvedValueOnce(mockSession);
+    
+    await expect(cadastrarPratoDoDia(criarFormData("p1", "almoço"))).rejects.toThrow("Acesso negado: você não tem permissão.");
   });
 
-  afterEach(() => {
-    // Restaura os timers reais após cada teste
-    vi.useRealTimers();
+  test("deve lançar erro se faltarem campos obrigatórios", async () => {
+    const mockSession: CustomSession = {
+      user: { id: "123", perfil: "adm", name: "Admin" },
+      expires: "9999-12-31T23:59:59.999Z"
+    };
+
+    vi.mocked(auth as unknown as () => Promise<Session | null>).mockResolvedValueOnce(mockSession);
+
+    // Mandando FormData sem a refeição
+    const formData = new FormData();
+    formData.append("idPrato", "p1");
+
+    await expect(cadastrarPratoDoDia(formData)).rejects.toThrow("Preencha todos os campos obrigatórios.");
   });
 
-  test("deve cadastrar o prato do dia com sucesso", async () => {
-    // Arrange: Prepara o estado do banco de dados para o teste
-    // 1. Insere o prato base que será referenciado.
-    await db.insert(prato).values({
-      idPrato: testPratoId,
-      nome: "Prato de Teste Automatizado",
-    });
+  test("deve prosseguir com sucesso e revalidar rotas se for gestor", async () => {
+    const mockSession: CustomSession = {
+      user: { id: "123", perfil: "gestorru", name: "Gestor" },
+      expires: "9999-12-31T23:59:59.999Z"
+    };
 
-    // 2. Garante que o registro do cardápio diário pai exista para a data do teste.
-    await db.insert(cardapioDiario).values({ data: dataFormatada }).onConflictDoNothing();
+    vi.mocked(auth as unknown as () => Promise<Session | null>).mockResolvedValueOnce(mockSession);
 
-    // Act: Executa a função que está sendo testada.
-    // Como usamos `setSystemTime`, a action `inserirPratoDoDiaNoBanco` usará a data "2026-06-20".
-    const result = await inserirPratoDoDiaNoBanco(testPratoId, refeicaoTeste);
+    const resultado = await cadastrarPratoDoDia(criarFormData("p1", "almoço"));
 
-    // Assert: Verifica se o resultado foi o esperado
-    expect(result.success).toBe(true);
+    expect(db.insert).toHaveBeenCalled();
+    expect(revalidatePath).toHaveBeenCalledWith("/gestao/cardapio");
+    expect(revalidatePath).toHaveBeenCalledWith("/dashboard");
+    expect(resultado).toEqual({ success: true });
   });
 });
