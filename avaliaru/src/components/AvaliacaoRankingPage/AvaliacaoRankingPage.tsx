@@ -18,9 +18,16 @@ export default function AvaliacaoRankingPage({ dados, session }: AvaliacaoRankin
   const [pratoSelecionado, setPratoSelecionado] = useState("");
   const [busca, setBusca] = useState("");
 
-  const { ranking, estatisticas, distribuicao } = dados;
+  const [campoDaCategoria, setCampoDaCategoria] = useState(
+    dados.categorias[0]?.campo ?? ""
+  );
 
-  const pratosFiltrados = ranking.filter((prato) =>
+  const { categorias, estatisticas, distribuicao } = dados;
+
+  const categoriaAtiva = 
+    categorias.find((c) => c.campo === campoDaCategoria) ?? categorias[0];
+
+  const pratosFiltrados = (categoriaAtiva?.ranking ?? []).filter((prato) =>
     prato.nome.toLowerCase().includes(busca.toLowerCase()));
 
   const handleRateClick = (nomeDoPrato: string) => {
@@ -58,12 +65,40 @@ export default function AvaliacaoRankingPage({ dados, session }: AvaliacaoRankin
           />
         </section>
 
+        <div style={{ marginBottom: "24px"}}>
+          <select
+            value={campoDaCategoria}
+            onChange={(e) => {
+              setCampoDaCategoria(e.target.value);
+              setBusca("");
+            }}
+            style={{
+              width: "100%",
+              padding: "14px 18px",
+              borderRadius: "24px",
+              border: "1px solid #e5e7eb",
+              background: "#fff",
+              fontSize: "1rem",
+              color: "#111827",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+              cursor: "pointer",
+              outline: "none",
+            }}
+          >
+            {categorias.map((c) => (
+              <option key={c.campo} value={c.campo}>
+                {c.rotulo}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div className={styles.searchWrap}>
           <Search className={styles.searchIcon} size={20} />
           <input
             className={styles.searchInput}
             type="text"
-            placeholder="Pesquisar prato..."
+            placeholder={`Pesquisar em ${categoriaAtiva?.rotulo ?? "pratos"}...`}
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
           />
@@ -71,8 +106,9 @@ export default function AvaliacaoRankingPage({ dados, session }: AvaliacaoRankin
 
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Pratos para Avaliação</h2>
-
+            <h2 className={styles.sectionTitle}>
+              {categoriaAtiva?.rotulo ?? "Pratos"} — Avaliações
+            </h2>
             <Link href="/dashboard/lista-pratos" className={styles.seeAllLink}>
               Ver tudo
             </Link>
@@ -82,7 +118,6 @@ export default function AvaliacaoRankingPage({ dados, session }: AvaliacaoRankin
             {pratosFiltrados.length === 0 && (
               <p style={{ color: "#6b7280" }}>Nenhum prato encontrado.</p>
             )}
-
             {pratosFiltrados.map((prato) => (
               <div className={styles.dishRow} key={prato.idPrato}>
                 <div className={styles.dishInfo}>
@@ -91,7 +126,6 @@ export default function AvaliacaoRankingPage({ dados, session }: AvaliacaoRankin
                     {prato.totalAvaliacoes} avaliações
                   </span>
                 </div>
-
                 <div className={styles.dishActions}>
                   <span className={styles.dishRating}>⭐ {prato.media}</span>
                   <button
@@ -108,17 +142,15 @@ export default function AvaliacaoRankingPage({ dados, session }: AvaliacaoRankin
 
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>
-            Ranking dos Pratos Mais Bem Avaliados
+            Ranking — {categoriaAtiva?.rotulo ?? "Pratos Mais Bem Avaliados"}
           </h2>
-
           <div className={styles.rankingList}>
-            {ranking.map((prato) => (
+            {(categoriaAtiva?.ranking ?? []).map((prato) => (
               <div className={styles.rankingItem} key={prato.idPrato}>
                 <div className={styles.rankingHeader}>
                   <span className={styles.rankingName}>{prato.nome}</span>
                   <span className={styles.rankingValue}>{prato.media}</span>
                 </div>
-
                 <div className={styles.barTrack}>
                   <div
                     className={styles.barFill}
@@ -135,7 +167,7 @@ export default function AvaliacaoRankingPage({ dados, session }: AvaliacaoRankin
             <h2 className={styles.sectionTitle}>Top 10 Pratos</h2>
 
             <div className={styles.topList}>
-              {ranking.slice(0, 10).map((prato, index) => (
+              {(categoriaAtiva?.ranking ?? []).slice(0, 10).map((prato, index) => (
                 <div className={styles.topItem} key={prato.idPrato}>
                   <span className={styles.topIndex}>{index + 1}</span>
                   <span className={styles.topName}>{prato.nome}</span>
@@ -148,21 +180,13 @@ export default function AvaliacaoRankingPage({ dados, session }: AvaliacaoRankin
 
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>Distribuição das Avaliações</h2>
-
             <div className={styles.distributionList}>
               {distribuicao.map((item) => (
                 <div className={styles.distributionItem} key={item.estrelas}>
-                  <span className={styles.distributionLabel}>
-                    {item.estrelas}⭐
-                  </span>
-
+                  <span className={styles.distributionLabel}>{item.estrelas}⭐</span>
                   <div className={styles.distributionTrack}>
-                    <div
-                      className={styles.distributionFill}
-                      style={{ width: `${item.percentual}%` }}
-                    />
+                    <div className={styles.distributionFill} style={{ width: `${item.percentual}%` }}/>
                   </div>
-
                   <span style={{color: "#6b7280", fontSize: "0.85rem", minWidth: "30px" }}>
                     {item.quantidade}
                   </span>
@@ -171,8 +195,7 @@ export default function AvaliacaoRankingPage({ dados, session }: AvaliacaoRankin
             </div>
           </section>
         </div>
-
-        <div>
+        
           {isAvaliacaoOpen && (
             <AvaliacaoModal
               props={{
@@ -183,7 +206,6 @@ export default function AvaliacaoRankingPage({ dados, session }: AvaliacaoRankin
               dataCardapio={new Date().toISOString().split("T")[0]}
             />
           )}
-        </div>
       </div>
     </main>
   );

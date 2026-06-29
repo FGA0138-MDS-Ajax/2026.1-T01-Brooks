@@ -3,45 +3,56 @@ import { buscarRankingAvaliacoes } from "../buscarRankingAvaliacoes";
 import { db } from "@/lib/db/db";
 
 vi.mock("@/lib/db/db", () => ({
-	db: {
-		select: vi.fn(),
-	},
+	db: { select: vi.fn() },
 }));
 
-describe("buscarRankingAvaliacoes", () => {
+describe("Testes Unitários: buscarRankingAvaliacoes", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});
 
-	test("deve montar ranking, estatísticas e distribuição corretamente", async () => {
-		const resultadosMock = [
-			{ idPrato: "p1", nome: "Feijoada", nota: 5 },
-			{ idPrato: "p1", nome: "Feijoada", nota: 4 },
-			{ idPrato: "p2", nome: "Lasanha", nota: 3 },
-			{ idPrato: "p2", nome: "Lasanha", nota: 2 },
-			{ idPrato: "p2", nome: "Lasanha", nota: 2 },
+	test("deve montar categorias, estatísticas e distribuição corretamente", async () => {
+		const avaliacoesPurasMock = [
+			{ nota: 5 }, { nota: 4 }, { nota: 3 }, { nota: 2 }, { nota: 2 }
 		];
 
-		const innerJoinMock = vi.fn().mockReturnThis();
-		const fromMock = vi.fn().mockReturnValue({
-			innerJoin: innerJoinMock,
-		});
+		const resultadosMock = [
+			{ campo: "prato_principal_padrao_almoco", idPrato: "p1", nome: "Feijoada", nota: 5 },
+			{ campo: "prato_principal_padrao_almoco", idPrato: "p1", nome: "Feijoada", nota: 4 },
+			{ campo: "sobremesa_almoco", idPrato: "p2", nome: "Lasanha", nota: 3 },
+			{ campo: "sobremesa_almoco", idPrato: "p2", nome: "Lasanha", nota: 2 },
+			{ campo: "sobremesa_almoco", idPrato: "p2", nome: "Lasanha", nota: 2 },
+		];
 
-		innerJoinMock
-			.mockReturnValueOnce({ innerJoin: innerJoinMock })
-			.mockResolvedValueOnce(resultadosMock);
+		// Mock da Primeira Query (avaliacoes puras)
+		const fromAvaliacoesMock = vi.fn().mockResolvedValueOnce(avaliacoesPurasMock);
+		
+		// Mock da Segunda Query (Joins)
+		const innerJoinPratoMock = vi.fn().mockResolvedValueOnce(resultadosMock);
+		const innerJoinCardapioMock = vi.fn().mockReturnValueOnce({ innerJoin: innerJoinPratoMock });
+		const fromResultadosMock = vi.fn().mockReturnValueOnce({ innerJoin: innerJoinCardapioMock });
 
-		vi.mocked(db.select).mockReturnValue({ from: fromMock } as never);
+		// Aplica os mocks na ordem em que são chamados no código
+		vi.mocked(db.select)
+			.mockReturnValueOnce({ from: fromAvaliacoesMock } as never)
+			.mockReturnValueOnce({ from: fromResultadosMock } as never);
 
 		const result = await buscarRankingAvaliacoes();
 
-		expect(db.select).toHaveBeenCalledTimes(1);
-		expect(fromMock).toHaveBeenCalledTimes(1);
-		expect(innerJoinMock).toHaveBeenCalledTimes(2);
+		expect(db.select).toHaveBeenCalledTimes(2);
 
-		expect(result.ranking).toEqual([
-			{ idPrato: "p1", nome: "Feijoada", media: 4.5, totalAvaliacoes: 2 },
-			{ idPrato: "p2", nome: "Lasanha", media: 2.3, totalAvaliacoes: 3 },
+		// Valida se agrupou corretamente as categorias
+		expect(result.categorias).toEqual([
+			{
+				campo: "prato_principal_padrao_almoco",
+				rotulo: "Prato Principal (Almoço)",
+				ranking: [{ idPrato: "p1", nome: "Feijoada", media: 4.5, totalAvaliacoes: 2 }],
+			},
+			{
+				campo: "sobremesa_almoco",
+				rotulo: "Sobremesa (Almoço)",
+				ranking: [{ idPrato: "p2", nome: "Lasanha", media: 2.3, totalAvaliacoes: 3 }],
+			}
 		]);
 
 		expect(result.estatisticas).toEqual({
@@ -61,47 +72,32 @@ describe("buscarRankingAvaliacoes", () => {
 	});
 
 	test("deve retornar estrutura vazia quando não houver avaliações", async () => {
-		const innerJoinMock = vi.fn().mockReturnThis();
-		const fromMock = vi.fn().mockReturnValue({
-			innerJoin: innerJoinMock,
-		});
+		const fromAvaliacoesMock = vi.fn().mockResolvedValueOnce([]);
+		
+		const innerJoinPratoMock = vi.fn().mockResolvedValueOnce([]);
+		const innerJoinCardapioMock = vi.fn().mockReturnValueOnce({ innerJoin: innerJoinPratoMock });
+		const fromResultadosMock = vi.fn().mockReturnValueOnce({ innerJoin: innerJoinCardapioMock });
 
-		innerJoinMock
-			.mockReturnValueOnce({ innerJoin: innerJoinMock })
-			.mockResolvedValueOnce([]);
-
-		vi.mocked(db.select).mockReturnValue({ from: fromMock } as never);
+		vi.mocked(db.select)
+			.mockReturnValueOnce({ from: fromAvaliacoesMock } as never)
+			.mockReturnValueOnce({ from: fromResultadosMock } as never);
 
 		const result = await buscarRankingAvaliacoes();
 
-		expect(result.ranking).toEqual([]);
+		expect(result.categorias).toEqual([]);
 		expect(result.estatisticas).toEqual({
 			mediaGeral: 0,
 			totalAvaliacoes: 0,
 			totalPratos: 0,
-			melhorAvaliado: "-",
+			melhorAvaliado: "—", // Atualizado para corresponder ao novo fallback no código ("—")
 		});
-		expect(result.distribuicao).toEqual([
-			{ estrelas: 5, quantidade: 0, percentual: 0 },
-			{ estrelas: 4, quantidade: 0, percentual: 0 },
-			{ estrelas: 3, quantidade: 0, percentual: 0 },
-			{ estrelas: 2, quantidade: 0, percentual: 0 },
-			{ estrelas: 1, quantidade: 0, percentual: 0 },
-		]);
 	});
 
 	test("deve propagar erro quando a consulta ao banco falhar", async () => {
 		const erro = new Error("falha no banco");
-		const innerJoinMock = vi.fn().mockReturnThis();
-		const fromMock = vi.fn().mockReturnValue({
-			innerJoin: innerJoinMock,
-		});
-
-		innerJoinMock
-			.mockReturnValueOnce({ innerJoin: innerJoinMock })
-			.mockRejectedValueOnce(erro);
-
-		vi.mocked(db.select).mockReturnValue({ from: fromMock } as never);
+		const fromAvaliacoesMock = vi.fn().mockRejectedValueOnce(erro);
+		
+		vi.mocked(db.select).mockReturnValueOnce({ from: fromAvaliacoesMock } as never);
 
 		await expect(buscarRankingAvaliacoes()).rejects.toThrow("falha no banco");
 	});

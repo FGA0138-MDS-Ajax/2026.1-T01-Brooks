@@ -34,8 +34,6 @@ describe("Testes de Integração: cadastrarAvaliacao", () => {
 		await db.delete(users).where(eq(users.id, IDS.usuario)).catch(() => {});
 	});
 
-    
-
 	test("deve cadastrar uma avaliação com sucesso no banco", async () => {
 		await prepararDadosBase();
 		await db.insert(cardapioDiario).values({ data: DATAS_CARDAPIO.sucesso });
