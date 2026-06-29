@@ -21,7 +21,7 @@ describe("Testes Unitários: buscarCardapioSemana", () => {
 
   test("deve agrupar corretamente os pratos retornados do banco", async () => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-08-16T12:00:00.000Z")); 
+    vi.setSystemTime(new Date("2026-08-16T12:00:00.000Z"));
 
     const retornoDoBanco = [
       { data: "2026-08-10", campo: "panificacao", idPrato: "p1", nome: "Pão de Queijo" },
@@ -34,6 +34,8 @@ describe("Testes Unitários: buscarCardapioSemana", () => {
     vi.mocked(db.select).mockReturnValue({ from: fromMock } as never);
 
     const resultado = await buscarCardapioSemana(0);
+    
+    // Procura o item de 10 de Agosto (index 0)
     const diaComCardapio = resultado.find((d) => d.data.dia === 10 && d.data.mes === 8 && d.data.ano === 2026);
 
     expect(diaComCardapio).toBeDefined();
