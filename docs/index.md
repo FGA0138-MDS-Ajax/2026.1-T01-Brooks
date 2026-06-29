@@ -50,4 +50,4 @@ Cadastro de pratos, cardápios e perfis de acesso do sistema.
 
 ## Documentação
 
-Esta página organiza os principais artefatos do projeto. Os documentos completos de Visão de Produto e Projeto e de Arquitetura permanecem disponíveis em PDF na seção [Documentos oficiais](documentos.md). As atas serão adicionadas assim que os registros oficiais forem consolidados pela equipe.
+Esta página organiza os principais artefatos do projeto. Os documentos completos de Visão de Produto e Projeto e de Arquitetura permanecem disponíveis em PDF na seção [Documentos oficiais](documentos.md).

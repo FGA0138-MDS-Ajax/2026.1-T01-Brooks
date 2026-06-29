@@ -15,7 +15,7 @@ A qualidade do AvaliaRU deve ser observada por verificação técnica e validaç
 | CT05 | Registro de avaliação | Persistir nota e comentário e confirmar o envio. |
 | CT06 | Usabilidade mobile | Manter navegação e controles sem quebra de layout. |
 
-## Métricas planejadas
+## Métricas
 
 - débito técnico acumulado;
 - densidade de defeitos por funcionalidade;
@@ -24,18 +24,58 @@ A qualidade do AvaliaRU deve ser observada por verificação técnica e validaç
 - taxa de sucesso das notificações;
 - adesão dos usuários às funcionalidades de valor.
 
-## Metas
+## Resultados obtidos
 
-| Métrica | Meta apresentada no documento de visão |
-|---|---|
-| Defeitos críticos | Zero na versão entregue. |
-| Cobertura automatizada | Pelo menos 80% das funcionalidades críticas. |
-| Tempo de resposta | Média de até 2 segundos nas operações críticas. |
-| Notificações essenciais | Taxa de sucesso de pelo menos 98%. |
+### CT01 - Exibição do cardápio
 
-!!! warning "Evidências em consolidação"
-    Os roteiros e metas estão definidos nos documentos oficiais. Resultados executados, capturas e ciclos de correção devem ser atualizados pela equipe conforme os testes forem realizados.
+Status: Aprovado
+
+Resultado:
+- refeições exibidas corretamente;
+- acompanhamentos exibidos corretamente;
+- dados persistidos após atualização.
+
+### CT02 - Alertas de restrição
+
+Status: Aprovado
+
+Resultado:
+- pratos incompatíveis destacados corretamente;
+- restrições alimentares consideradas na renderização.
+
+### CT03 - Cadastro de favoritos
+
+Status: Aprovado
+
+Resultado:
+- favorito salvo com sucesso;
+- favorito recuperado após novo acesso.
+
+### CT04 - Notificação de favorito
+
+Status: Aprovado
+
+Resultado:
+- notificação enviada quando prato favorito foi disponibilizado.
+
+### CT05 - Registro de avaliação
+
+Status: Aprovado
+
+Resultado:
+- nota armazenada corretamente;
+- comentário persistido no banco.
+
+### CT06 - Usabilidade mobile
+
+Status: Aprovado
+
+Resultado:
+- interface responsiva;
+- navegação funcional em resolução móvel.
 
 ## Testes existentes
 
-O repositório já possui testes iniciais de actions relacionados ao cadastro de cardápio e prato do dia. Esses testes ainda passam por estabilização. A evolução esperada inclui corrigir os cenários existentes e ampliar a cobertura para componentes, autenticação, favoritos, restrições e avaliações.
+O repositório já possui testes iniciais de actions relacionados ao cadastro de cardápio e prato do dia. Os testes automatizados existentes foram utilizados como mecanismo de verificação contínua durante o desenvolvimento. A equipe realizou correções nos cenários identificados e definiu a ampliação futura da cobertura para novos módulos. A cobertura de testes geral do projeto se encontra demonstrada na imagem a baixo.
+
+![Log de saída do teste automatizado](assets/testes1.JPG)
