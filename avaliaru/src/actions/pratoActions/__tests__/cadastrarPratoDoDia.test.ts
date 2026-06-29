@@ -1,42 +1,73 @@
-import { describe, test, expect, beforeEach } from "vitest";
-import { inserirPratoNoBanco } from "../cadastrarPrato";
-import { inserirPratoDoDiaNoBanco } from "../cadastrarPratoDoDia";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+import { cadastrarPratoDoDia } from "../cadastrarPratoDoDia";
+import { auth } from "@/auth";
 import { db } from "@/lib/db/db";
-import { cardapioDiario, cardapioDiarioItem, prato } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { Session, User } from "next-auth";
 
-describe("Testes de Prato do Dia", () => {
-  const testPratoId = "PRATO_TESTE_001";
-  const refeicaoTeste = "almoço";
-  const dataFormatada = "2026-06-20";
+// Criamos um tipo local que estende a Session para evitar o uso de 'any'
+type CustomSession = Session & {
+  user: User & { id: string; perfil: string };
+};
 
-  // O beforeEach roda ANTES do teste, limpando qualquer sujeira de execuções passadas
-  beforeEach(async () => {
-    // 1. Limpa o item do cardápio diário antigo
-    await db.delete(cardapioDiarioItem).where(
-      and(
-        eq(cardapioDiarioItem.data, dataFormatada),
-        eq(cardapioDiarioItem.campo, refeicaoTeste)
-      )
-    ).catch(() => {});
+vi.mock("@/auth", () => ({ auth: vi.fn() }));
+vi.mock("@/lib/db/db", () => ({
+  db: {
+    insert: vi.fn(() => ({ values: vi.fn().mockResolvedValue(true) })),
+    delete: vi.fn(() => ({ where: vi.fn().mockResolvedValue(true) })),
+  },
+}));
+vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 
-    // 2. Limpa o prato base para evitar o UNIQUE constraint failed
-    await db.delete(prato).where(eq(prato.idPrato, testPratoId)).catch(() => {});
+describe("Testes Unitários: cadastrarPratoDoDia", () => {
+  beforeEach(() => { vi.clearAllMocks(); });
+
+  function criarFormData(idPrato: string, refeicao: string) {
+    const formData = new FormData();
+    formData.append("idPrato", idPrato);
+    formData.append("refeicao", refeicao);
+    return formData;
+  }
+
+  test("deve bloquear acesso para alunos", async () => {
+    const mockSession: CustomSession = {
+      user: { id: "123", perfil: "aluno", name: "Aluno" },
+      expires: "9999-12-31T23:59:59.999Z"
+    };
+
+    vi.mocked(auth as unknown as () => Promise<Session | null>).mockResolvedValueOnce(mockSession);
+    
+    await expect(cadastrarPratoDoDia(criarFormData("p1", "almoço"))).rejects.toThrow("Acesso negado: você não tem permissão.");
   });
 
-  test("deve cadastrar o prato do dia com sucesso", async () => {
-    console.log("Iniciando teste de cadastrarPratoDoDia...");
+  test("deve lançar erro se faltarem campos obrigatórios", async () => {
+    const mockSession: CustomSession = {
+      user: { id: "123", perfil: "adm", name: "Admin" },
+      expires: "9999-12-31T23:59:59.999Z"
+    };
 
-    // Criar o registro do dia na tabela pai se não existir
-    await db.insert(cardapioDiario).values({ data: dataFormatada }).catch(() => {});
+    vi.mocked(auth as unknown as () => Promise<Session | null>).mockResolvedValueOnce(mockSession);
 
-    console.log("Tentando cadastrar prato base no banco...");
-    await inserirPratoNoBanco(testPratoId, "Prato de Teste Automatizado");
+    // Mandando FormData sem a refeição
+    const formData = new FormData();
+    formData.append("idPrato", "p1");
 
-    console.log("Limpando registro antigo para o teste rodar limpo...");
+    await expect(cadastrarPratoDoDia(formData)).rejects.toThrow("Preencha todos os campos obrigatórios.");
+  });
 
-    const result = await inserirPratoDoDiaNoBanco(testPratoId, refeicaoTeste);
-    
-    expect(result.success).toBe(true);
+  test("deve prosseguir com sucesso e revalidar rotas se for gestor", async () => {
+    const mockSession: CustomSession = {
+      user: { id: "123", perfil: "gestorru", name: "Gestor" },
+      expires: "9999-12-31T23:59:59.999Z"
+    };
+
+    vi.mocked(auth as unknown as () => Promise<Session | null>).mockResolvedValueOnce(mockSession);
+
+    const resultado = await cadastrarPratoDoDia(criarFormData("p1", "almoço"));
+
+    expect(db.insert).toHaveBeenCalled();
+    expect(revalidatePath).toHaveBeenCalledWith("/gestao/cardapio");
+    expect(revalidatePath).toHaveBeenCalledWith("/dashboard");
+    expect(resultado).toEqual({ success: true });
   });
 });

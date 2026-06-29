@@ -6,7 +6,7 @@ const globalForDrizzle = globalThis as unknown as { conn: Database.Database | nu
 
 const rawUrl = process.env.DATABASE_URL?.replace("file:", "")
 
-const databaseUrl = rawUrl ? rawUrl : path.join(process.cwd(), "avaliaru.db");
+const databaseUrl = rawUrl ? rawUrl : path.join(process.cwd(), "dev.db");
 
 export const sqlite = globalForDrizzle.conn || new Database(databaseUrl);
 

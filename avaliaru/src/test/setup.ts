@@ -1,4 +1,7 @@
 import "@testing-library/jest-dom/vitest";
+// As variáveis de ambiente são carregadas no `vitest.config.ts` (para os testes)
+// e no `global-setup.ts` (para o setup global/migrations).
+
 import { cleanup } from "@testing-library/react";
 import { afterEach, vi } from "vitest";
 
