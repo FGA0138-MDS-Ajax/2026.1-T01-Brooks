@@ -11,7 +11,6 @@ nav:
   - Desenvolvimento: desenvolvimento.md
   - Qualidade e testes: qualidade.md
   - Documentos oficiais: documentos.md
-  - Atas de reunião: atas.md
 
 theme:
   name: material
